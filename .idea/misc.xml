@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1725" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1725" />
+        <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1725" />
+        <entry key="app/src/main/res/layout/activity_admin.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/layout/activity_doc_page.xml" value="0.21788279215494794" />
+        <entry key="app/src/main/res/layout/activity_donor_page.xml" value="0.15989583333333332" />
+        <entry key="app/src/main/res/layout/activity_find_and_book_donor.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/layout/activity_find_donor.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/activity_get_started.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.1642181396484375" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.22508341471354168" />
+        <entry key="app/src/main/res/layout/activity_patient_page.xml" value="0.21598307291666669" />
+        <entry key="app/src/main/res/layout/activity_sign_up_doc.xml" value="0.17395833333333333" />
+        <entry key="app/src/main/res/layout/activity_sign_up_donor.xml" value="0.17050082441689313" />
+        <entry key="app/src/main/res/layout/activity_sign_up_patient.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.16822916666666668" />
+        <entry key="app/src/main/res/layout/fragment_home_doc.xml" value="0.16822916666666668" />
+        <entry key="app/src/main/res/layout/fragment_home_patient.xml" value="0.16822916666666668" />
+        <entry key="app/src/main/res/layout/fragment_notification_doc.xml" value="0.16822916666666668" />
+        <entry key="app/src/main/res/layout/fragment_notification_patient.xml" value="0.15416666666666667" />
+        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.16822916666666668" />
+        <entry key="app/src/main/res/layout/fragment_patients_attended.xml" value="0.17395833333333333" />
+        <entry key="app/src/main/res/layout/fragment_patients_remaining.xml" value="0.17395833333333333" />
+        <entry key="app/src/main/res/layout/fragment_profile_doc.xml" value="0.16822916666666668" />
+        <entry key="app/src/main/res/layout/fragment_profile_patient.xml" value="0.16822916666666668" />
+        <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.16979166666666667" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
