@@ -20,12 +20,14 @@
         <entry key="app/src/main/res/layout/activity_sign_up_donor.xml" value="0.17050082441689313" />
         <entry key="app/src/main/res/layout/activity_sign_up_patient.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/layout/fragment_donor_search.xml" value="0.1703125" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.16822916666666668" />
         <entry key="app/src/main/res/layout/fragment_home_doc.xml" value="0.16822916666666668" />
         <entry key="app/src/main/res/layout/fragment_home_patient.xml" value="0.16822916666666668" />
         <entry key="app/src/main/res/layout/fragment_notification_doc.xml" value="0.16822916666666668" />
         <entry key="app/src/main/res/layout/fragment_notification_patient.xml" value="0.15416666666666667" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.16822916666666668" />
+        <entry key="app/src/main/res/layout/fragment_patient_history.xml" value="0.15625" />
         <entry key="app/src/main/res/layout/fragment_patients_attended.xml" value="0.17395833333333333" />
         <entry key="app/src/main/res/layout/fragment_patients_remaining.xml" value="0.17395833333333333" />
         <entry key="app/src/main/res/layout/fragment_profile_doc.xml" value="0.16822916666666668" />

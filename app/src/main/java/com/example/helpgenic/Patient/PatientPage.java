@@ -51,8 +51,12 @@ public class PatientPage extends AppCompatActivity {
                     loadFrag(new HomePatient(),true);
                 }else if (id == R.id.navigation_profile){
                     loadFrag(new ProfilePatient(),true);
-                }else{
+                }else if (id == R.id.navigation_notification){
                     loadFrag(new NotificationPatient(),true);
+                }else if(id == R.id.navigation_searchDonor){
+                    loadFrag(new DonorSearch(),true);
+                }else{
+                    loadFrag(new PatientHistory(),true);
                 }
                 return true;
             }

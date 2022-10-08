@@ -13,11 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HelpGenic"
         tools:targetApi="31" >
-        <activity
-            android:name=".FindDonor"
-            android:exported="false"
-            android:label="Find Donor"
-            android:parentActivityName=".MainActivity"/>
 
         <activity
             android:name=".GetStarted"

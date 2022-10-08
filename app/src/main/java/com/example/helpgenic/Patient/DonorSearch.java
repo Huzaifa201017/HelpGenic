@@ -12,10 +12,10 @@ import com.example.helpgenic.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link PatientHistory #newInstance} factory method to
+ * Use the {@link DonorSearch#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PatientHistory extends Fragment {
+public class DonorSearch extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,15 +26,16 @@ public class PatientHistory extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public PatientHistory() {
+    public DonorSearch() {
         // Required empty public constructor
     }
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_patient_history, container, false);
+        return inflater.inflate(R.layout.fragment_donor_search, container, false);
     }
 }
