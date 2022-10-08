@@ -14,5 +14,9 @@
     <string name="enter_your_password">Enter your password</string>
     <string name="pSignUp">Sign Up</string>
     <string name="getStarted"><a href=""></a></string>
+    <string name="search_donor">Search Donor</string>
+    <string name="history">History</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

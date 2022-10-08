@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_baseline_history_24.xml" value="0.1345" />
         <entry key="app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1725" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1725" />
         <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1725" />
@@ -30,6 +31,7 @@
         <entry key="app/src/main/res/layout/fragment_profile_doc.xml" value="0.16822916666666668" />
         <entry key="app/src/main/res/layout/fragment_profile_patient.xml" value="0.16822916666666668" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/menu/bottom_nav_patient_menu.xml" value="0.16927083333333334" />
       </map>
     </option>
   </component>
