@@ -55,9 +55,9 @@ public class HomeDoc extends Fragment {
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
                 if (position == 0){
-                    tab.setText("Patients Remaining");
+                    tab.setText("Appointments");
                 }else{
-                    tab.setText("Patients Attended");
+                    tab.setText("Patients");
                 }
             }
         }).attach();

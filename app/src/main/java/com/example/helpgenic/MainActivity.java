@@ -51,10 +51,6 @@ public class MainActivity extends AppCompatActivity {
 //        startActivity(intent);
 //    }
 
-    public void goToFindDonorPage(View view){
-        Intent intent = new Intent(this , FindDonor.class);
-        startActivity(intent);
-    }
 
 
 
