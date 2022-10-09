@@ -12,7 +12,7 @@ import com.example.helpgenic.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link DonorSearch#newInstance} factory method to
+ * Use the {@link DonorSearch #newInstance} factory method to
  * create an instance of this fragment.
  */
 public class DonorSearch extends Fragment {
