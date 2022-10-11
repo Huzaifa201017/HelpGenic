@@ -3,23 +3,27 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../Library/Android/sdk/platforms/android-32/data/res/layout/simple_list_item_1.xml" value="0.1734375" />
         <entry key="app/src/main/res/drawable/ic_baseline_history_24.xml" value="0.1345" />
         <entry key="app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1725" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1725" />
         <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1725" />
+        <entry key="app/src/main/res/drawable/list_cell_custom_design.xml" value="0.1575" />
+        <entry key="app/src/main/res/drawable/search_view_custom_deesign.xml" value="0.178" />
         <entry key="app/src/main/res/layout/activity_admin.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/layout/activity_doc_page.xml" value="0.21788279215494794" />
         <entry key="app/src/main/res/layout/activity_donor_page.xml" value="0.15989583333333332" />
         <entry key="app/src/main/res/layout/activity_find_and_book_donor.xml" value="0.16979166666666667" />
-        <entry key="app/src/main/res/layout/activity_find_doctor.xml" value="0.1703125" />
+        <entry key="app/src/main/res/layout/activity_find_doctor.xml" value="0.22445831298828123" />
         <entry key="app/src/main/res/layout/activity_find_donor.xml" value="0.17239583333333333" />
         <entry key="app/src/main/res/layout/activity_get_started.xml" value="0.17239583333333333" />
-        <entry key="app/src/main/res/layout/activity_login.xml" value="0.1642181396484375" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.16675262451171877" />
         <entry key="app/src/main/res/layout/activity_patient_page.xml" value="0.21598307291666669" />
         <entry key="app/src/main/res/layout/activity_sign_up_doc.xml" value="0.17395833333333333" />
         <entry key="app/src/main/res/layout/activity_sign_up_donor.xml" value="0.17050082441689313" />
         <entry key="app/src/main/res/layout/activity_sign_up_patient.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/layout/dropdown_item.xml" value="0.17239583333333333" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/layout/fragment_donor_search.xml" value="0.1703125" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.16822916666666668" />
@@ -33,6 +37,7 @@
         <entry key="app/src/main/res/layout/fragment_patients_remaining.xml" value="0.17395833333333333" />
         <entry key="app/src/main/res/layout/fragment_profile_doc.xml" value="0.16822916666666668" />
         <entry key="app/src/main/res/layout/fragment_profile_patient.xml" value="0.16822916666666668" />
+        <entry key="app/src/main/res/layout/list_cell_custom_design.xml" value="0.16927083333333334" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/menu/bottom_nav_patient_menu.xml" value="0.16927083333333334" />
       </map>

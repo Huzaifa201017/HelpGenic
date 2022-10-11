@@ -21,10 +21,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button8"
+        android:id="@+id/findDoc"
         android:layout_width="400dp"
         android:layout_height="60dp"
-        android:onClick="goToDocPage"
         android:text="Find Doctor"
         android:textAllCaps="false"
         android:textSize="17sp"
