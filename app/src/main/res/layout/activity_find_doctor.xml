@@ -11,42 +11,56 @@
     <ListView
 
         android:id="@+id/DocList"
-        android:layout_width="417dp"
-        android:layout_height="495dp"
+        android:layout_width="match_parent"
+        android:layout_height="464dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.588"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="0.965" />
+        app:layout_constraintVertical_bias="0.979" />
 
-    <SearchView
+    <EditText
         android:id="@+id/searchView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:background="@drawable/search_view_custom_deesign"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+        android:hint="Search"
+        android:padding="12dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.048" />
+<!--    <SearchView-->
+<!--        android:id="@+id/searchView"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+
+<!--        android:background="@drawable/search_view_custom_deesign"-->
+<!--        android:paddingTop="5dp"-->
+<!--        android:paddingBottom="5dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.048" />-->
 
     <com.google.android.material.textfield.TextInputLayout
 
+        android:id="@+id/textInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:hint="Sort By"
-
         app:layout_constraintBottom_toTopOf="@+id/DocList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.03"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView">
+        app:layout_constraintTop_toBottomOf="@+id/searchView"
+        app:layout_constraintVertical_bias="0.831">
 
         <AutoCompleteTextView
             android:id="@+id/searchOptions"
@@ -55,14 +69,114 @@
             android:inputType="none"
             android:text="Rating"
             app:layout_constraintBottom_toTopOf="@+id/DocList"
-            app:layout_constraintTop_toBottomOf="@+id/searchView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.531"
-            app:layout_constraintHorizontal_bias="1.03"/>
+            app:layout_constraintHorizontal_bias="1.03"
+            app:layout_constraintTop_toBottomOf="@+id/searchView"
+            app:layout_constraintVertical_bias="0.831" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!--    <HorizontalScrollView-->
+    <!--        android:id="@+id/horizontalScrollView1"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
 
+
+    <!--        app:layout_constraintBottom_toTopOf="@+id/DocList"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.473"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/searchView"-->
+    <!--        app:layout_constraintVertical_bias="0.2">-->
+
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/shapeLayout"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:layout_gravity="center"-->
+    <!--            android:orientation="horizontal"-->
+    <!--            android:paddingLeft="30dp">-->
+
+    <!--            <Button-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginEnd="6dp"-->
+    <!--                android:paddingTop="25dp"-->
+    <!--                android:paddingBottom="25dp"-->
+    <!--                android:paddingLeft="20dp"-->
+    <!--                android:paddingRight="20dp"-->
+    <!--                android:text="Button1"-->
+    <!--                 />-->
+
+    <!--            <Button-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginEnd="5dp"-->
+    <!--                android:paddingTop="25dp"-->
+    <!--                android:paddingBottom="25dp"-->
+    <!--                android:text="Heart"/>-->
+
+    <!--            <Button-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginEnd="5dp"-->
+    <!--                android:paddingTop="25dp"-->
+    <!--                android:paddingBottom="25dp"-->
+    <!--                android:text="Brain"-->
+    <!--                />-->
+
+    <!--            <Button-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginEnd="5dp"-->
+    <!--                android:paddingTop="25dp"-->
+    <!--                android:paddingBottom="25dp"-->
+    <!--                android:text="Skin"-->
+    <!--                 />-->
+
+    <!--            <Button-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginEnd="5dp"-->
+    <!--                android:paddingTop="25dp"-->
+    <!--                android:paddingBottom="25dp"-->
+    <!--                android:text="Liver"-->
+    <!--                />-->
+
+    <!--            <Button-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginEnd="5dp"-->
+    <!--                android:paddingTop="25dp"-->
+    <!--                android:paddingBottom="25dp"-->
+    <!--                android:text="Kidney"-->
+    <!--                 />-->
+
+    <!--            <Button-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginEnd="5dp"-->
+    <!--                android:paddingTop="25dp"-->
+    <!--                android:paddingBottom="25dp"-->
+    <!--                android:text="Lungs"-->
+    <!--                />-->
+
+
+    <!--        </LinearLayout>-->
+    <!--    </HorizontalScrollView>-->
+    <TextView
+        android:id="@+id/selectCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background"
+        android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24"
+        android:hint="Select Category"
+        android:padding="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

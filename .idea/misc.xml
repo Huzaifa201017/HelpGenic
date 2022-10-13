@@ -9,12 +9,13 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1725" />
         <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1725" />
         <entry key="app/src/main/res/drawable/list_cell_custom_design.xml" value="0.1575" />
+        <entry key="app/src/main/res/drawable/list_view_custom_design.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/search_view_custom_deesign.xml" value="0.178" />
         <entry key="app/src/main/res/layout/activity_admin.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/layout/activity_doc_page.xml" value="0.21788279215494794" />
         <entry key="app/src/main/res/layout/activity_donor_page.xml" value="0.15989583333333332" />
         <entry key="app/src/main/res/layout/activity_find_and_book_donor.xml" value="0.16979166666666667" />
-        <entry key="app/src/main/res/layout/activity_find_doctor.xml" value="0.22445831298828123" />
+        <entry key="app/src/main/res/layout/activity_find_doctor.xml" value="0.1841583251953125" />
         <entry key="app/src/main/res/layout/activity_find_donor.xml" value="0.17239583333333333" />
         <entry key="app/src/main/res/layout/activity_get_started.xml" value="0.17239583333333333" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
@@ -28,7 +29,7 @@
         <entry key="app/src/main/res/layout/fragment_donor_search.xml" value="0.1703125" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.16822916666666668" />
         <entry key="app/src/main/res/layout/fragment_home_doc.xml" value="0.16822916666666668" />
-        <entry key="app/src/main/res/layout/fragment_home_patient.xml" value="0.16822916666666668" />
+        <entry key="app/src/main/res/layout/fragment_home_patient.xml" value="0.1871958414713541" />
         <entry key="app/src/main/res/layout/fragment_notification_doc.xml" value="0.16822916666666668" />
         <entry key="app/src/main/res/layout/fragment_notification_patient.xml" value="0.15416666666666667" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.16822916666666668" />
@@ -38,6 +39,7 @@
         <entry key="app/src/main/res/layout/fragment_profile_doc.xml" value="0.16822916666666668" />
         <entry key="app/src/main/res/layout/fragment_profile_patient.xml" value="0.16822916666666668" />
         <entry key="app/src/main/res/layout/list_cell_custom_design.xml" value="0.16927083333333334" />
+        <entry key="app/src/main/res/layout/searchable_spinner_custom_design.xml" value="0.1" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/menu/bottom_nav_patient_menu.xml" value="0.16927083333333334" />
       </map>
