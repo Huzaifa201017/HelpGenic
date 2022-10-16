@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Patient.PatientHistory">
+
+    <!-- TODO: Update blank fragment layout -->
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/ImageView"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="19dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TextView"
+        android:layout_toEndOf="@id/ImageView"
+        android:layout_marginStart="22dp"
+        android:layout_alignTop="@+id/ImageView"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        />
+
+
+    <ListView
+        android:id="@+id/AppointmentsListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="40dp" />
+
+
+</RelativeLayout>

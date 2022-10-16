@@ -17,12 +17,9 @@ import java.util.List;
 public class customListViewAdapter extends ArrayAdapter<Doctor> {
 
 
-
-    public customListViewAdapter(@NonNull FindDoctor context, int resource, @NonNull List<Doctor> objects) {
+    public customListViewAdapter(Context context, int resource, @NonNull List<Doctor> objects) {
         super(context, resource, objects);
     }
-
-
 
     @NonNull
     @Override

@@ -2,29 +2,25 @@ package com.example.helpgenic.Patient;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.helpgenic.Doctor.ViewPagerDocPageAdapter;
 import com.example.helpgenic.R;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PatientHistory #newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class PatientHistory extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    TabLayout tab;
+    ViewPager2 viewPager;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public PatientHistory() {
         // Required empty public constructor
@@ -35,6 +31,25 @@ public class PatientHistory extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_patient_history, container, false);
+        View view = inflater.inflate(R.layout.fragment_patient_history, container, false);
+
+        tab = view.findViewById(R.id.tab);
+        viewPager = view.findViewById(R.id.viewPager);
+
+        ViewPagerPatientHistoryAdapter adapter = new ViewPagerPatientHistoryAdapter(getActivity().getSupportFragmentManager(), getLifecycle() );
+        viewPager.setAdapter(adapter);
+
+        new TabLayoutMediator(tab, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                if (position == 0){
+                    tab.setText("Upcoming Appointments");
+                }else{
+                    tab.setText("History");
+                }
+            }
+        }).attach();
+
+        return view;
     }
 }
