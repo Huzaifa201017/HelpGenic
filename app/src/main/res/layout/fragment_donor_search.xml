@@ -1,22 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/green_500"
+    android:foregroundTint="@color/green_500"
     tools:context=".Patient.DonorSearch">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:text="@string/home"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="419dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="3dp"
+        android:backgroundTint="@color/green_500"
+        android:contentDescription="@android:string/yes"
+        android:scaleType="fitStart"
+        android:src="@drawable/ic_baseline_search_24"
+        android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextTextPersonName2"
+        android:layout_width="266dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="52dp"
+        android:ems="10"
+        android:hint="@string/search_for_donor"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="121dp"
+        android:layout_height="134dp"
+        android:layout_marginTop="152dp"
+        android:layout_marginEnd="209dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:backgroundTint="@color/green_500"
+        android:dropDownSelector="@android:drawable/btn_dropdown"
+        android:entries="@array/BloodGroup"
+        android:foregroundTint="@color/green_500"
+        android:spinnerMode="dropdown"
+        android:textAlignment="center"
+        android:textDirection="anyRtl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="111dp"
+        android:layout_height="134dp"
+        android:layout_marginTop="152dp"
+        android:layout_marginEnd="98dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:backgroundTint="@color/green_500"
+        android:dropDownSelector="@android:drawable/btn_dropdown"
+        android:entries="@array/Gender"
+        android:foregroundTint="@color/green_500"
+        android:spinnerMode="dropdown"
+        android:textAlignment="center"
+        android:textDirection="anyRtl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="428dp"
+        android:contentDescription="@string/hello_blank_fragment"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="181dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dip">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+
+                android:text="Name"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="RtlCompat" />
+
+
+            <ListView
+                android:id="@+id/listView1"
+                android:layout_width="392dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="116dp"
+                android:background="@color/green_500"
+                tools:ignore="NestedScrolling">
+
+            </ListView>
+
+        </LinearLayout>
+    </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

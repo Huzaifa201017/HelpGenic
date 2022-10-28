@@ -7,8 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.helpgenic.Doctor.AppointmentDocsViewedByDoc;
 import com.example.helpgenic.Doctor.DocPage;
 import com.example.helpgenic.Doctor.SignUpDoc;
+import com.example.helpgenic.Patient.AppointmentDocsViewedByPatient;
+import com.example.helpgenic.Patient.DocViewingPatientProfile;
 import com.example.helpgenic.Patient.PatientPage;
 import com.example.helpgenic.Patient.SignUpPatient;
 
@@ -46,13 +49,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-//    public void goToAdminDashboard(View view){
-//        Intent intent = new Intent(this , Admin.class);
-//        startActivity(intent);
-//    }
-
-
-
 
     public void goToDocPage(View view){
         Intent intent = new Intent(this , DocPage.class);
@@ -61,6 +57,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToGetStartedPage(View view){
         Intent intent = new Intent(this , GetStarted.class);
+        startActivity(intent);
+    }
+
+    public void goToDovViewingPatientProfilePage(View view){
+        Intent intent = new Intent(this , DocViewingPatientProfile.class);
+        startActivity(intent);
+    }
+
+
+    public void goToAppointmentDocsViewedByPatientPage(View view){
+        Intent intent = new Intent(this , AppointmentDocsViewedByPatient.class);
+        startActivity(intent);
+    }
+
+
+    public void goToAppointmentDocsViewedByDocPage(View view){
+        Intent intent = new Intent(this , AppointmentDocsViewedByDoc.class);
         startActivity(intent);
     }
 }

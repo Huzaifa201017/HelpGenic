@@ -180,7 +180,7 @@ public class HomePatient extends Fragment  {
         customListViewAdapter adapter1 = new customListViewAdapter(getContext() , R.layout.list_cell_custom_design , docList);
         doctorsList.setAdapter(adapter1);
 
-        
+
 
 
         return view;

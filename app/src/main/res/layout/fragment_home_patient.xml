@@ -48,7 +48,9 @@
         app:layout_constraintHorizontal_bias="0.588"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="0.979" />
+        app:layout_constraintVertical_bias="0.979"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10.0sp"/>
 
 
     <EditText
@@ -94,6 +96,26 @@
             app:layout_constraintVertical_bias="0.831" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/selectCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/search_view_custom_deesign"
+        android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24"
+        android:hint="Select Category"
+        android:padding="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <!--    <HorizontalScrollView-->
     <!--        android:id="@+id/horizontalScrollView1"-->
@@ -183,18 +205,3 @@
 
     <!--        </LinearLayout>-->
     <!--    </HorizontalScrollView>-->
-    <TextView
-        android:id="@+id/selectCategory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/search_view_custom_deesign"
-        android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24"
-        android:hint="Select Category"
-        android:padding="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>

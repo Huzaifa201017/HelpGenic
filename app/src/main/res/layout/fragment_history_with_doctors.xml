@@ -31,8 +31,7 @@
     <ListView
         android:id="@+id/AppointmentsListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="40dp" />
+        android:layout_height="wrap_content" />
 
 
 </RelativeLayout>

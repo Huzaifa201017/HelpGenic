@@ -17,8 +17,8 @@
         android:background="@drawable/list_view_custom_design"
 
         android:paddingStart="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp">
 
         <ImageView
             android:id="@+id/imageView"
