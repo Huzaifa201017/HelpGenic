@@ -32,7 +32,8 @@ public class UpcomingAppointments extends Fragment {
 
 
 
-    private void setUpData(){
+
+    private void setUpData() {
         appointments.add(new Appointment("July 22" , "8:30-9:00 AM" , "Tuesday" , "Dr, Guljeet Tillo"));
 
         appointments.add(new Appointment("Sept 22" , "9:30-10:00 AM" , "Wednesday" , "Dr, Aslam Pardes"));

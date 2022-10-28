@@ -27,6 +27,7 @@ class Appointment{
         this.docName = docName;
     }
 }
+
 public class ListViewPatientHistoryAdapter extends ArrayAdapter<Appointment> {
 
 

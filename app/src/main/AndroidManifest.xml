@@ -13,6 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HelpGenic"
         tools:targetApi="31" >
+
+
         <activity
             android:name=".Patient.AppointmentDocsViewedByPatient"
             android:exported="false" />
@@ -31,6 +33,7 @@
             android:name=".Doctor.DocPage"
             android:exported="false"
             android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".Patient.PatientPage"

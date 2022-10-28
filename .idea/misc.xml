@@ -55,6 +55,9 @@
         <entry key="app/src/main/res/layout/list_cell_custom_design_appointment_docs_1.xml" value="0.1" />
         <entry key="app/src/main/res/layout/list_cell_custom_design_appointment_docs_2.xml" value="0.15614471435546876" />
         <entry key="app/src/main/res/layout/list_cell_custom_design_for_patient_schedule.xml" value="0.16927083333333334" />
+        <entry key="app/src/main/res/layout/list_cell_custom_design_patients_attended.xml" value="0.17447916666666666" />
+        <entry key="app/src/main/res/layout/list_cell_custom_design_patients_attended_and_remaining.xml" value="0.17552083333333332" />
+        <entry key="app/src/main/res/layout/list_cell_custom_design_patients_rem.xml" value="0.17447916666666666" />
         <entry key="app/src/main/res/layout/searchable_spinner_custom_design.xml" value="0.1" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/menu/bottom_nav_patient_menu.xml" value="0.16927083333333334" />

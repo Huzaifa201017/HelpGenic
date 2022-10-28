@@ -22,12 +22,7 @@ import java.util.ArrayList;
  */
 
 public class DonorSearch extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public DonorSearch() {
         // Required empty public constructor
@@ -39,9 +34,13 @@ public class DonorSearch extends Fragment {
         return inflater.inflate(R.layout.fragment_donor_search, container, false);
 
     }
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState ) {
         super.onViewCreated(view, savedInstanceState);
+
+
         ListView listview =view.findViewById(R.id.listView1);
 
         ArrayList<String> donor = new ArrayList<>();

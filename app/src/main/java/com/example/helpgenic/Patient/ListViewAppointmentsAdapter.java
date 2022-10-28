@@ -41,4 +41,5 @@ public class ListViewAppointmentsAdapter extends ArrayAdapter<String> {
 
         return convertView;
     }
+
 }
