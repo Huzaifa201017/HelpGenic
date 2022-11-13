@@ -11,7 +11,7 @@ import com.example.helpgenic.Doctor.AppointmentDocsViewedByDoc;
 import com.example.helpgenic.Doctor.DocPage;
 import com.example.helpgenic.Doctor.SignUpDoc;
 import com.example.helpgenic.Patient.AppointmentDocsViewedByPatient;
-import com.example.helpgenic.Patient.DocViewingPatientProfile;
+import com.example.helpgenic.Doctor.DocViewingPatientProfile;
 import com.example.helpgenic.Patient.PatientPage;
 import com.example.helpgenic.Patient.SignUpPatient;
 

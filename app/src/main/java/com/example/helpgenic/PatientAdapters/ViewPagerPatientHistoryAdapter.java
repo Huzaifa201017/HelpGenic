@@ -1,9 +1,12 @@
-package com.example.helpgenic.Patient;
+package com.example.helpgenic.PatientAdapters;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.example.helpgenic.Patient.HistoryWithDoctors;
+import com.example.helpgenic.Patient.UpcomingAppointments;
 
 public class ViewPagerPatientHistoryAdapter extends FragmentStateAdapter {
 

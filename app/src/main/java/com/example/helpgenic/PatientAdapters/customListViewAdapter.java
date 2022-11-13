@@ -1,4 +1,4 @@
-package com.example.helpgenic.Patient;
+package com.example.helpgenic.PatientAdapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,13 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.helpgenic.R;
 
 import java.util.List;
+
+
 
 public class customListViewAdapter extends ArrayAdapter<Doctor> {
 

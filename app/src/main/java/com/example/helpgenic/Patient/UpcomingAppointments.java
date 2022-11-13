@@ -8,13 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.example.helpgenic.PatientAdapters.Appointment;
+import com.example.helpgenic.PatientAdapters.ListViewPatientHistoryAdapter;
 import com.example.helpgenic.R;
 
 import java.util.ArrayList;
 
 public class UpcomingAppointments extends Fragment {
 
-    private ArrayList<Appointment> appointments = new ArrayList<>();
+    private final ArrayList<Appointment> appointments = new ArrayList<>();
 
 
     // TODO: Rename parameter arguments, choose names that match

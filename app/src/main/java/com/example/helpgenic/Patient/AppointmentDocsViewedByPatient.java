@@ -1,11 +1,11 @@
 package com.example.helpgenic.Patient;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.helpgenic.CommonAdapters.ListViewAppointmentDocsAdapter;
 import com.example.helpgenic.R;
 
 import java.util.ArrayList;

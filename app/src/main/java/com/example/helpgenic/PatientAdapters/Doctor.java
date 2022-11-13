@@ -1,5 +1,6 @@
-package com.example.helpgenic.Patient;
+package com.example.helpgenic.PatientAdapters;
 
+//random Class
 public class Doctor {
 
     public String name;

@@ -1,4 +1,4 @@
-package com.example.helpgenic.Patient;
+package com.example.helpgenic.CommonAdapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,18 +12,14 @@ import androidx.annotation.Nullable;
 
 import com.example.helpgenic.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ListViewAppointmentDocsAdapter extends ArrayAdapter<String> {
+public class ListViewAppointmentsAdapter extends ArrayAdapter<String> {
 
-
-    private final int resource;
-    public ListViewAppointmentDocsAdapter(@NonNull Context context, int resource, @NonNull List<String> objects) {
-
+    public ListViewAppointmentsAdapter(Context context, int resource, String[] objects) {
         super(context, resource, objects);
-        this.resource = resource;
     }
+
 
     @NonNull
     @Override
@@ -32,15 +28,19 @@ public class ListViewAppointmentDocsAdapter extends ArrayAdapter<String> {
         String item  = getItem(position);
 
         if (convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(resource, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.appointments_list_custom_design, parent, false);
         }
 
 
-        TextView fileName = convertView.findViewById(R.id.fileName);
-        fileName.setText(item);
+        TextView date = convertView.findViewById(R.id.date);
+        date.setText(item);
+
+        TextView appointmentNum = convertView.findViewById(R.id.appointmentNum);
+        appointmentNum.setText("Appointment" + (position+1));
 
 
 
         return convertView;
     }
+
 }

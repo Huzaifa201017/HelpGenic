@@ -4,8 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,44 +19,37 @@ import com.example.helpgenic.R;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DonorSearch #newInstance} factory method to
- * create an instance of this fragment.
- */
 
 public class DonorSearch extends Fragment {
 
+    AutoCompleteTextView bloodGroups;
+    String[] bloodGrps = {"A+" , "A-" , "B+","B-","AB+","AB-","O+","O-" };
 
     public DonorSearch() {
         // Required empty public constructor
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_donor_search, container, false);
 
-    }
+        View view = inflater.inflate(R.layout.fragment_donor_search, container, false);
+        // ======================================== Handling Sort by functionality ==========================================
+        bloodGroups = view.findViewById(R.id.bloodGroups);    // 'sort by' spinner option
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity() , android.R.layout.simple_spinner_dropdown_item , bloodGrps);
+        bloodGroups.setAdapter(adapter);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState ) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-        ListView listview =view.findViewById(R.id.listView1);
-
-        ArrayList<String> donor = new ArrayList<>();
-        donor.add("Gender");
-        donor.add("BloodGroup");
-        donor.add("PhoneNumber");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, donor);
-        listview.setAdapter(adapter);
-
-
-
+        // when user presses the autocomplete text view 'sort by' option
+        bloodGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String s = adapterView.getItemAtPosition(i).toString();
+                Toast.makeText(getContext(), "Item: "+ s, Toast.LENGTH_SHORT).show();
+            }
+        });
+        return view;
 
     }
 

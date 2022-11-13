@@ -1,10 +1,14 @@
-package com.example.helpgenic.Patient;
+package com.example.helpgenic.Doctor;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.helpgenic.CommonAdapters.ListViewAppointmentsAdapter;
 import com.example.helpgenic.R;
 
 public class DocViewingPatientProfile extends AppCompatActivity {
@@ -20,6 +24,13 @@ public class DocViewingPatientProfile extends AppCompatActivity {
         appointmentsListRef = findViewById(R.id.appointments);
         ListViewAppointmentsAdapter adapter = new ListViewAppointmentsAdapter(this , R.layout.appointments_list_custom_design , date);
         appointmentsListRef.setAdapter(adapter);
+
+        appointmentsListRef.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                startActivity(new Intent(DocViewingPatientProfile.this, AppointmentDocsViewedByDoc.class));
+            }
+        });
     }
 
 

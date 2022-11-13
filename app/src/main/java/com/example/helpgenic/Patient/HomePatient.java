@@ -9,7 +9,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleObserver;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,19 +21,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.helpgenic.PatientAdapters.Doctor;
+import com.example.helpgenic.PatientAdapters.customListViewAdapter;
 import com.example.helpgenic.R;
-import com.example.helpgenic.SignUpDonor;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomePatient #newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class HomePatient extends Fragment  {
 
 
@@ -50,7 +45,7 @@ public class HomePatient extends Fragment  {
     ListView doctorsList; // list of Doctors
     EditText sView;
     AutoCompleteTextView tView;
-    TextView selectOption;
+    Button selectOption;
     Dialog dialog;
 
 
@@ -125,7 +120,7 @@ public class HomePatient extends Fragment  {
         //================================== Select category functionality =======================
         selectOption = view.findViewById(R.id.selectCategory); // select category option
 
-        // When user presses the select category option
+        // When user presses the select category Button
         selectOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,6 +169,13 @@ public class HomePatient extends Fragment  {
 
 
 
+        // ====================================== Listening to click on doctor lit row =================
+        doctorsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                startActivity(new Intent(getContext(), PatientViewingDocProfile.class));
+            }
+        });
 
         return view;
     }

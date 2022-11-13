@@ -1,4 +1,4 @@
-package com.example.helpgenic.Patient;
+package com.example.helpgenic.PatientAdapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,21 +12,6 @@ import androidx.annotation.Nullable;
 
 import com.example.helpgenic.R;
 import java.util.List;
-
-// random class
-class Appointment{
-    public String date;
-    public String time;
-    public String week;
-    public String docName;
-
-    public Appointment(String date, String time, String week, String docName) {
-        this.date = date;
-        this.time = time;
-        this.week = week;
-        this.docName = docName;
-    }
-}
 
 public class ListViewPatientHistoryAdapter extends ArrayAdapter<Appointment> {
 
