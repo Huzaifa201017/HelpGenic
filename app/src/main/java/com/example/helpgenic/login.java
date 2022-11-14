@@ -20,6 +20,7 @@ public class login extends AppCompatActivity {
 
         btn = findViewById(R.id.getStarted);
 
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -5,17 +5,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="wrap_content"
-    android:fillViewport="true"
-
     android:verticalScrollbarPosition="right"
+    android:layout_marginBottom="40dp"
     >
 
 
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="442dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
 
         android:gravity="center_horizontal"
         android:orientation="vertical"
@@ -37,7 +36,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#56B35A"
-            android:drawableLeft="@drawable/ic_baseline_person_24"
             android:gravity="center"
             android:paddingStart="10dp"
             android:paddingLeft="5dp"
@@ -45,7 +43,8 @@
             android:paddingBottom="5dp"
             android:text="Personal Info"
             android:textSize="25sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:drawableLeftCompat="@drawable/ic_baseline_person_24" />
 
         <TextView
             android:id="@+id/name"
@@ -140,7 +139,6 @@
             android:id="@+id/book_physical_appointment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:outlineProvider="bounds"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:text="Add Schedule"
@@ -155,8 +153,7 @@
             android:paddingBottom="5dp"
             android:text="Log Out"
             android:textSize="17dp"
-            android:layout_marginTop="5dp"
-            android:outlineProvider="bounds"/>
+            />
     </LinearLayout>
 
 
