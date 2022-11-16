@@ -19,7 +19,7 @@ import java.sql.DriverManager;
 
 public class GetStarted extends AppCompatActivity {
     Button doc , donor , patient;
-    //DbHandler conn;
+    DbHandler conn;
      private Connection connection = null;
     String url="jdbc:mysql://sda.mysql.database.azure.com:3306/helpgenic?useSSL=true&loginTimeout=30";
 
@@ -28,31 +28,15 @@ public class GetStarted extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_started);
 
-        // =============== connect with db ===============
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-
-        try {
-
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(url, "azureuser", "Muhammad167");
-            //connection = DriverManager.getConnection(url);
-            Toast.makeText(this,"Success", Toast.LENGTH_SHORT).show();
-
-
-        } catch (Exception e) {
-
-            Log.e(String.valueOf(1), "Error occured here 1!");
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-        // ==================================================
-
-
         doc = findViewById(R.id.signUpDoc);
         donor = findViewById(R.id.signUpDonor);
         patient = findViewById(R.id.signUpPatient);
+
+        
+        // =============== connect with db ===============
+        conn = new DbHandler();
+        conn.connectToDb(GetStarted.this);
+        // ==================================================
 
         doc.setOnClickListener(new View.OnClickListener() {
             @Override
