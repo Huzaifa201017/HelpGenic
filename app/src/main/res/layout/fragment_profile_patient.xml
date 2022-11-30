@@ -8,17 +8,20 @@
     android:layout_height="match_parent"
     tools:context=".Patient.ProfilePatient">
 
+
     <LinearLayout
         android:id="@+id/patientName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="horizontal"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView8"
-        app:layout_constraintVertical_bias="0.091">
+        app:layout_constraintVertical_bias="0.191">
 
 
         <ImageView
@@ -32,7 +35,7 @@
             tools:layout_editor_absoluteY="326dp" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/pName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
@@ -64,7 +67,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView8"
-        app:layout_constraintVertical_bias="0.191">
+        app:layout_constraintVertical_bias="0.291">
 
 
         <ImageView
@@ -78,7 +81,7 @@
             tools:layout_editor_absoluteY="326dp" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/phNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
@@ -99,7 +102,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView8"
-        app:layout_constraintVertical_bias="0.291">
+        app:layout_constraintVertical_bias="0.391">
 
 
         <ImageView
@@ -113,7 +116,7 @@
             tools:layout_editor_absoluteY="326dp" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
@@ -134,7 +137,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView8"
-        app:layout_constraintVertical_bias="0.391">
+        app:layout_constraintVertical_bias="0.491">
 
 
         <TextView
@@ -148,7 +151,7 @@
             tools:layout_editor_absoluteY="323dp" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/bloodGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
@@ -170,7 +173,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView8"
-        app:layout_constraintVertical_bias="0.491">
+        app:layout_constraintVertical_bias="0.591">
 
 
         <TextView
@@ -184,7 +187,7 @@
             tools:layout_editor_absoluteY="323dp" />
 
         <TextView
-            android:id="@+id/textView8"
+            android:id="@+id/dob"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
@@ -197,6 +200,7 @@
 
 
     <View
+        android:id="@+id/view4"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="10dp"
@@ -222,15 +226,30 @@
         android:id="@+id/logOut"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Log Out"
-        android:textSize="20dp"
         android:layout_marginStart="60dp"
         android:layout_marginEnd="60dp"
+        android:text="Log Out"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view3"
         app:layout_constraintVertical_bias="0.33" />
+
+    <TextView
+        android:id="@+id/patientID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ID: "
+        android:textSize="24sp"
+        android:gravity="center_horizontal"
+        android:fontFamily="sans-serif-medium"
+        app:layout_constraintBottom_toTopOf="@+id/patientName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view4"
+        app:layout_constraintVertical_bias="0.091" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

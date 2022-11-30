@@ -5,13 +5,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.helpgenic.Classes.Patient;
 import com.example.helpgenic.Patient.HistoryWithDoctors;
 import com.example.helpgenic.Patient.UpcomingAppointments;
 
 public class ViewPagerPatientHistoryAdapter extends FragmentStateAdapter {
 
-    public ViewPagerPatientHistoryAdapter(FragmentManager fragmentManager, Lifecycle lifecycle) {
+    Patient p;
+    public ViewPagerPatientHistoryAdapter(FragmentManager fragmentManager, Lifecycle lifecycle, Patient p) {
         super(fragmentManager, lifecycle);
+        this.p = p;
     }
 
     @Override
@@ -19,7 +22,7 @@ public class ViewPagerPatientHistoryAdapter extends FragmentStateAdapter {
         if (position == 0){
             return new UpcomingAppointments();
         }else{
-            return new HistoryWithDoctors();
+            return new HistoryWithDoctors(p);
         }
 
     }

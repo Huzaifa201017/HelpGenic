@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.helpgenic.Classes.Patient;
 import com.example.helpgenic.R;
 
 import java.util.ArrayList;
@@ -24,9 +25,12 @@ public class DonorSearch extends Fragment {
 
     AutoCompleteTextView bloodGroups;
     String[] bloodGrps = {"A+" , "A-" , "B+","B-","AB+","AB-","O+","O-" };
+    ListView donorsList;
 
-    public DonorSearch() {
+    Patient p;
+    public DonorSearch(Patient p) {
         // Required empty public constructor
+        this.p = p;
     }
 
     @Override
@@ -37,6 +41,8 @@ public class DonorSearch extends Fragment {
         View view = inflater.inflate(R.layout.fragment_donor_search, container, false);
         // ======================================== Handling Sort by functionality ==========================================
         bloodGroups = view.findViewById(R.id.bloodGroups);    // 'sort by' spinner option
+        donorsList = view.findViewById(R.id.donorsList);
+
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity() , android.R.layout.simple_spinner_dropdown_item , bloodGrps);
         bloodGroups.setAdapter(adapter);

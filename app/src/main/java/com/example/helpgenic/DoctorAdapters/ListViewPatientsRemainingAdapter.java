@@ -10,14 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.helpgenic.Classes.Appointment;
 import com.example.helpgenic.R;
 
 import java.util.List;
 
 
-public class ListViewPatientsAttendedAdapter extends ArrayAdapter<PatientAppointment> {
+public class ListViewPatientsRemainingAdapter extends ArrayAdapter<Appointment> {
 
-    public ListViewPatientsAttendedAdapter(Context context, int resource, @NonNull List<PatientAppointment> objects) {
+    public ListViewPatientsRemainingAdapter(Context context, int resource, @NonNull List<Appointment> objects) {
         super(context, resource, objects);
     }
 
@@ -27,10 +28,10 @@ public class ListViewPatientsAttendedAdapter extends ArrayAdapter<PatientAppoint
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        PatientAppointment appointment = getItem(position);
+        Appointment appointment = getItem(position);
 
         if (convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_cell_custom_design_patients_attended_and_remaining, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_cell_custom_design_patients_remaining, parent, false);
         }
 
         // all views defined in list cell design
@@ -41,11 +42,14 @@ public class ListViewPatientsAttendedAdapter extends ArrayAdapter<PatientAppoint
 
 
         // setting their data
-        patientName.setText(appointment.patientName);
+        patientName.setText(appointment.getP().getName());
 
-        id.setText(String.valueOf(appointment.id));  // random data
-        appointmentDate.setText(new StringBuilder().append(appointment.date).append(" ").append(appointment.week).toString());
-        appointmentTime.setText(appointment.time);
+        id.setText(String.valueOf(appointment.getP().getId()));  // random data
+        appointmentDate.setText(appointment.getAppDate().toString());
+        String time = appointment.getsTime().toString();
+        time += " -- ";
+        time += appointment.geteTime().toString();
+        appointmentTime.setText(time);
 
 
 

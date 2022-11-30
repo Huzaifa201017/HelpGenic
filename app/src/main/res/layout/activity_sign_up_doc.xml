@@ -73,7 +73,7 @@
             android:layout_width="267dp"
             android:layout_height="48dp"
             android:ems="10"
-            android:hint="@string/dob"
+            android:hint="DOB:yyyy-MM-dd"
             android:inputType="date"
             android:minHeight="48dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -187,6 +187,49 @@
                 android:text="@string/female" />
         </RadioGroup>
 
+        <RadioGroup
+            android:id="@+id/Surgeon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView12"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+            app:layout_constraintHorizontal_bias="0.550">
+
+            <RadioButton
+                android:id="@+id/Yes"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:onClick="onRadioButtonClicked2"
+                android:text="Yes" />
+
+            <RadioButton
+                android:id="@+id/No"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:onClick="onRadioButtonClicked2"
+                android:text="No"
+
+                />
+        </RadioGroup>
+
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="Surgeon"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.170"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView3" />
+
         <Button
             android:id="@+id/uploaddocs"
             android:layout_width="232dp"
@@ -198,7 +241,7 @@
             app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup"
-            app:layout_constraintVertical_bias="0.135" />
+            app:layout_constraintVertical_bias="0.535" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

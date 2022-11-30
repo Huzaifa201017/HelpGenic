@@ -10,16 +10,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.helpgenic.Classes.Prescription;
 import com.example.helpgenic.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListViewAppointmentDocsAdapter extends ArrayAdapter<String> {
+public class ListViewAppointmentDocsAdapter extends ArrayAdapter<Prescription> {
 
 
     private final int resource;
-    public ListViewAppointmentDocsAdapter(@NonNull Context context, int resource, @NonNull List<String> objects) {
+    public ListViewAppointmentDocsAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Prescription> objects) {
 
         super(context, resource, objects);
         this.resource = resource;
@@ -29,7 +30,7 @@ public class ListViewAppointmentDocsAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        String item  = getItem(position);
+        Prescription item  = getItem(position);
 
         if (convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(resource, parent, false);
@@ -37,7 +38,7 @@ public class ListViewAppointmentDocsAdapter extends ArrayAdapter<String> {
 
 
         TextView fileName = convertView.findViewById(R.id.fileName);
-        fileName.setText(item);
+        fileName.setText("Prescription");
 
 
 

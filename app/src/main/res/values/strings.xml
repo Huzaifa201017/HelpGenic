@@ -52,5 +52,7 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="ratings">Ratings</string>
 
 </resources>

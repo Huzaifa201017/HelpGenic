@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.helpgenic.Classes.Patient;
 import com.example.helpgenic.PatientAdapters.ViewPagerPatientHistoryAdapter;
 import com.example.helpgenic.R;
 import com.google.android.material.tabs.TabLayout;
@@ -22,8 +23,10 @@ public class PatientHistory extends Fragment {
     ViewPager2 viewPager;
 
 
-    public PatientHistory() {
+    Patient p;
+    public PatientHistory(Patient p) {
         // Required empty public constructor
+        this.p = p;
     }
 
 
@@ -36,7 +39,7 @@ public class PatientHistory extends Fragment {
         tab = view.findViewById(R.id.tab);
         viewPager = view.findViewById(R.id.viewPager);
 
-        ViewPagerPatientHistoryAdapter adapter = new ViewPagerPatientHistoryAdapter(getActivity().getSupportFragmentManager(), getLifecycle() );
+        ViewPagerPatientHistoryAdapter adapter = new ViewPagerPatientHistoryAdapter(getActivity().getSupportFragmentManager(), getLifecycle(),  p );
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tab, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {

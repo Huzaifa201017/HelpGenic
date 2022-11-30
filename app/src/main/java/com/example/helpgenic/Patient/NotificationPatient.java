@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.helpgenic.Classes.Patient;
 import com.example.helpgenic.R;
 
 /**
@@ -18,17 +19,11 @@ import com.example.helpgenic.R;
  */
 public class NotificationPatient extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    Patient p;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public NotificationPatient() {
+    public NotificationPatient(Patient p) {
         // Required empty public constructor
+        this.p = p;
     }
 
 

@@ -19,9 +19,7 @@ import java.sql.DriverManager;
 
 public class GetStarted extends AppCompatActivity {
     Button doc , donor , patient;
-    DbHandler conn;
-     private Connection connection = null;
-    String url="jdbc:mysql://sda.mysql.database.azure.com:3306/helpgenic?useSSL=true&loginTimeout=30";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +30,6 @@ public class GetStarted extends AppCompatActivity {
         donor = findViewById(R.id.signUpDonor);
         patient = findViewById(R.id.signUpPatient);
 
-        
-        // =============== connect with db ===============
-        conn = new DbHandler();
-        conn.connectToDb(GetStarted.this);
-        // ==================================================
 
         doc.setOnClickListener(new View.OnClickListener() {
             @Override

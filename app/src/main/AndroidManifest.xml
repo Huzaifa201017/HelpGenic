@@ -3,9 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.helpgenic">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- The Agora SDK requires Bluetooth permissions in case users are using Bluetooth devices. -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
         android:allowBackup="true"
@@ -13,10 +23,55 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HelpGenic"
         tools:targetApi="31">
+
+        <activity
+            android:name=".Doctor.AddPhysicalSchedule"
+            android:exported="false" />
+        <activity
+            android:name=".AddVirtualSchedule"
+            android:exported="false" />
+        <activity
+            android:name=".Doctor.UpdateVirtualSchedule"
+            android:exported="false" />
+        <activity
+            android:name=".DisplayImage"
+            android:exported="false" />
+        <activity
+            android:name=".DisplayPrescription"
+            android:exported="false" />
+        <activity
+            android:name=".Doctor.MedicineLists"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Doctor.PrescriptionForm"
+            android:exported="false" />
+        <activity
+            android:name=".Patient.JoinMeeting"
+            android:exported="false" />
+        <activity
+            android:name=".Patient.GiveFeedback"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".Patient.PageForUpdateApps"
+            android:exported="false" />
+        <activity
+            android:name=".Patient.DisplayingSlots"
+            android:exported="false" />
         <activity
             android:name=".Patient.PatientViewingDocProfile"
             android:exported="false" />
@@ -49,7 +104,7 @@
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustPan" /> <!-- We would touch this in the end -->
         <activity
-            android:name=".Admin"
+            android:name=".Admin.AdminPage"
             android:exported="false"
             android:label="Dashboard"
             android:parentActivityName=".MainActivity" />
@@ -81,6 +136,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".MyReciever" />
     </application>
 
 </manifest>

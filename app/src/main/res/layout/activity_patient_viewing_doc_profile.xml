@@ -20,6 +20,9 @@
         android:orientation="vertical"
         android:layout_gravity="center_horizontal"
         android:padding="20sp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +58,7 @@
             app:drawableLeftCompat="@drawable/ic_baseline_person_24" />
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/docName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -66,8 +69,8 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/speciality"
-            android:layout_width="142dp"
+            android:id="@+id/docSpeciality"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:paddingTop="5dp"
@@ -78,8 +81,8 @@
             app:drawableLeftCompat="@drawable/ic_baseline_star_24" />
 
         <TextView
-            android:id="@+id/email"
-            android:layout_width="290dp"
+            android:id="@+id/docEmail"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:paddingTop="5dp"
@@ -104,24 +107,25 @@
             android:textStyle="bold"
             app:drawableStartCompat="@drawable/ic_baseline_laptop_windows_24" />
 
+        <TextView
+            android:id="@+id/fee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fee: 500/PKR"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="120dp"/>
+
         <ListView
             android:id="@+id/virtual_app_list"
             android:layout_width="420dp"
             android:layout_height="207dp"
-            android:nestedScrollingEnabled="true" />
+            android:nestedScrollingEnabled="true"
+            />
 
-
-        <Button
-            android:id="@+id/book_appointment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:outlineProvider="bounds"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:text="Book Appointment"
-            android:textSize="17sp"
-            app:icon="@android:drawable/ic_input_add"
-            app:iconGravity="textEnd" />
 
         <TextView
             android:id="@+id/physical_schedule"

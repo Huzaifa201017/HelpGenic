@@ -1,32 +1,37 @@
 package com.example.helpgenic.Patient;
-
-import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-
-import android.widget.ImageView;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.helpgenic.Classes.DbHandler;
+import com.example.helpgenic.Classes.Doctor;
+import com.example.helpgenic.Classes.Patient;
+import com.example.helpgenic.PatientAdapters.customListViewAdapter;
 import com.example.helpgenic.R;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class HistoryWithDoctors extends Fragment {
 
-    public HistoryWithDoctors() {
+    DbHandler db = new DbHandler();
+    private ArrayList<Doctor> docList ;
+    private ListView doctorsList ;
+    Patient p;
+    public HistoryWithDoctors(Patient p) {
 
+        this.p = p;
     }
-
-
-    List<String> DocDescription;
-    int[] Docs = {R.drawable.doc1, R.drawable.doc2, R.drawable.doc3, R.drawable.doc1, R.drawable.doc2, R.drawable.doc3};
 
     @Override
 
@@ -34,50 +39,51 @@ public class HistoryWithDoctors extends Fragment {
         // Inflate the layout for this fragment
         View contentView = inflater.inflate(R.layout.fragment_history_with_doctors,container,false);
 
-        ListView listView = contentView.findViewById(R.id.AppointmentsListView);
-        List<String> list = new ArrayList<>();
+        doctorsList = contentView.findViewById(R.id.AppointmentsListView);
 
-        for (int i=0; i<6; i++)
-        {
-            list.add("Doctor Name:          \n\nQualification:           \n\nRating:          \n");
+        try {
+            // populate the data
+            setUpData();
+            // set adapter to list view
+            customListViewAdapter adapter = new customListViewAdapter(getContext() , R.layout.list_cell_custom_design , docList);
+            doctorsList.setAdapter(adapter);
+
+        }catch (Exception e){
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-        CustomAdapter customAdapter = new CustomAdapter(list);
-        listView.setAdapter(customAdapter);
 
+
+        // on click
+
+        doctorsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // go to the 'Patient Viewing Doc Profile'
+                Doctor doc = (Doctor)adapterView.getItemAtPosition(i);
+                Intent intent = new Intent(getContext(), PatientViewingDocProfile.class);
+                intent.putExtra("doctor", doc);
+                intent.putExtra("patient" , p);
+                startActivity(intent);
+            }
+        });
         return contentView;
     }
 
+    private void setUpData(){
 
-    class CustomAdapter extends BaseAdapter{
-        public CustomAdapter(List<String> docDescription){
-            DocDescription=docDescription;
+        if(db.connectToDb(getContext())){
+
+            SharedPreferences sh = getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+            docList = db.getPreviousDoctorsMet(sh.getInt("Id", 0),getContext());
+
+            try {
+                db.closeConnection();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
-        @Override
-        public int getCount() {
-            return DocDescription.size();
-        }
 
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int i, View convertview, ViewGroup parent) {
-            @SuppressLint({"ViewHolder", "InflateParams"}) View view = getLayoutInflater().inflate(R.layout.fragment_history_with_doctors,null);
-            ImageView mImageView = (ImageView) view.findViewById(R.id.ImageView);
-            TextView mTextView = (TextView) view.findViewById(R.id.TextView);
-
-            mImageView.setImageResource(Docs[i]);
-            mTextView.setText(DocDescription.get(i));
-            return view;
-        }
     }
 
 

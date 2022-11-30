@@ -1,25 +1,32 @@
 
 package com.example.helpgenic.CommonAdapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.helpgenic.Doctor.ProfileDoc;
+import com.example.helpgenic.Patient.PatientViewingDocProfile;
 import com.example.helpgenic.R;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringTokenizer;
 
 public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     private final Context context;
     private final Map<String,List<String>> physicalSchedule;
     private final List<String> groupList;
+
     public ExpandableListViewAdapter(Context context, List<String> grouplist, Map<String,List<String>> physicalSchedule)
     {
         this.context=context;
@@ -72,6 +79,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         TextView item = view.findViewById(R.id.group_item);
         item.setTypeface(null, Typeface.BOLD);
         item.setText(clinic);
+
         return view;
     }
 
@@ -84,6 +92,61 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         }
         TextView item = view.findViewById(R.id.child_item);
         item.setText(Details);
+
+
+        // ================================ remove service for phy schedule =============================\
+
+
+
+
+//        Button button = view.findViewById(R.id.deletebutton);
+//        boolean flag = PatientViewingDocProfile.flag;
+//
+//        if (flag!=false)
+//            button.setVisibility(View.GONE);
+//
+//        if (flag==false)
+//        {
+//            button.setOnClickListener(new View.OnClickListener() {
+//                public void onClick(View view) {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//                    builder.setMessage("Do you want to remove?");
+//                    builder.setCancelable(true);
+//                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int id) {
+//                            List<String> child = physicalSchedule.get(groupList.get(i));
+//                            String s=child.toString();
+//                            s=s+",";
+//                            StringTokenizer st = new StringTokenizer(s,",");
+//                            String clocation = st.nextToken();//[Not decided yet
+//                            String phoneNum = st.nextToken();//[ 032
+//                            clocation=clocation.substring(1);
+//                            phoneNum=phoneNum.substring(1,phoneNum.length()-1);
+//                            String cName=getGroup(i).toString();
+//                            child.clear();
+////                            dbHandler.connectToDb(context.getApplicationContext());
+////                            int pid = dbHandler.getPid(cName,clocation,phoneNum);
+////                            dbHandler.removePhysicalSchedule(pid);
+////                            dbHandler.removeAppSchedule(pid);
+//                            notifyDataSetChanged();
+//                        }
+//                    });
+//                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            dialogInterface.cancel();
+//                        }
+//                    });
+//                    AlertDialog alertDialog = builder.create();
+//                    alertDialog.show();
+//
+//                }
+//            });
+//        }
+
+
+        // ===================================================================================
         return view;
     }
 

@@ -10,14 +10,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.helpgenic.Classes.Appointment;
 import com.example.helpgenic.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ListViewAppointmentsAdapter extends ArrayAdapter<String> {
+public class ListViewAppointmentsAdapter extends ArrayAdapter<Appointment> {
 
-    public ListViewAppointmentsAdapter(Context context, int resource, String[] objects) {
+    int size = 0;
+    public ListViewAppointmentsAdapter(Context context, int resource, ArrayList<Appointment> objects) {
         super(context, resource, objects);
+        size = objects.size();
     }
 
 
@@ -25,7 +29,7 @@ public class ListViewAppointmentsAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        String item  = getItem(position);
+        Appointment item  = getItem(position);
 
         if (convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.appointments_list_custom_design, parent, false);
@@ -33,10 +37,10 @@ public class ListViewAppointmentsAdapter extends ArrayAdapter<String> {
 
 
         TextView date = convertView.findViewById(R.id.date);
-        date.setText(item);
+        date.setText(item.getAppDate().toString());
 
         TextView appointmentNum = convertView.findViewById(R.id.appointmentNum);
-        appointmentNum.setText("Appointment" + (position+1));
+        appointmentNum.setText("Appointment" + (size-position));
 
 
 

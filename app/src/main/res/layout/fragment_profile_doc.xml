@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_width="wrap_content"
     android:verticalScrollbarPosition="right"
-    android:layout_marginBottom="40dp"
+    android:layout_marginBottom="55dp"
     >
 
 
@@ -19,7 +19,7 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:layout_gravity="center_horizontal"
-        android:padding="20sp">
+        >
 
         <ImageView
             android:id="@+id/imageView5"
@@ -38,7 +38,7 @@
             android:background="#56B35A"
             android:gravity="center"
             android:paddingStart="10dp"
-            android:paddingLeft="5dp"
+            android:paddingEnd="10dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:text="Personal Info"
@@ -59,7 +59,7 @@
 
         <TextView
             android:id="@+id/speciality"
-            android:layout_width="142dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_baseline_star_24"
             android:gravity="center_horizontal"
@@ -71,7 +71,7 @@
 
         <TextView
             android:id="@+id/email"
-            android:layout_width="290dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_baseline_email_24"
             android:gravity="center_horizontal"
@@ -95,6 +95,36 @@
             android:text="Virtual Schedule"
             android:textSize="25sp"
             android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/fee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fee: 500/PKR"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginStart="0dp"
+                />
+
+            <Button
+                android:id="@+id/changeFee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Change Fee" />
+
+
+        </LinearLayout>
 
         <ListView
             android:id="@+id/virtual_app_list"
@@ -123,6 +153,7 @@
             android:drawableLeft="@drawable/ic_baseline_people_24"
             android:gravity="center"
             android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:text="Physical Schedule"
@@ -147,6 +178,7 @@
             app:iconGravity="textEnd" />
 
         <Button
+            android:id="@+id/dLogOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
