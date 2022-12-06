@@ -74,13 +74,13 @@ public class AccountHandler {
 
 
             if( ! (Objects.equals(gender.getText().toString(),"Male") || Objects.equals(gender.getText().toString(),"male") || Objects.equals(gender.getText().toString(),"Female") || Objects.equals(gender.getText().toString(),"female")) ){
-                Toast.makeText(context, "Invalid gender entered !", Toast.LENGTH_SHORT).show();
+                gender.setError("Invalid gender entered");
                 return null;
             }
-            
+
         }
 
-        if(dob  != null){
+        if(dob != null) {
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Calendar calendar = Calendar.getInstance();

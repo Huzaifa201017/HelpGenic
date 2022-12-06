@@ -42,6 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false"
+            android:progressTint="#c7db14"
+            android:isIndicator="true"
             android:contentDescription="@string/ratings"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
