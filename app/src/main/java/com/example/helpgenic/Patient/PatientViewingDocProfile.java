@@ -56,8 +56,6 @@ public class PatientViewingDocProfile extends AppCompatActivity {
     ArrayList<String> allClinicNames= new ArrayList<>();
     ReportsHandler rh = new ReportsHandler();
 
-
-
     private void setupPhysicalScheduleData(){
         // setting physical schedule data
         groupList = new ArrayList<>();
@@ -66,12 +64,13 @@ public class PatientViewingDocProfile extends AppCompatActivity {
 
         //--------------------- ------- seting adapter for physical schedule list ------------------------------
 
-        expandableListAdapter = new MyExpandableListAdapter(PatientViewingDocProfile.this,groupList,map);
+        expandableListAdapter = new MyExpandableListAdapter(PatientViewingDocProfile.this,groupList,map,db);
         expandableListView.setAdapter(expandableListAdapter);
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             int lastExpandedPosition=-1;
             @Override
             public void onGroupExpand(int i) {
+
                 if(lastExpandedPosition != -1 && i!= lastExpandedPosition){
                     expandableListView.collapseGroup(lastExpandedPosition);
                 }
@@ -150,7 +149,7 @@ public class PatientViewingDocProfile extends AppCompatActivity {
             virtualapps.setAdapter(adapter2);
 
 
-            //setupPhysicalScheduleData();
+            setupPhysicalScheduleData();
 
 
 
@@ -191,9 +190,6 @@ public class PatientViewingDocProfile extends AppCompatActivity {
 
             // ===================================================================================================
 
-
-
-
     }
 
     //function to set data for physical schedule
@@ -206,10 +202,9 @@ public class PatientViewingDocProfile extends AppCompatActivity {
                 String day = resultSet.getString("day");
                 Time sTime = resultSet.getTime("stime");
                 Time eTime = resultSet.getTime("etime");
-                String location = resultSet.getString("location");
                 String AssPhone = resultSet.getString("assistantPhoneNum");
                 String fullSchedule = "   Time :      " + sTime.toString() + "  to  " + eTime.toString() + "  " + day; // concatenate data
-                String[] allinOne={fullSchedule,"   Location :      " + location,"   Assistant Contact :      "+AssPhone};
+                String[] allinOne={fullSchedule, "Assistant Contact :      "+AssPhone};
                 clinicInfo.add(allinOne);
             }
         }

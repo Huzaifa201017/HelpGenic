@@ -1,12 +1,14 @@
 package com.example.helpgenic.Classes;
 import android.content.Context;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.helpgenic.login;
 
+import java.sql.Date;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.Objects;
 
 
@@ -37,7 +39,7 @@ public class GuestUser extends User{
 
     }
 
-    public GuestUser SignUpPatient (EditText name , EditText email, EditText phoneNumber ,EditText password1, EditText password2 ,EditText gender ,EditText dob,EditText bloodGroup, Context context )
+    public GuestUser SignUpPatient (EditText name , EditText email, EditText phoneNumber , EditText password1, EditText password2 , EditText gender , Date dob, AutoCompleteTextView bloodGroup, Context context )
     {
 
 

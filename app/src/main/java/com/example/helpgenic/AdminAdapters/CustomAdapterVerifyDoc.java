@@ -23,15 +23,13 @@ import java.util.ArrayList;
 public class CustomAdapterVerifyDoc extends ArrayAdapter<Doctor> {
 
 
-    DbHandler dbHandler;
-    ArrayList<Doctor> docList;
-    Context context;
+//    ArrayList<Doctor> docList;
+//    Context context;
 
-    public CustomAdapterVerifyDoc(Context context, int resource, @NonNull ArrayList<Doctor> objects, DbHandler db) {
+    public CustomAdapterVerifyDoc(Context context, int resource, @NonNull ArrayList<Doctor> objects) {
         super(context, resource, objects);
-        docList=objects;
-        dbHandler = db;
-        this.context = context;
+//        docList=objects;
+//        this.context = context;
     }
 
     @NonNull
@@ -42,44 +40,37 @@ public class CustomAdapterVerifyDoc extends ArrayAdapter<Doctor> {
         Doctor doc = getItem(position);
 
         if (convertView == null){
+
             convertView = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.list_cell_custom_verify_doctors_design, parent, false);
-            ViewHolder view = new ViewHolder();
-            view.reject=(Button) convertView.findViewById(R.id.reject);
-            view.verify=(Button) convertView.findViewById(R.id.accept);
-            view.viewDegree = (Button) convertView.findViewById(R.id.viewDoc);
-            convertView.setTag(view);
-
-            //======================= Setting click listeners for both the buttons ===================== //
-
-            view.verify.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    System.out.println("The id is " + doc.getId());
-                    dbHandler.setVerified(getContext(),doc.getId());
-                    Toast.makeText(getContext(),"Verified" + position,Toast.LENGTH_SHORT).show();
-                    docList.remove(position);
-                    notifyDataSetChanged();
-                }
-            });
-
-            view.reject.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    System.out.println("The id is " + doc.getId());
-                    dbHandler.removeDoctor(getContext(), doc.getId());
-                    docList.remove(position);
-                    notifyDataSetChanged();
-                }
-            });
-
-            view.viewDegree.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context , DisplayImage.class);
-                    intent.putExtra("docId" , doc.getId());
-                    context.startActivity(intent);
-                }
-            });
+//            ViewHolder view = new ViewHolder();
+//            view.reject=(Button) convertView.findViewById(R.id.reject);
+//            view.verify=(Button) convertView.findViewById(R.id.accept);
+//            convertView.setTag(view);
+//
+//            //======================= Setting click listeners for both the buttons ===================== //
+//
+//            view.verify.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//
+//                    System.out.println("The id is " + doc.getId());
+//                    dbHandler.setVerified(getContext(),doc.getId());
+//                    Toast.makeText(getContext(),"Verified" + position,Toast.LENGTH_SHORT).show();
+//                    docList.remove(position);
+//                    notifyDataSetChanged();
+//                }
+//            });
+//
+//            view.reject.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    System.out.println("The id is " + doc.getId());
+//                    dbHandler.removeDoctor(getContext(), doc.getId());
+//                    docList.remove(position);
+//                    notifyDataSetChanged();
+//                }
+//            });
+//
         }
 
 
@@ -98,10 +89,10 @@ public class CustomAdapterVerifyDoc extends ArrayAdapter<Doctor> {
     }
 
 
-    public class ViewHolder{
-        Button verify;
-        Button reject;
-        Button viewDegree;
-    }
+//    public class ViewHolder{
+//        Button verify;
+//        Button reject;
+//        Button viewDegree;
+//    }
 
 }

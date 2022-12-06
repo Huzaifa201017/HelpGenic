@@ -2,6 +2,7 @@ package com.example.helpgenic.Classes;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,6 +24,9 @@ public class AuthenticateUser {
 
         if (email.length() == 0) {
             email.setError("This field is required");
+            return null;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()) {
+            email.setError("Invalid Email!");
             return null;
         }
         if (password.length() == 0) {
@@ -95,6 +99,8 @@ public class AuthenticateUser {
                 return new Doctor(id, email.getText().toString(), (String) doctorDetails.get(3), (boolean) doctorDetails.get(4), (String) doctorDetails.get(5), (String) doctorDetails.get(0), c, null, (float) doctorDetails.get(6));
 
 
+            }else if(Objects.equals(type, "d")){
+                Toast.makeText(context, "Sorry! you have no access to login", Toast.LENGTH_SHORT).show();
             }
             else if (Objects.equals(type, "N")) {
                 // if not found , i.e not verified

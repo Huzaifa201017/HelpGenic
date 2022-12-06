@@ -18,6 +18,7 @@ import com.example.helpgenic.Classes.ReportsHandler;
 import com.example.helpgenic.CommonAdapters.ListViewAppointmentDocsAdapter;
 import com.example.helpgenic.CommonAdapters.ListViewAppointmentDocsAdapter2;
 import com.example.helpgenic.DisplayImage;
+import com.example.helpgenic.DisplayImage2;
 import com.example.helpgenic.DisplayPrescription;
 import com.example.helpgenic.Patient.AppointmentDocsViewedByPatient;
 import com.example.helpgenic.R;
@@ -33,6 +34,8 @@ public class AppointmentDocsViewedByDoc extends AppCompatActivity {
     int aptId = 0;
     ArrayList<Prescription> prescriptions = null;
     ReportsHandler rh = new ReportsHandler();
+    DbHandler db = new DbHandler();
+    ListView listview2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +50,6 @@ public class AppointmentDocsViewedByDoc extends AppCompatActivity {
 
         Toast.makeText(this, Integer.toString(aptId), Toast.LENGTH_SHORT).show();
 
-        DbHandler db = new DbHandler();
         db.connectToDb(AppointmentDocsViewedByDoc.this);
         rh.setDb(db);
 
@@ -62,8 +64,9 @@ public class AppointmentDocsViewedByDoc extends AppCompatActivity {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                 Document document = (Document)adapterView.getItemAtPosition(i);
-                Intent intent =new Intent(AppointmentDocsViewedByDoc.this , DisplayImage.class);
+                Intent intent =new Intent(AppointmentDocsViewedByDoc.this , DisplayImage2.class);
                 intent.putExtra("documentId" , document.getDocumentId());
                 startActivity(intent);
             }
@@ -71,8 +74,8 @@ public class AppointmentDocsViewedByDoc extends AppCompatActivity {
 
         // =====================================================================================================
 
-        ListView listview2 = findViewById(R.id.listView2);
 
+        listview2 = findViewById(R.id.listView2);
         prescriptions = rh.setUpPrescriptions(aptId,AppointmentDocsViewedByDoc.this);
 
         if(prescriptions != null && prescriptions.size() == 1){
@@ -91,12 +94,6 @@ public class AppointmentDocsViewedByDoc extends AppCompatActivity {
             }
         });
 
-
-        try {
-            db.closeConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
         addPres.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,14 +119,26 @@ public class AppointmentDocsViewedByDoc extends AppCompatActivity {
         SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
 
         if(sh.getBoolean("isNeedToUpdate", false)){
-            //Toast.makeText(this, "Yes there is need", Toast.LENGTH_SHORT).show();
+
             prescriptions = rh.setUpPrescriptions(aptId,AppointmentDocsViewedByDoc.this);
+
+            ListViewAppointmentDocsAdapter adapter2 = new ListViewAppointmentDocsAdapter(this, R.layout.list_cell_custom_design_appointment_docs_2 , prescriptions);
+            listview2.setAdapter(adapter2);
+
             SharedPreferences.Editor myEdit = sh.edit();
             myEdit.remove("isNeedToUpdate");
             myEdit.apply();
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
-
+        try {
+            db.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

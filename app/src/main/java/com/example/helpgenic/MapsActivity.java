@@ -10,14 +10,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.helpgenic.Classes.DbHandler;
-import com.example.helpgenic.Classes.Doctor;
 import com.example.helpgenic.Classes.PhysicalAppointmentSchedule;
 import com.example.helpgenic.PatientAdapters.ListViewMapsActivityAdapter;
 import com.example.helpgenic.databinding.ActivityMapsBinding;
@@ -128,10 +125,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         setUpData();
 
-//        // get query from database
-//        details.add(new PhysicalAppointmentSchedule("National Hospital" ,31.4845018,74.3971746,"Dr.Arslan Butt" ));
-//        details.add(new PhysicalAppointmentSchedule("Farooq Hospital" ,31.464896,74.235038,"Dr.Munawwar Hussain" ));
-//        details.add(new PhysicalAppointmentSchedule("FAST NUCES Lhr" ,31.4811,74.3034,"Dr.Qadeer jalebi" ));
 
         // When user presses the select category Button
         selectOption.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +132,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 setUpDialogBox();
 
-                if(dialog != null){
+                if(dialog != null) {
                     handleDialogBoxFunctionality();
                 }
 
@@ -148,6 +141,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -155,8 +149,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         name = mMap.addMarker(new MarkerOptions().position(new LatLng(31.4811,74.3034)).title("Fast Nuces Lahore"));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(20000.0f));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(31.4811,74.3034)));
-
-
 
     }
 }

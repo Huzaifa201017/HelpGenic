@@ -27,7 +27,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.helpgenic.AddVirtualSchedule;
 import com.example.helpgenic.Classes.BookingManager;
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.Doctor;
@@ -103,16 +102,17 @@ public class ProfileDoc extends Fragment {
                 }
                 db.updateFee(d.getId(),Integer.parseInt(feeInput.getText().toString()),getContext());
 
-                try {
-                    db.closeConnection();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+
             }
         });
     }
 
     private void setUpData(View view){
+
+        // setting db connection
+        if(!db.isConnectionOpen()) {
+            db.connectToDb(getContext());
+        }
 
         BookingManager bm = new BookingManager();
         bm.setDb(db);
@@ -162,13 +162,18 @@ public class ProfileDoc extends Fragment {
 
     private void setupPhysicalScheduleData(){
         // setting physical schedule data
+
+        // setting db connection
+        if(!db.isConnectionOpen()) {
+            db.connectToDb(getContext());
+        }
         groupList = new ArrayList<>();
         addClinicNames(d.getId());
         setUpDataForEachClinic(d.getId());
 
         //--------------------- ------- seting adapter for physical schedule list ------------------------------
 
-        expandableListAdapter = new MyExpandableListAdapter(getContext(),groupList,map);
+        expandableListAdapter = new MyExpandableListAdapter(getContext(),groupList,map, db);
         expandableListView.setAdapter(expandableListAdapter);
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             int lastExpandedPosition=-1;
@@ -200,7 +205,7 @@ public class ProfileDoc extends Fragment {
         expandableListView= (ExpandableListView)view.findViewById(R.id.psExpandable);
 
         // setting db connection
-        if(!db.isConnectionOpen()){
+        if(!db.isConnectionOpen()) {
             db.connectToDb(getContext());
         }
 
@@ -249,6 +254,10 @@ public class ProfileDoc extends Fragment {
                 Intent intent = new Intent(getContext(), UpdateVirtualSchedule.class);
                 intent.putExtra("vSch" ,sch);
 
+                ArrayList<CharSequence> days = getUsedDays();
+                days.remove(sch.getDay());
+
+                intent.putExtra("days" ,days);
                 startActivity(intent);
             }
         });
@@ -285,6 +294,10 @@ public class ProfileDoc extends Fragment {
                 Intent intent = new Intent(getContext(), AddVirtualSchedule.class);
                 intent.putExtra("docId" ,d.getId());
                 intent.putExtra("fee" ,feeAmount);
+
+                ArrayList<CharSequence> days = getUsedDays();
+
+                intent.putExtra("days" ,days);
                 startActivity(intent);
             }
         });
@@ -316,10 +329,9 @@ public class ProfileDoc extends Fragment {
                 String day = resultSet.getString("day");
                 Time sTime = resultSet.getTime("stime");
                 Time eTime = resultSet.getTime("etime");
-                String location = resultSet.getString("location");
                 String AssPhone = resultSet.getString("assistantPhoneNum");
                 String fullSchedule = "   Time :      " + sTime.toString() + "  to  " + eTime.toString() + "  " + day; // concatenate data
-                String[] allinOne={fullSchedule,"   Location :      " + location,"   Assistant Contact :      "+AssPhone};
+                String[] allinOne={fullSchedule, "Assistant Contact :      "+AssPhone};
                 clinicInfo.add(allinOne);
             }
         }
@@ -353,6 +365,7 @@ public class ProfileDoc extends Fragment {
 
         String clinicName;
         groupList=new ArrayList<>();
+        System.out.println(docId);
         ResultSet resultSet = db.getAllClinicNames(getContext(),docId) ;
         try{
             while(resultSet.next()){
@@ -393,6 +406,14 @@ public class ProfileDoc extends Fragment {
         myEdit.apply();
 
 
+    }
+    public ArrayList<CharSequence> getUsedDays(){
+        ArrayList<CharSequence> days = new ArrayList<>();
+
+        for(VirtualAppointmentSchedule v: vSchList){
+            days.add(v.getDay());
+        }
+        return days;
     }
 
 

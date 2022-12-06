@@ -80,11 +80,7 @@ public class PageForUpdateApps extends AppCompatActivity {
         ListViewDsiplayingSlotsAdapter adapter = new ListViewDsiplayingSlotsAdapter(this,0,availableSlots);
         lst.setAdapter(adapter);
 
-        try {
-            db.closeConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
 
 
 
@@ -115,7 +111,6 @@ public class PageForUpdateApps extends AppCompatActivity {
             public void onClick(View view) {
 
                 if(selectedSlot != null){
-                    db.connectToDb(PageForUpdateApps.this);
 
                     // updating appointment
                     db.updateAppointmentInDatabase(app.getAppId() ,selectedSlot.sTime , selectedSlot.eTime,PageForUpdateApps.this);
@@ -128,14 +123,6 @@ public class PageForUpdateApps extends AppCompatActivity {
 
                     // TODO: Send email to doctor again for this change
 
-
-                    // close db connection
-                    try {
-                        db.closeConnection();
-                    } catch (SQLException e) {
-
-                        e.printStackTrace();
-                    }
 
                     // signal that we have to know display the updated list of upcoming appointments
                     setSharedPref();
@@ -158,7 +145,6 @@ public class PageForUpdateApps extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                db.connectToDb(PageForUpdateApps.this);
                 db.cancelAppointment(app.getAppId() , PageForUpdateApps.this);
 
                 setSharedPref();
@@ -169,14 +155,6 @@ public class PageForUpdateApps extends AppCompatActivity {
                 ah.cancelAlarm(app.getAppId() , PageForUpdateApps.this,alarmManager);
 
 
-                // close db connection
-                try {
-                    db.closeConnection();
-                } catch (SQLException e) {
-
-                    e.printStackTrace();
-                }
-
                 finish();
             }
         });
@@ -184,9 +162,18 @@ public class PageForUpdateApps extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            db.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
-//    @Override
+    //    @Override
 //    protected void onPause() {
 //
 //        super.onPause();

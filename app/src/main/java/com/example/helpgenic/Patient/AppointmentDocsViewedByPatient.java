@@ -26,6 +26,7 @@ import com.example.helpgenic.Classes.ReportsHandler;
 import com.example.helpgenic.CommonAdapters.ListViewAppointmentDocsAdapter;
 import com.example.helpgenic.CommonAdapters.ListViewAppointmentDocsAdapter2;
 import com.example.helpgenic.DisplayImage;
+import com.example.helpgenic.DisplayImage2;
 import com.example.helpgenic.DisplayPrescription;
 import com.example.helpgenic.Doctor.AppointmentDocsViewedByDoc;
 import com.example.helpgenic.Doctor.SignUpDoc;
@@ -122,7 +123,7 @@ public class AppointmentDocsViewedByPatient extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Document document = (Document)adapterView.getItemAtPosition(i);
-                Intent intent =new Intent(AppointmentDocsViewedByPatient.this , DisplayImage.class);
+                Intent intent =new Intent(AppointmentDocsViewedByPatient.this , DisplayImage2.class);
                 intent.putExtra("documentId" , document.getDocumentId());
                 startActivity(intent);
             }

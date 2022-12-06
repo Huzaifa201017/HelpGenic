@@ -34,8 +34,8 @@ public class MyReciever extends BroadcastReceiver {
             notification = new Notification.Builder( context )
 
                     .setSmallIcon(R.drawable.ic_baseline_calendar_today_24)
-                    .setContentTitle("Scheduled Notification")
-                    .setContentText("Hey! Soft Reminder")
+                    .setContentTitle("HelpGenic")
+                    .setContentText("Hey! Soft Reminder For Your Appointment Today !")
                     .setChannelId("MyChannel")
                     .setSubText("New Message").build();
 
@@ -43,9 +43,9 @@ public class MyReciever extends BroadcastReceiver {
         }else{
             notification = new Notification.Builder( context )
                     .setSmallIcon(R.drawable.ic_baseline_calendar_today_24)
-                    .setContentTitle("Scheduled Notification")
+                    .setContentTitle("HelpGenic")
                     .setContentText("Hey! Soft Reminder")
-                    .setSubText("New Message").build();
+                    .setSubText("Hurry Up ! Your turn arrived.").build();
 
         }
 

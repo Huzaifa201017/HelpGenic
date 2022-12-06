@@ -124,8 +124,8 @@ public class AddPhysicalSchedule extends AppCompatActivity {
                     Toast.makeText(AddPhysicalSchedule.this, "Submitted", Toast.LENGTH_SHORT).show();
                     dbHandler.connectToDb(getApplicationContext());
 
-
                     dbHandler.insertPAppSchedule(getApplicationContext(),physicalAppointmentSchedule,docId);
+
                     try {
                         dbHandler.closeConnection();
                     } catch (SQLException e) {

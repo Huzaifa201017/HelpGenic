@@ -46,6 +46,7 @@ public class UpcomingAppointments extends Fragment {
         SharedPreferences sh = getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
 
         try {
+
             if(db.isConnectionOpen()){
                 appointments = db.getUpcommingAppointmentsForPatients(sh.getInt("Id", 0),  getContext());
             }
@@ -54,6 +55,7 @@ public class UpcomingAppointments extends Fragment {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
         }
         catch (Exception e) {
 
@@ -90,10 +92,37 @@ public class UpcomingAppointments extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+
                 Appointment app =(Appointment) adapterView.getItemAtPosition(i);
-                Intent intent = new Intent(getContext(), PageForUpdateApps.class);
-                intent.putExtra("appointment", app);
-                startActivity(intent);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                String dateString = app.getAppDate().toString() + " " + app.getsTime().toString();
+
+
+                //formatting the dateString to convert it into a Date
+                java.util.Date date = null;
+                try {
+                    date = sdf.parse(dateString);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Calendar calendar = Calendar.getInstance();
+                //Setting the Calendar date and time to the given date and time
+                calendar.setTime(date);
+
+                long time = calendar.getTimeInMillis();
+                long currentTime = System.currentTimeMillis();
+
+                if(time > currentTime){
+                    Intent intent = new Intent(getContext(), PageForUpdateApps.class);
+                    intent.putExtra("appointment", app);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getContext() ,"Your appointment has already been started!", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
 
         });
@@ -183,11 +212,14 @@ public class UpcomingAppointments extends Fragment {
         SharedPreferences shrd =  getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
 
         if(shrd.getBoolean("MeetingJoined", false)){
+
             SharedPreferences.Editor myEdit = shrd.edit();
             myEdit.remove("MeetingJoined");
+            myEdit.putInt("dId", docId);
             myEdit.apply();
+
             Intent intent = new Intent(getContext() , GiveFeedback.class);
-            intent.putExtra("docId" , docId);
+
             startActivity(intent);
 
         }else if(shrd.getBoolean("isNeedToUpdate" ,false)){

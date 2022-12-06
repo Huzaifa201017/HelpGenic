@@ -55,6 +55,7 @@ public class GraphWithRating extends Fragment {
         // initializing variable for bar chart.
         barChart = view.findViewById(R.id.idBarChart);
 
+
         // calling method to get bar entries.
         getBarEntries();
         //labeling xAxis and formatting
@@ -124,6 +125,7 @@ public class GraphWithRating extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+
 
         try {
             dbHandler.closeConnection();

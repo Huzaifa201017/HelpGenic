@@ -59,6 +59,7 @@ public class DocViewingPatientProfile extends AppCompatActivity {
                 Appointment apt = (Appointment)adapterView.getItemAtPosition(i);
                 Intent intent = new Intent(DocViewingPatientProfile.this, AppointmentDocsViewedByDoc.class);
                 intent.putExtra("aptId" , apt.getAppId());
+                Toast.makeText(DocViewingPatientProfile.this, Integer.toString(apt.getAppId()), Toast.LENGTH_SHORT).show();
                 startActivity(intent);
             }
         });

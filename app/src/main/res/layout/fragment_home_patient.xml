@@ -50,10 +50,10 @@
         android:dividerHeight="10.0sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintHorizontal_bias="0.59"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="0.993" />
+        app:layout_constraintVertical_bias="0.987" />
 
     <EditText
         android:id="@+id/searchView"

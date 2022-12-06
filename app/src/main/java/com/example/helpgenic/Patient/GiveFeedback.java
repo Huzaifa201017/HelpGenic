@@ -39,7 +39,16 @@ public class GiveFeedback extends AppCompatActivity {
 
         doctorId = getIntent().getIntExtra("docId",0);
         SharedPreferences shrd =  this.getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = shrd.edit();
         patientId  = shrd.getInt("Id",0);
+        doctorId  = shrd.getInt("dId",0);
+        myEdit.remove("dId");
+        myEdit.apply();
+
+        System.out.println(doctorId);
+        System.out.println(patientId);
+
+        Toast.makeText(this, Integer.toString(doctorId) + " " +Integer.toString(patientId) , Toast.LENGTH_SHORT).show();
 
         comment=findViewById(R.id.editTextTextMultiLine);
         rb=findViewById(R.id.ratingBar);
@@ -58,8 +67,6 @@ public class GiveFeedback extends AppCompatActivity {
 
             }
         } );
-
-
 
 
         submitBtn.setOnClickListener(new View.OnClickListener() {

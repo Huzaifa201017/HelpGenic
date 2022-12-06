@@ -32,21 +32,38 @@ public class PendingDoctors extends Fragment {
 
     Button logOutBtn;
 
-    ArrayList<Doctor> docList =new ArrayList<>();
+    ArrayList<Doctor> docList = null;
 
     ListView doctorsList;
     DbHandler dbHandler = new DbHandler();
+    CustomAdapterVerifyDoc adapter1 = null;
 
     // Helper Functions
-    private void setUpData(String name,String specialization,int id){
-        docList.add(new Doctor(name,specialization,id));
-    }
-    private Admin admin;
-    public PendingDoctors(Admin admin) {
-        // Required empty public constructor
-        this.admin = admin;
+    private ArrayList<Doctor> setUpData(){
 
+        ArrayList<Doctor> docList =new ArrayList<>();
+        int id=0;
+        String name,specialization;
+        ResultSet rs = dbHandler.getUnVerifiedDocs(getContext()); // get all unverified doctors
+
+        try {
+            while (rs.next()) {
+                id=rs.getInt("uid");
+                name=rs.getString("name");
+                specialization=rs.getString("specialization");
+                docList.add(new Doctor(name,specialization,id));
+            }
+        }
+        catch (Exception e){
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        return docList;
     }
+
+    public PendingDoctors(Admin admin) {
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,9 +73,10 @@ public class PendingDoctors extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pending_doctors, container, false);;
 
-        dbHandler.connectToDb(getContext());
-        int id=0;
-        String name,specialization;
+        if(!dbHandler.isConnectionOpen()){
+            dbHandler.connectToDb(getContext());
+        }
+
 
         logOutBtn = view.findViewById(R.id.logOutBtn);
         logOutBtn = view.findViewById(R.id.logOutBtn);
@@ -79,26 +97,10 @@ public class PendingDoctors extends Fragment {
         });
 
 
-
-        //============================== Setting up Connection WIth DB ===========================//
-
-
-
-        ResultSet rs = dbHandler.getUnVerifiedDocs(getContext()); // get all unverified doctors
-
-        try {
-            while (rs.next()) {
-                id=rs.getInt("uid");
-                name=rs.getString("name");
-                specialization=rs.getString("specialization");
-                setUpData(name,specialization,id);
-            }
-        }
-        catch (Exception e){
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-        }
         doctorsList =view.findViewById(R.id.verifyList);
-        CustomAdapterVerifyDoc adapter1 = new CustomAdapterVerifyDoc(getContext() , R.layout.list_cell_custom_verify_doctors_design , docList, dbHandler);
+
+        docList = setUpData();
+        adapter1 = new CustomAdapterVerifyDoc(getContext() , R.layout.list_cell_custom_verify_doctors_design , docList);
         doctorsList.setAdapter(adapter1);
 
         doctorsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -112,19 +114,48 @@ public class PendingDoctors extends Fragment {
             }
         });
 
-        //=================================== Verify/Reject Doctor ClickListeners =======================================//
+
+
+
 
 
         return view;
     }
 
+
     @Override
-    public void onPause() {
-        super.onPause();
-        try {
-            dbHandler.closeConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void onResume() {
+        super.onResume();
+
+
+        SharedPreferences sh = getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sh.edit();
+
+        if(sh.getBoolean("NeedToUpdate", false)){
+            // setting physical schedule data
+
+            Toast.makeText(getContext(), "Resumed", Toast.LENGTH_SHORT).show();
+            docList = setUpData();
+            adapter1 = new CustomAdapterVerifyDoc(getContext() , R.layout.list_cell_custom_verify_doctors_design , docList);
+            doctorsList.setAdapter(adapter1);
+        }
+        myEdit.remove("NeedToUpdate");
+        myEdit.apply();
+
+
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(dbHandler.isConnectionOpen()){
+            try {
+                dbHandler.closeConnection();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

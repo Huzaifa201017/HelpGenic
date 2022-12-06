@@ -11,12 +11,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.example.helpgenic.AddVirtualSchedule;
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.VirtualAppointmentSchedule;
 import com.example.helpgenic.R;
@@ -24,6 +22,7 @@ import com.example.helpgenic.R;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -37,6 +36,7 @@ public class UpdateVirtualSchedule extends AppCompatActivity {
     int hour,minutes,sec,hour2,minutes2;
     LocalTime t1,t2;
     String start,end;
+    ArrayList<CharSequence> days;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +47,7 @@ public class UpdateVirtualSchedule extends AppCompatActivity {
         startTime = findViewById(R.id.start);
         endTime= findViewById(R.id.end);
         submit = findViewById(R.id.submit);
+        days = (ArrayList<CharSequence>) getIntent().getCharSequenceArrayListExtra("days");
 
         VirtualAppointmentSchedule sch = (VirtualAppointmentSchedule) getIntent().getSerializableExtra("vSch");
         selectedDay = sch.getDay();
@@ -116,37 +117,42 @@ public class UpdateVirtualSchedule extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // get time from both buttons in string
-                start = startTime.getText().toString() + ":00";
-                end = endTime.getText().toString() + ":00";
+                if (!days.contains(selectedDay)) {
+                    // get time from both buttons in string
+                    start = startTime.getText().toString() + ":00";
+                    end = endTime.getText().toString() + ":00";
 
-                //compare the two times
-                int value=t1.compareTo(t2);
-                System.out.println(start);
-                System.out.println(end);
-                Time time1 = Time.valueOf(start); // startTime
-                Time time2 = Time.valueOf(end); // endTime
-
-
-
-                if(returnToProfile(value)){
+                    //compare the two times
+                    int value = t1.compareTo(t2);
+                    System.out.println(start);
+                    System.out.println(end);
+                    Time time1 = Time.valueOf(start); // startTime
+                    Time time2 = Time.valueOf(end); // endTime
 
 
-                    dbHandler.connectToDb(getApplicationContext());
+                    if (returnToProfile(value, start, end)) {
 
-                    dbHandler.updateVirtualSchedule(sch.getId(), time1 ,time2,selectedDay,UpdateVirtualSchedule.this);
 
-                    try {
-                        dbHandler.closeConnection();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                        dbHandler.connectToDb(getApplicationContext());
+
+                        dbHandler.updateVirtualSchedule(sch.getId(), time1, time2, selectedDay, UpdateVirtualSchedule.this);
+
+                        try {
+                            dbHandler.closeConnection();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sh.edit();
+                        myEdit.putBoolean("vNeedToUpdate", true);
+                        myEdit.apply();
+                        finish();
+
                     }
-                    SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sh.edit();
-                    myEdit.putBoolean("vNeedToUpdate", true);
-                    myEdit.apply();
-                    finish();
+                }else{
+                    Toast.makeText(UpdateVirtualSchedule.this, "Already have a schedule at this day", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
@@ -169,13 +175,9 @@ public class UpdateVirtualSchedule extends AppCompatActivity {
             }
         });
 
-        // get new values for sTime , eTime , day
-        // call updateVirtualSchedule function in db class
-        // finish the page
-        // also update the list in profile doc page
     }
 
-    public boolean returnToProfile(int value){
+    public boolean returnToProfile(int value, String t1, String t2){
         //int value=t1.compareTo(t2);
         boolean eFound=false;
         if(value==0){
@@ -185,6 +187,9 @@ public class UpdateVirtualSchedule extends AppCompatActivity {
         else if(value>0){
             startTime.setError("Invalid Start Time");
             System.out.println(value);
+            eFound=true;
+        }else if(!checkSelectedTimings(t1,t2)){
+            Toast.makeText(this, "Schedule must follow the format, hh:00:00 or hh:30:00", Toast.LENGTH_SHORT).show();
             eFound=true;
         }
         else{
@@ -196,4 +201,17 @@ public class UpdateVirtualSchedule extends AppCompatActivity {
         else
             return true;
     }
+
+    private boolean checkSelectedTimings(String t1 , String t2){
+        boolean isvalid = false;
+        if(Integer.parseInt(t1.substring(3,5)) == 30 || Integer.parseInt(t1.substring(3,5)) == 0){
+            isvalid = true;
+        }
+        isvalid = false;
+        if(Integer.parseInt(t2.substring(3,5)) == 30 || Integer.parseInt(t2.substring(3,5)) == 0){
+            isvalid = true;
+        }
+        return isvalid;
+    }
+
 }

@@ -407,7 +407,7 @@ public class DbHandler {
     public ArrayList<Appointment> getUpcommingAppointmentsForPatients(int pId,Context context){
 
         ArrayList<Appointment> upcomingApp = new ArrayList<>();
-        String query = "select * from upcomingAppointments ua where pId = ? and day=DAYNAME(date)";
+        String query = "select * from upcomingAppointments ua where pId = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
 
@@ -418,13 +418,14 @@ public class DbHandler {
             while (rs.next()) {
 
                  Character gender;
-                 if(Objects.equals(rs.getBoolean("gender"),1)){
+                 if(Objects.equals(rs.getBoolean("gender"),1)) {
                      gender = 'M';
                  }else{
                      gender = 'F';
                  }
+
                  Doctor d = new Doctor(rs.getInt("docId"), null ,rs.getString("specialization"),rs.getBoolean("surgeon") , null ,rs.getString("name") , gender , null, 0.0f);
-                 d.setVSch(rs.getString("day"),rs.getTime("docsTime"), rs.getTime("doceTime"));
+                 d.setVSch(rs.getString("day"),rs.getTime("docsTime"), rs.getTime("docetime"));
 
                 upcomingApp.add(new Appointment(rs.getDate("date") , d , null ,rs.getTime("sTime")  ,rs.getTime("eTime"),rs.getInt("appId")));
 
@@ -482,7 +483,6 @@ public class DbHandler {
             }
 
         } catch (Exception e) {
-
 
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
@@ -605,7 +605,6 @@ public class DbHandler {
         return id;
     }
 
-
     public String loadDoctorDegreeImageFromDb(int docId , Context context){
 
         String query = "select degree from Doctor where docId = ?";
@@ -629,7 +628,6 @@ public class DbHandler {
 
         return null;
     }
-
 
     public ArrayList<Appointment> getUpcommingAppointmentsForDoctor(int docId,Context context)
     {
@@ -761,14 +759,21 @@ public class DbHandler {
             ResultSet rs = stmt.executeQuery();
 
 
+            Prescription p = new Prescription();
+
             while (rs.next()) {
 
-                Prescription p = new Prescription();
                 p.addMedicine(new MedicineDosage(rs.getString("name") , rs.getInt("dosage"), rs.getBoolean("morning") , rs.getBoolean("afternoon"), rs.getBoolean("night")));
                 p.setDays(rs.getInt("days"));
+
+            }
+
+            if(p.getMedicines().size() != 0){
                 ArrayList<Prescription> temp = new ArrayList<>();
                 temp.add(p);
                 return temp;
+            } else{
+                return null;
             }
 
 
@@ -970,6 +975,7 @@ public class DbHandler {
     }
 
     public int insertUser(GuestUser user,String type,Context context){
+
         String query = "CALL INSERTUSER(?,?,?,?,?,?,?)";
         int id=-1;
         try{
@@ -981,8 +987,6 @@ public class DbHandler {
                 else
                     g=true;
 
-                //convert util.Date to Sql.Date
-                java.sql.Date sqlDate = new java.sql.Date(user.dob.getTime());
 
                 //prepare query
                 cs = (CallableStatement) connection.prepareCall(query);
@@ -990,7 +994,7 @@ public class DbHandler {
                 cs.setString(2,user.email);
                 cs.setString(3,user.password);
                 cs.setBoolean(4, g);
-                cs.setDate(5,sqlDate);
+                cs.setDate(5, user.getDob());
                 cs.setString(6,type);
                 cs.setInt(7,id);
                 cs.executeQuery();
@@ -1283,5 +1287,73 @@ public class DbHandler {
         return lst;
     }
 
+    public ArrayList<Double> getLattsAndLongs(String clinicName , Context context){
+
+        ArrayList<Double> coordinates = new ArrayList<>();
+        String query = "select DISTINCT p.latts , p.longs from phyAppSchedule p where clinicName = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+
+            stmt.setString(1,clinicName);
+
+            ResultSet rs = stmt.executeQuery();
+
+
+            while (rs.next()) {
+                coordinates.add(rs.getDouble("latts"));
+                coordinates.add(rs.getDouble("longs"));
+            }
+
+
+        } catch (Exception e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        return coordinates;
+    }
+
+    public ArrayList<Donor> getDonorDetails(Context context){
+        ArrayList<Donor> donorDetails = new ArrayList<>();
+        String query = "select * from `User` u join Donor d on u.uid = d.did";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+
+
+            ResultSet rs = stmt.executeQuery();
+
+
+            while (rs.next()) {
+                char gender = 'M';
+                if(!rs.getBoolean("gender")){
+                    gender = 'F';
+                }
+
+                donorDetails.add(new Donor(rs.getString("name"), null,null,gender, rs.getDate("dob"), rs.getString("bloodGroup"), rs.getString("phoneNum"), rs.getString("address")));
+            }
+
+
+        } catch (Exception e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        return donorDetails;
+    }
+
+    public void insertDonor(Donor donor,int id,Context context) {
+        String query="CALL insertDonor(?,?,?,?)";
+        try{
+            if(connection!=null)
+            {
+                cs= (CallableStatement) connection.prepareCall(query);
+                cs.setInt(1,id);
+                cs.setString(2,donor.getBloodGroup());
+                cs.setString(3,donor.getAddress());
+                cs.setString(4,donor.getPhNum());
+                cs.executeQuery();
+            }
+        }
+        catch(Exception e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    }
 }
 

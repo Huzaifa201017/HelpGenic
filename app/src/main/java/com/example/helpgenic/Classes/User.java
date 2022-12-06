@@ -1,13 +1,13 @@
 package com.example.helpgenic.Classes;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
 
 public abstract class User implements Serializable {
 
     protected String name,email,password;
     protected char gender;
-    protected Date dob;
+    protected java.sql.Date dob;
     protected int id;
 
 

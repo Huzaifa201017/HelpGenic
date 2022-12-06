@@ -5,44 +5,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
+    android:layout_marginBottom="55dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
     tools:context=".Patient.DonorSearch">
-
-
-    <EditText
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/search_view_custom_deesign"
-        android:hint="Search"
-        android:inputType="text"
-        android:padding="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.473"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.042" />
 
 
     <com.google.android.material.textfield.TextInputLayout
 
         android:id="@+id/textInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="366dp"
+        android:layout_height="58dp"
         android:layout_margin="16dp"
         android:hint="Blood Group"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/donorsList"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.03"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="0.031">
+        app:layout_constraintTop_toTopOf="parent">
 
         <AutoCompleteTextView
             android:id="@+id/bloodGroups"
-            android:layout_width="110dp"
+            android:layout_width="366dp"
             android:layout_height="48dp"
             android:inputType="none"
             android:text="A+"
@@ -56,14 +41,15 @@
 
     <ListView
         android:id="@+id/donorsList"
-        android:layout_width="match_parent"
-        android:layout_height="514dp"
+        android:layout_width="393dp"
+        android:layout_height="531dp"
+        android:layout_marginBottom="4dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10.0sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

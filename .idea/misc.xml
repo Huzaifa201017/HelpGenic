@@ -25,6 +25,7 @@
         <entry key="app/src/main/res/layout/activity_appointment_docs_viewed_by_doc.xml" value="0.22520039876302084" />
         <entry key="app/src/main/res/layout/activity_appointment_docs_viewed_by_patient.xml" value="0.17061309814453127" />
         <entry key="app/src/main/res/layout/activity_display_image.xml" value="0.17604166666666668" />
+        <entry key="app/src/main/res/layout/activity_display_image2.xml" value="0.13802083333333334" />
         <entry key="app/src/main/res/layout/activity_display_prescriptiom.xml" value="0.17604166666666668" />
         <entry key="app/src/main/res/layout/activity_displaying_slots.xml" value="0.17604166666666668" />
         <entry key="app/src/main/res/layout/activity_doc_page.xml" value="0.21788279215494794" />
@@ -45,13 +46,13 @@
         <entry key="app/src/main/res/layout/activity_patient_viewing_doc_profile.xml" value="0.24612360935585173" />
         <entry key="app/src/main/res/layout/activity_prescription_form.xml" value="0.2399576822916667" />
         <entry key="app/src/main/res/layout/activity_sign_up_doc.xml" value="0.19251708984375002" />
-        <entry key="app/src/main/res/layout/activity_sign_up_donor.xml" value="0.1221221923828125" />
+        <entry key="app/src/main/res/layout/activity_sign_up_donor.xml" value="0.21695556640625" />
         <entry key="app/src/main/res/layout/activity_sign_up_patient.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/layout/activity_update_virtual_schedule.xml" value="0.17604166666666668" />
         <entry key="app/src/main/res/layout/appointments_list_custom_design.xml" value="0.15060240963855423" />
         <entry key="app/src/main/res/layout/dropdown_item.xml" value="0.17239583333333333" />
         <entry key="app/src/main/res/layout/expandable_listview_child_item_patient_views_doc_prof.xml" value="0.3864206949869792" />
-        <entry key="app/src/main/res/layout/expandable_listview_group_item_patient_views_doc_profile.xml" value="0.10729166666666666" />
+        <entry key="app/src/main/res/layout/expandable_listview_group_item_patient_views_doc_profile.xml" value="0.16339569091796877" />
         <entry key="app/src/main/res/layout/fee_input.xml" value="0.2576706735711348" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/layout/fragment_donor_search.xml" value="0.1703125" />
@@ -82,7 +83,7 @@
         <entry key="app/src/main/res/layout/list_cell_custom_design_patients_rem.xml" value="0.17447916666666666" />
         <entry key="app/src/main/res/layout/list_cell_custom_design_patients_remaining.xml" value="0.17604166666666668" />
         <entry key="app/src/main/res/layout/list_cell_custom_verify_doctors_design.xml" value="0.2705393473307292" />
-        <entry key="app/src/main/res/layout/list_cell_donor_search_design.xml" value="0.29061381022135424" />
+        <entry key="app/src/main/res/layout/list_cell_donor_search_design.xml" value="0.11579437255859379" />
         <entry key="app/src/main/res/layout/list_cell_feedback_custom_design.xml" value="0.175" />
         <entry key="app/src/main/res/layout/list_cell_medicines_list_custom_design.xml" value="0.175" />
         <entry key="app/src/main/res/layout/searchable_spinner_custom_design.xml" value="0.1955718994140625" />

@@ -2,27 +2,28 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
 
-        android:layout_width="411dp"
-        android:layout_height="135dp"
+        android:layout_width="match_parent"
+        android:layout_height="147dp"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
-        android:backgroundTint="@color/lightGreen"
         android:paddingStart="10dp"
         android:paddingTop="5dp"
+        android:background="@drawable/list_view_custom_design"
         android:paddingEnd="10dp"
-
         android:paddingBottom="10dp">
 
 
         <ImageView
             android:id="@+id/imageView16"
-            android:layout_width="66dp"
-            android:layout_height="71dp"
+            android:layout_width="76dp"
+            android:layout_height="97dp"
+            android:foreground="@drawable/schedule_custom_design"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.014"
@@ -30,20 +31,41 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/donor" />
 
-        <TextView
-            android:id="@+id/name"
-
+        <LinearLayout
+            android:id="@+id/textViewsLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
-            android:text="Bilal Hashim"
-            android:textSize="25dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.043"
+            app:layout_constraintHorizontal_bias="0.09"
             app:layout_constraintStart_toEndOf="@+id/imageView16"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.158" />
+            app:layout_constraintVertical_bias="0.16"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Bilal Hashim "
+                android:textSize="25dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.043"
+                app:layout_constraintStart_toEndOf="@+id/imageView16"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.158" />
+
+            <TextView
+                android:id="@+id/bloodgroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:text="(A+)"
+                android:textSize="25dp"
+                tools:layout_editor_absoluteX="214dp"
+                tools:layout_editor_absoluteY="6dp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/phNUm"
@@ -52,10 +74,11 @@
             android:text="+923351662794"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.04"
+            app:layout_constraintHorizontal_bias="0.092"
             app:layout_constraintStart_toEndOf="@+id/imageView16"
-            app:layout_constraintTop_toBottomOf="@+id/name"
-            app:layout_constraintVertical_bias="0.127" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewsLayout"
+            app:layout_constraintVertical_bias="0.135" />
+
 
         <TextView
             android:id="@+id/address"
@@ -65,33 +88,18 @@
             android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.13"
+            app:layout_constraintHorizontal_bias="0.709"
             app:layout_constraintStart_toEndOf="@+id/imageView16"
-            app:layout_constraintTop_toBottomOf="@+id/phNUm"
-            app:layout_constraintVertical_bias="0.333" />
+            app:layout_constraintTop_toBottomOf="@+id/phNUm" />
 
         <TextView
-            android:id="@+id/bloodgroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:text="A+"
-            android:textSize="35dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/textView17"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.506" />
-
-        <TextView
-            android:id="@+id/textView20"
+            android:id="@+id/gender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Male"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/address"
-            app:layout_constraintHorizontal_bias="0.28"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.077"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView16"
             app:layout_constraintVertical_bias="0.0" />

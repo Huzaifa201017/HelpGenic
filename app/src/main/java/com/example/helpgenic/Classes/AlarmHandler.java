@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.example.helpgenic.MyReciever;
 import android.app.AlarmManager;
+import android.widget.Toast;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -21,7 +22,7 @@ public class AlarmHandler {
         String dateString = dateSelected.toString() + " " + sTime.toString();
 
 
-        //formatting the dateString to convert it into a Date
+        // formatting the dateString to convert it into a Date
         java.util.Date date = null;
         try {
             date = sdf.parse(dateString);
@@ -34,10 +35,9 @@ public class AlarmHandler {
         calendar.setTime(date);
 
 
-
         // setting alarm
-        long time = calendar.getTimeInMillis();
-        long triggerTime = System.currentTimeMillis()+(time);
+
+        long triggerTime = calendar.getTimeInMillis();
 
         Intent iBroadCast = new Intent (context, MyReciever.class);
         PendingIntent pi = PendingIntent.getBroadcast(context , uniqueId ,iBroadCast,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -45,7 +45,7 @@ public class AlarmHandler {
 
     }
 
-    public void cancelAlarm(int uniqueId, Context context , AlarmManager alarmManager){
+    public void cancelAlarm(int uniqueId, Context context , AlarmManager alarmManager) {
 
         Intent iBroadCast = new Intent (context, MyReciever.class);
         PendingIntent pi = PendingIntent.getBroadcast(context , uniqueId ,iBroadCast,PendingIntent.FLAG_UPDATE_CURRENT);

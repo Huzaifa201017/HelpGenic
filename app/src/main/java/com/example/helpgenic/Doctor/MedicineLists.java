@@ -57,33 +57,44 @@ public class MedicineLists extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                boolean isValid = true;
                 if(daysToFollow.length() == 0){
-                    pres.setDays(0);
-                }else{
+                    daysToFollow.setError("Please fill this field");
+                    isValid = false;
+                }
+                if (pres.getMedicines().size() == 0){
+                    Toast.makeText(MedicineLists.this, "No prescribed medicine", Toast.LENGTH_SHORT).show();
+                    isValid = false;
+                }
+
+                if(isValid) {
+
                     pres.setDays(Integer.parseInt(daysToFollow.getText().toString()));
+
+
+                    ReportsHandler rh = new ReportsHandler();
+                    DbHandler db = new DbHandler();
+
+                    db.connectToDb(MedicineLists.this);
+
+                    rh.setDb(db);
+
+                    rh.loadPrescription(aptId, pres, MedicineLists.this);
+
+                    try {
+                        db.closeConnection();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sh.edit();
+                    myEdit.putBoolean("isNeedToUpdate", true);
+                    myEdit.apply();
+
+
+                    finish();
                 }
-
-                ReportsHandler rh = new ReportsHandler();
-                DbHandler db = new DbHandler();
-                db.connectToDb(MedicineLists.this);
-
-                rh.setDb(db);
-
-                rh.loadPrescription(aptId,pres,MedicineLists.this);
-
-                try {
-                    db.closeConnection();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-                SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sh.edit();
-                myEdit.putBoolean("isNeedToUpdate", true);
-                myEdit.apply();
-
-
-                finish();
 
             }
         });
@@ -95,6 +106,7 @@ public class MedicineLists extends AppCompatActivity {
         ListViewMedicinesListAdapter adapter = new ListViewMedicinesListAdapter(this, R.layout.list_cell_medicines_list_custom_design, pres.getMedicines());
         medicinesList.setAdapter(adapter);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
