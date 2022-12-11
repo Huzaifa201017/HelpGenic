@@ -23,7 +23,7 @@ public class JoinMeeting extends AppCompatActivity {
     // Fill the channel name.
     private String channelName = "sdaChannel";
     // Fill the temp token generated on Agora Console.
-    private String token = "007eJxTYLAWY9upMyVIT2b1tfPS6uGZ9uWfg3ZKFD35vcB6e3rpK0kFBnMjo8TEZMtkA8MkQ5M0AzPLJKMU80RDs5RkY1NzM+PUvO29yQ2BjAzrbpQxMTJAIIjPxVCckuickZiXl5rDwAAAlsMg9w==";
+    private String token = "007eJxTYLhbHMGc6VUloq9ksVuM+xNDQfHmWPsdOr9uqFvJs4TEzFNgMDcySkxMtkw2MEwyNEkzMLNMMkoxTzQ0S0k2NjU3M04tnNyf3BDIyCDw8jIrIwMEgvhcDMUpic4ZiXl5qTkMDADXrR5c";
 
 
     private void initializeAndJoinChannel() {

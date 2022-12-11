@@ -154,7 +154,6 @@ public class PageForUpdateApps extends AppCompatActivity {
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                 ah.cancelAlarm(app.getAppId() , PageForUpdateApps.this,alarmManager);
 
-
                 finish();
             }
         });
