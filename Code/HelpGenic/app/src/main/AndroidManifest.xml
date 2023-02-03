@@ -113,8 +113,7 @@
         <activity
             android:name=".Admin.AdminPage"
             android:exported="false"
-            android:label="Dashboard"
-            android:parentActivityName=".MainActivity" />
+            android:label="Dashboard"/>
         <activity
             android:name=".SignUpDonor"
             android:exported="false"
@@ -130,19 +129,6 @@
             android:exported="false"
             android:label="Sign Up"
             android:parentActivityName=".GetStarted" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".login"
-            android:exported="true"
-            android:label="Log In">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <receiver android:name=".MyReciever" />
     </application>
