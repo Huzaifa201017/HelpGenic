@@ -54,22 +54,17 @@ public class SignUpPatient extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext() , android.R.layout.simple_spinner_dropdown_item , bloodGrps);
         bloodGroups.setAdapter(adapter);
 
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        submitBtn.setOnClickListener(view -> {
 
-                AccountHandler ah =  new AccountHandler();
-                usr.setAh(ah);
+            AccountHandler ah =  new AccountHandler();
+            usr.setAh(ah);
 
-                GuestUser obj = usr.SignUpPatient(nameField,emailField,phoneNumField, password1Field,password2Field,gender,dob, bloodGroups,SignUpPatient.this);
+            GuestUser obj = usr.SignUpPatient(nameField,emailField,phoneNumField, password1Field,password2Field,gender,dob, bloodGroups,SignUpPatient.this);
 
 
-                if (obj != null) {
+            if (obj != null) {
 
-                    finish();
-
-
-                }
+                finish();
 
 
             }
@@ -77,23 +72,15 @@ public class SignUpPatient extends AppCompatActivity {
 
         });
 
-        DatePickerDialog.OnDateSetListener date =new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int day) {
+        DatePickerDialog.OnDateSetListener date = (view, year, month, day) -> {
 
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH,month);
-                myCalendar.set(Calendar.DAY_OF_MONTH,day);
-                updateLabel();
-            }
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH,month);
+            myCalendar.set(Calendar.DAY_OF_MONTH,day);
+            updateLabel();
         };
 
-        dateOfBirth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new DatePickerDialog(SignUpPatient.this,date,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
+        dateOfBirth.setOnClickListener(view -> new DatePickerDialog(SignUpPatient.this,date,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show());
 
     }
 
