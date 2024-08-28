@@ -7,31 +7,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.helpgenic.Classes.Admin;
-import com.example.helpgenic.Classes.DbHandler;
-import com.example.helpgenic.Classes.Doctor;
-import com.example.helpgenic.Classes.Patient;
-import com.example.helpgenic.Patient.DonorSearch;
-import com.example.helpgenic.Patient.HomePatient;
-import com.example.helpgenic.Patient.NotificationPatient;
-import com.example.helpgenic.Patient.PatientHistory;
-import com.example.helpgenic.Patient.ProfilePatient;
 import com.example.helpgenic.R;
-import com.example.helpgenic.login;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
-import java.util.ArrayList;
 
 public class AdminPage extends AppCompatActivity {
 

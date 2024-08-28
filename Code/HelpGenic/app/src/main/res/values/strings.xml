@@ -14,7 +14,6 @@
     <string name="enter_your_password">Enter your password</string>
     <string name="pSignUp">Sign Up</string>
 
-    <string name="search_donor">Search Donor</string>
     <string name="history">History</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -47,7 +46,6 @@
 
 
     <string name="Gender">Homebrew.com - Dropdown</string>
-    <string name="search_for_donor">Search for donor</string>
     <string-array name="Gender">
         <item>Male</item>
         <item>Female</item>

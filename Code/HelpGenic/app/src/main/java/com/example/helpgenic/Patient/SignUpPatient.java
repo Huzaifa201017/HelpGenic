@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,11 +14,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.helpgenic.Classes.AccountHandler;
-import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.GuestUser;
 
 import com.example.helpgenic.R;
-import com.example.helpgenic.SignUpDonor;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;

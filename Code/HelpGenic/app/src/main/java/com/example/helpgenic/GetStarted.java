@@ -18,7 +18,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class GetStarted extends AppCompatActivity {
-    Button doc , donor , patient;
+    Button doc , patient;
 
 
     @Override
@@ -27,7 +27,6 @@ public class GetStarted extends AppCompatActivity {
         setContentView(R.layout.activity_get_started);
 
         doc = findViewById(R.id.signUpDoc);
-        donor = findViewById(R.id.signUpDonor);
         patient = findViewById(R.id.signUpPatient);
 
 
@@ -35,13 +34,6 @@ public class GetStarted extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(GetStarted.this, SignUpDoc.class));
-            }
-        });
-
-        donor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(GetStarted.this, SignUpDonor.class));
             }
         });
 

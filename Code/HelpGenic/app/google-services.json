@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "939535519619",
+    "project_id": "helpgenic-db57e",
+    "storage_bucket": "helpgenic-db57e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939535519619:android:268703e07ce836e27830b6",
+        "android_client_info": {
+          "package_name": "com.foliotech.helpgenic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBso0fYGf7sMsusnCPdJiPE3zzuNS9qeE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

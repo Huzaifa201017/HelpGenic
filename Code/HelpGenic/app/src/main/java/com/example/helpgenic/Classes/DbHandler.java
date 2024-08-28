@@ -1310,50 +1310,6 @@ public class DbHandler {
         return coordinates;
     }
 
-    public ArrayList<Donor> getDonorDetails(Context context){
-        ArrayList<Donor> donorDetails = new ArrayList<>();
-        String query = "select * from `User` u join Donor d on u.uid = d.did";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-
-            ResultSet rs = stmt.executeQuery();
-
-
-            while (rs.next()) {
-                char gender = 'M';
-                if(!rs.getBoolean("gender")){
-                    gender = 'F';
-                }
-
-                donorDetails.add(new Donor(rs.getString("name"), null,null,gender, rs.getDate("dob"), rs.getString("bloodGroup"), rs.getString("phoneNum"), rs.getString("address")));
-            }
-
-
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-        return donorDetails;
-    }
-
-    public void insertDonor(Donor donor,int id,Context context) {
-        String query="CALL insertDonor(?,?,?,?)";
-        try{
-            if(connection!=null)
-            {
-                cs= (CallableStatement) connection.prepareCall(query);
-                cs.setInt(1,id);
-                cs.setString(2,donor.getBloodGroup());
-                cs.setString(3,donor.getAddress());
-                cs.setString(4,donor.getPhNum());
-                cs.executeQuery();
-            }
-        }
-        catch(Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-    }
 }
 

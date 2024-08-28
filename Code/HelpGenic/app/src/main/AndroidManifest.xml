@@ -35,7 +35,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
+            android:value="AIzaSyC5Y_qUAVEn3_mlCeDDTQdH0gqzLHCS-tg" />
 
         <activity
             android:name=".MapsActivity2"
@@ -112,11 +112,7 @@
             android:name=".Admin.AdminPage"
             android:exported="false"
             android:label="Dashboard" />
-        <activity
-            android:name=".SignUpDonor"
-            android:exported="false"
-            android:label="Sign Up"
-            android:parentActivityName=".GetStarted" />
+
         <activity
             android:name=".Patient.SignUpPatient"
             android:exported="false"

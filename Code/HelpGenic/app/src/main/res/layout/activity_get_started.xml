@@ -24,14 +24,12 @@
         android:id="@+id/signUpDoc"
         android:layout_width="300dp"
         android:layout_height="70dp"
+        android:layout_marginTop="88dp"
         android:text="Sign Up as Doctor"
         android:textColor="#212121"
-        app:layout_constraintBottom_toTopOf="@+id/signUpDonor"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5"
-        app:layout_constraintVertical_bias="0.539" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
     <Button
         android:id="@+id/signUpPatient"
@@ -44,18 +42,6 @@
         app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signUpDoc"
-        app:layout_constraintVertical_bias="0.475" />
-
-    <Button
-        android:id="@+id/signUpDonor"
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:text="Sign Up as Donor"
-        android:textColor="#212121"
-        app:layout_constraintBottom_toTopOf="@+id/signUpPatient"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signUpDoc" />
+        app:layout_constraintVertical_bias="0.094" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

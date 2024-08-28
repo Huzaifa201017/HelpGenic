@@ -1,11 +1,9 @@
 package com.example.helpgenic.Classes;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Patterns;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.Date;
@@ -15,8 +13,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Objects;
-
-import aws.sdk.kotlin.services.s3.model.SelectObjectContentEventStream;
 
 
 public class AccountHandler {
