@@ -1,14 +1,23 @@
 package com.example.helpgenic.Classes;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.sql.Date;
-import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,52 +27,64 @@ import java.util.Objects;
 public class AccountHandler {
 
 
-
+    private FirebaseAuth mAuth;
     DbHandler db;
+
 
     public void setDb(DbHandler db) {
         this.db = db;
     }
 
-    public GuestUser validatePatientCredentials(EditText name , EditText email, EditText phoneNumber , EditText gender , EditText password , EditText password2 , Date dob, AutoCompleteTextView bloodGroup , Context context ){
+    public Task<Boolean>  validatePatientCredentials(EditText name , EditText email, EditText phoneNumber , EditText gender , EditText password , EditText password2 , Date dob, AutoCompleteTextView bloodGroup , Context context ){
+
+
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
 
         if (name.length()==0)
         {
             name.setError("This field is required");
-            return null;
+            taskCompletionSource.setResult(false);
+            return taskCompletionSource.getTask();
         }
         if (email.length() == 0) {
             email.setError("This field is required");
-            return null;
+            taskCompletionSource.setResult(false);
+            return taskCompletionSource.getTask();
         }
         else if (!Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()) {
             email.setError("Invalid Email!");
-            return null;
+            taskCompletionSource.setResult(false);
+            return taskCompletionSource.getTask();
         }
         if (phoneNumber.length() == 0) {
             phoneNumber.setError("This field is required");
-            return null;
+            taskCompletionSource.setResult(false);
+            return taskCompletionSource.getTask();
         }
         if (password.length() == 0) {
             password.setError("This field is required");
-            return null;
+            taskCompletionSource.setResult(false);
+            return taskCompletionSource.getTask();
         }
         if (password2.length() == 0) {
             password2.setError("This field is required");
-            return null;
+            taskCompletionSource.setResult(false);
+            return taskCompletionSource.getTask();
 
         }if (dob== null) {
             Toast.makeText(context, "DOB can't be empty", Toast.LENGTH_SHORT).show();
-            return null;
+            taskCompletionSource.setResult(false);
+            return taskCompletionSource.getTask();
         }
         if(!password.getText().toString().equals(password2.getText().toString())){
             password2.setError("Passwords don't match");
-            return null;
+            taskCompletionSource.setResult(false);
+            return taskCompletionSource.getTask();
         }
         if(gender.length() == 0){
             gender.setError("This field is required");
-
-            return null;
+            taskCompletionSource.setResult(false);
+            return taskCompletionSource.getTask();
         }
 
         if(gender.length() != 0){
@@ -71,7 +92,8 @@ public class AccountHandler {
 
             if( ! (Objects.equals(gender.getText().toString(),"Male") || Objects.equals(gender.getText().toString(),"male") || Objects.equals(gender.getText().toString(),"Female") || Objects.equals(gender.getText().toString(),"female")) ){
                 gender.setError("Invalid gender entered");
-                return null;
+                taskCompletionSource.setResult(false);
+                return taskCompletionSource.getTask();
             }
 
         }
@@ -92,67 +114,76 @@ public class AccountHandler {
             if(currdate1.compareTo(dob) < 0){
 
                 Toast.makeText(context, "Invalid DOB !", Toast.LENGTH_SHORT).show();
-                return null;
+                taskCompletionSource.setResult(false);
+                return taskCompletionSource.getTask();
             }
         }
 
         // TODO: check gender field
 
-
-        db = new DbHandler();
-        // create connection
-        if (!db.isConnectionOpen()) {
-            // =============== connect with db ===============
-            db.connectToDb(context);
-            // ==================================================
-        }
+        mAuth = FirebaseAuth.getInstance();
 
 
 
-        boolean isAlreadyExists = db.matchPatientCredentials(email.getText().toString()  ,context);
+        mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                if (task.isSuccessful()) {
+
+                    // Sign in success
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    Log.d("Accounts Handler", "User Created Successfully with ID: " + user.getUid());
+
+                    if (user != null){
+                        Log.d("Accounts Handler", "User is Signed in");
+                        mAuth.signOut();
+                        Log.d("Accounts Handler", "User is Logged Out");
+                    }
 
 
+                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+
+                    // Inserting data in database
+
+                    // Parsing Gender
+                    boolean g = false;
+                    if(Objects.equals(gender.getText().toString(),"Male") || Objects.equals(gender.getText().toString(),"male")){
+                        g = true;
+                    }
 
 
+                    // Parsing Date of Birth
 
-        if (!isAlreadyExists) {
+                    Date dateOfBirth = null;
+                    SimpleDateFormat formatter;
+                    formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    java.util.Date temp = null;
+
+                    try {
+                        temp = (java.util.Date) formatter.parse(dob.toString());
+                    } catch (ParseException e) {
+                        Log.d("Accounts Handler", "Date Parsing Error");
+                    }
+                    dateOfBirth = new Date(temp.getTime());
+
+                    // Now Inserting ...
+                    db = new DbHandler();
+                    db.insertPatientDetailsInDb(user.getUid().toString(),name.getText().toString(), g ,dateOfBirth,bloodGroup.getText().toString(),phoneNumber.getText().toString(),context );
+
+                    taskCompletionSource.setResult(true);
 
 
-            boolean g = false;
-            if(Objects.equals(gender.getText().toString(),"Male") || Objects.equals(gender.getText().toString(),"male")){
-                g = true;
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.d("Accounts Handler", "Failure in User Creation", task.getException());
+                    taskCompletionSource.setResult(false);
+
+                }
             }
+        });
 
-            Date dateOfBirth = null;
-            DateFormat formatter;
-            formatter = new SimpleDateFormat("yyyy-MM-dd");
-            java.util.Date temp = null;
-
-            try {
-                temp = (java.util.Date) formatter.parse(dob.toString());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            dateOfBirth = new Date(temp.getTime());
-
-
-            Toast.makeText(context, "Inserted", Toast.LENGTH_SHORT).show();
-            int id = db.insertPatientDetailsInDb(name.getText().toString(), email.getText().toString(), password.getText().toString(),g ,dateOfBirth,bloodGroup.getText().toString(),phoneNumber.getText().toString(),context );
-
-
-            // closing connection
-            try {
-                db.closeConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-
-            return new Patient(id,email.getText().toString(),null,name.getText().toString(),g,dateOfBirth,bloodGroup.getText().toString(),phoneNumber.getText().toString());
-
-        }
-
-        return null;
+        return taskCompletionSource.getTask();
 
     }
 

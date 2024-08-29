@@ -1,21 +1,19 @@
 package com.example.helpgenic.Patient;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.helpgenic.Classes.AccountHandler;
 import com.example.helpgenic.Classes.GuestUser;
-
 import com.example.helpgenic.R;
 
 import java.sql.Date;
@@ -54,20 +52,24 @@ public class SignUpPatient extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext() , android.R.layout.simple_spinner_dropdown_item , bloodGrps);
         bloodGroups.setAdapter(adapter);
 
+
         submitBtn.setOnClickListener(view -> {
 
             AccountHandler ah =  new AccountHandler();
             usr.setAh(ah);
+            Log.d("SignUpPatient", "Yes");
+            usr.SignUpPatient(nameField,emailField,phoneNumField, password1Field,password2Field,gender,dob, bloodGroups,SignUpPatient.this).addOnCompleteListener(task -> {
 
-            GuestUser obj = usr.SignUpPatient(nameField,emailField,phoneNumField, password1Field,password2Field,gender,dob, bloodGroups,SignUpPatient.this);
+                if (task.isSuccessful() && task.getResult()) {
 
+                    Log.d("SignUpPatient", "isSignedUp: " + task.getResult());
+                    finish();
 
-            if (obj != null) {
+                }else{
+                    Log.d("SignUpPatient", "isSignedUp: " + task.getResult());
+                }
+            });
 
-                finish();
-
-
-            }
 
 
         });

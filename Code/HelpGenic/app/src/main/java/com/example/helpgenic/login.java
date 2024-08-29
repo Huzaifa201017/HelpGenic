@@ -1,8 +1,6 @@
 /*------------------------------------------------Activity-----------------------------------------------*/
 package com.example.helpgenic;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.helpgenic.Admin.AdminPage;
 import com.example.helpgenic.Classes.Admin;
@@ -127,7 +127,11 @@ public class login extends AppCompatActivity {
 
 
 
-        // when submit button clicked
+        // When submit button clicked
+
+        // As already checked above, if the user is already logged in or not, so now at this point of code
+        // it means that he was not already logged in, so log him in.
+
         logIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

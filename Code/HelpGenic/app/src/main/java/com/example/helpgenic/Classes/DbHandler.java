@@ -1,17 +1,18 @@
 package com.example.helpgenic.Classes;
+
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.StrictMode;
-import android.util.Base64;
-import android.widget.ArrayAdapter;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.mysql.jdbc.CallableStatement;
 
-import java.io.FileInputStream;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,9 @@ import java.sql.Time;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class DbHandler {
@@ -31,31 +34,15 @@ public class DbHandler {
 
     String url="jdbc:mysql://sda.mysql.database.azure.com:3306/helpgenic?useSSL=true&loginTimeout=30";
 
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public boolean  connectToDb(Context ptr) {
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-
-        try {
-
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(url, "azureuser", "Muhammad167");
-
-            Toast.makeText(ptr,"Success", Toast.LENGTH_SHORT).show();
-
-            return true;
-
-        } catch (Exception e) {
-            Toast.makeText(ptr, e.getMessage(), Toast.LENGTH_SHORT).show();
-            return false;
-        }
+        db = FirebaseFirestore.getInstance();
+        return true;
     }
 
     public void closeConnection() throws SQLException {
-        connection.close();
-        connection = null;
+        db = null;
 
     }
 
@@ -172,9 +159,7 @@ public class DbHandler {
     }
 
     public boolean isConnectionOpen(){
-        if (Objects.equals(connection ,null))
-            return false;
-        return true;
+        return !Objects.equals(db, null);
     }
 
 
@@ -555,54 +540,32 @@ public class DbHandler {
 
     }
 
-    public  int insertPatientDetailsInDb(String name , String email , String password , boolean gender , Date dob, String bloodGrup , String phNum, Context context ){
+    public  void insertPatientDetailsInDb(String id, String name , boolean gender , Date dob, String bloodGrup , String phNum, Context context ){
 
-        String query = "call insertUser(?,?,?,?,?,?,?)";
-
-        int id = 0;
-        try {
-
-            if (connection != null) {
-
-                cs = (CallableStatement) this.connection.prepareCall(query);
-
-                cs.setString(1, name);
-                cs.setString(2, email);
-                cs.setString(3, password);
-                cs.setBoolean(4, gender);
-                cs.setDate(5,dob);
-                cs.setString(6,"P");
-                cs.registerOutParameter(7,Types.INTEGER);
-                cs.executeQuery();
-
-                id = cs.getInt(7);
-
-                String query2 = "insert into Patient values (?,?,?)";
-
-                try (PreparedStatement stmt = connection.prepareStatement(query2)) {
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", name);
+        user.put("gender", gender);
+        user.put("dob", dob);
+        user.put("bloodGroup", bloodGrup);
+        user.put("bloodGroup", bloodGrup);
+        user.put("phoneNum", phNum);
+        user.put("phoneNum", phNum);
+        user.put("type", "P");
 
 
-                    stmt.setInt(1,id);
-                    stmt.setString(2,bloodGrup);
-                    stmt.setString(3,phNum);
-
-                    stmt.execute();
-
-                    Toast.makeText(context, "Inserted Successfully !", Toast.LENGTH_SHORT).show();
-
-
-                } catch (Exception e) {
-                    Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-
-
-
+        db.collection("Users").document(id).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("DbHandler: insertPatientDetailsInDb", "DocumentSnapshot (user) successfully written with ID: " + id);
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w("DbHandler: insertPatientDetailsInDb", "Error writing document", e);
+            }
+        });
 
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        return id;
+
     }
 
     public String loadDoctorDegreeImageFromDb(int docId , Context context){

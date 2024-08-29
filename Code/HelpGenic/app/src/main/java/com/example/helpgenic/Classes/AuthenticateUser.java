@@ -6,6 +6,8 @@ import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Objects;
 
 public class AuthenticateUser {
 
+    private FirebaseAuth mAuth;
     DbHandler db;
 
     public void setDb(DbHandler db) {
