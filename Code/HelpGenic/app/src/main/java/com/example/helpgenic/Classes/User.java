@@ -8,8 +8,8 @@ public abstract class User implements Serializable {
     protected String name,email,password;
     protected char gender;
     protected java.sql.Date dob;
-    protected int id;
-
+    protected String id;
+    protected char type;
 
 
     protected int age;
@@ -37,6 +37,9 @@ public abstract class User implements Serializable {
         this.au = au;
     }
 
+    public void setType(char type) {
+        this.type = type;
+    }
 
     public String getName() {
         return name;
@@ -58,12 +61,16 @@ public abstract class User implements Serializable {
         return dob;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
     public String getMail(){
        return email;
+    }
+
+    public char getType() {
+        return type;
     }
 
 }

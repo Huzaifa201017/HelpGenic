@@ -3,15 +3,13 @@ package com.example.helpgenic.Admin;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.helpgenic.Classes.Admin;
+import androidx.fragment.app.Fragment;
+
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.R;
 import com.github.mikephil.charting.charts.BarChart;
@@ -29,8 +27,6 @@ import java.util.ArrayList;
 
 public class GraphWithRating extends Fragment {
 
-
-    private Admin admin;
     DbHandler dbHandler = new DbHandler();
     BarChart barChart;
     BarData barData;
@@ -38,10 +34,6 @@ public class GraphWithRating extends Fragment {
     ArrayList barEntriesArrayList;
     ArrayList<String> docNames = new ArrayList<>();
 
-    public GraphWithRating(Admin admin) {
-        // Required empty public constructor
-        this.admin = admin;
-    }
 
 
     @Override

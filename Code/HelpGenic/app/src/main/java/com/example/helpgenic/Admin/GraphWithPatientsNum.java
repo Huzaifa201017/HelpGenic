@@ -2,20 +2,18 @@ package com.example.helpgenic.Admin;
 
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
-import com.example.helpgenic.Classes.Admin;
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.R;
 
@@ -24,18 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GraphWithPatientsNum extends Fragment {
-
-    private Admin admin;
     DbHandler dbHandler = new DbHandler();
     AnyChartView anyChartView;
     ArrayList<String> docNames = new ArrayList<>();
     ArrayList<Integer> pAttended = new ArrayList<>();
 
 
-    public GraphWithPatientsNum(Admin admin) {
-        // Required empty public constructor
-        this.admin = admin;
-    }
 
 
 

@@ -1,10 +1,8 @@
 package com.example.helpgenic.Patient;
-import androidx.appcompat.app.AppCompatActivity;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,6 +13,8 @@ import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.helpgenic.Classes.AlarmHandler;
 import com.example.helpgenic.Classes.BookingManager;
 import com.example.helpgenic.Classes.DbHandler;
@@ -22,7 +22,6 @@ import com.example.helpgenic.Classes.Doctor;
 import com.example.helpgenic.Classes.Patient;
 import com.example.helpgenic.Classes.Slot;
 import com.example.helpgenic.Classes.VirtualAppointmentSchedule;
-import com.example.helpgenic.MyReciever;
 import com.example.helpgenic.PatientAdapters.ListViewDsiplayingSlotsAdapter;
 import com.example.helpgenic.R;
 
@@ -66,7 +65,7 @@ public class DisplayingSlots extends AppCompatActivity {
         d = (Doctor) getIntent().getSerializableExtra("doc");
         vs = (VirtualAppointmentSchedule) getIntent().getSerializableExtra("vs");
         SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        p = new Patient(sh.getInt("Id" , 0),null, null , null , false , null  , null , null);
+        p = new Patient(sh.getString("Id" , "xyz"),null, null , null , false , null  , null , null);
 
         slots = bm.makeSlots(vs.getsTime(),vs.geteTime(),vs.getDay()); // all total possibilities
 
@@ -97,7 +96,7 @@ public class DisplayingSlots extends AppCompatActivity {
                     db.connectToDb(DisplayingSlots.this);
                     bm.setDb(db);
 
-                    ArrayList<Slot> availableSlots = bm.getAvailableSlots(d.getId() , dateSelected, vs.getDay() , slots, DisplayingSlots.this );
+                    ArrayList<Slot> availableSlots = bm.getAvailableSlots(0 , dateSelected, vs.getDay() , slots, DisplayingSlots.this );
                     ListViewDsiplayingSlotsAdapter adapter = new ListViewDsiplayingSlotsAdapter(DisplayingSlots.this,0,availableSlots);
 
                     lst.setAdapter(adapter);
@@ -129,7 +128,8 @@ public class DisplayingSlots extends AppCompatActivity {
                     }
 
 
-                }else{
+                }
+                else{
                     Toast.makeText(DisplayingSlots.this, "Invalid Date Selected", Toast.LENGTH_SHORT).show();
                 }
 
@@ -159,7 +159,7 @@ public class DisplayingSlots extends AppCompatActivity {
             public void onClick(View view) {
 
                 p.setBm(bm);
-                int appId = p.confirmAppointment(p.getId() , d.getId() ,dateSelected ,selectedSlot , DisplayingSlots.this);
+                int appId = p.confirmAppointment(0 , 0 ,dateSelected ,selectedSlot , DisplayingSlots.this);
 
                 if(appId != -1){
 

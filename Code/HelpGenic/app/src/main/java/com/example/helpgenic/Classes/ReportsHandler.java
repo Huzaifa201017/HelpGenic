@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,23 +31,27 @@ public class ReportsHandler {
         this.db = db;
     }
 
-    public String loadImage(Uri selectedImageUri, Context context){
+    public byte[] loadImage(Uri selectedImageUri, Context context){
 
         Bitmap selectedImageBitmap = null;
 
         try {
             selectedImageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), selectedImageUri);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.d("ReportsHandler", "Image not loaded");
         }
 
         ByteArrayOutputStream  byteArrayOutputStream = new ByteArrayOutputStream();
-        selectedImageBitmap.compress(Bitmap.CompressFormat.PNG, 0, byteArrayOutputStream);
+        selectedImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
 
-        byte[] bytesImage = byteArrayOutputStream.toByteArray();
-        String encodedImage = Base64.encodeToString(bytesImage, Base64.DEFAULT);
+        return byteArrayOutputStream.toByteArray();
 
-        return encodedImage;
+    }
+
+    public void loadImageFromByteData(ImageView iv , byte[] bytes){
+
+        Bitmap decodebitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        iv.setImageBitmap(decodebitmap);
 
     }
 

@@ -1,14 +1,14 @@
 /*------------------------------------------------Activity-----------------------------------------------*/
 package com.example.helpgenic.Admin;
 
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.os.Bundle;
-import android.view.MenuItem;
 
 import com.example.helpgenic.Classes.Admin;
 import com.example.helpgenic.R;
@@ -43,7 +43,7 @@ public class AdminPage extends AppCompatActivity {
 
 
         bnView.setSelectedItemId(R.id.navigation_home);
-        loadFrag(new PendingDoctors(admin), false);
+        loadFrag(new PendingDoctors(), false);
 
         bnView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
 
@@ -51,11 +51,11 @@ public class AdminPage extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
                 if (id == R.id.navigation_home) {
-                    loadFrag(new PendingDoctors(admin), true);
+                    loadFrag(new PendingDoctors(), true);
                 } else if (id == R.id.navigation_ratingsGraph) {
-                    loadFrag(new GraphWithRating(admin), true);
+                    loadFrag(new GraphWithRating(), true);
                 } else {
-                    loadFrag(new GraphWithPatientsNum(admin), true);
+                    loadFrag(new GraphWithPatientsNum(), true);
                 }
                 return true;
             }

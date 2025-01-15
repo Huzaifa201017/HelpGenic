@@ -1,7 +1,5 @@
 package com.example.helpgenic.Patient;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlarmManager;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -12,6 +10,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.helpgenic.Classes.AlarmHandler;
 import com.example.helpgenic.Classes.Appointment;
@@ -72,7 +72,7 @@ public class PageForUpdateApps extends AppCompatActivity {
 
         // getting available slots
         slots = bm.makeSlots(app.getDoc().getvSchedule().get(0).getsTime() , app.getDoc().getvSchedule().get(0).geteTime() ,dayWeekText);
-        ArrayList<Slot> availableSlots = bm.getAvailableSlots(app.getDoc().getId() , app.getAppDate(),dayWeekText,slots ,this);
+        ArrayList<Slot> availableSlots = bm.getAvailableSlots(0, app.getAppDate(),dayWeekText,slots ,this);
 
 
         // displaying slots to patient

@@ -103,6 +103,7 @@ public class AccountHandler {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Calendar calendar = Calendar.getInstance();
             String date = sdf.format(calendar.getTime());
+
             java.util.Date currdate1 = null;
             try {
                 currdate1 =new SimpleDateFormat("yyyy-MM-dd").parse(date);
@@ -142,14 +143,13 @@ public class AccountHandler {
                     }
 
 
-                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
 
                     // Inserting data in database
 
                     // Parsing Gender
-                    boolean g = false;
+                    char g = 'F';
                     if(Objects.equals(gender.getText().toString(),"Male") || Objects.equals(gender.getText().toString(),"male")){
-                        g = true;
+                        g = 'M';
                     }
 
 
@@ -169,8 +169,9 @@ public class AccountHandler {
 
                     // Now Inserting ...
                     db = new DbHandler();
-                    db.insertPatientDetailsInDb(user.getUid().toString(),name.getText().toString(), g ,dateOfBirth,bloodGroup.getText().toString(),phoneNumber.getText().toString(),context );
+                    db.insertPatientDetailsInDb(user.getUid().toString(),name.getText().toString(), g ,dateOfBirth,bloodGroup.getText().toString(),phoneNumber.getText().toString() );
 
+                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
                     taskCompletionSource.setResult(true);
 
 

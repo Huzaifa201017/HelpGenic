@@ -1,22 +1,19 @@
 package com.example.helpgenic;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.ReportsHandler;
 
-import java.sql.SQLException;
-
 public class DisplayImage extends AppCompatActivity {
 
-    int documentId = 0, docId  = 0;
+    String docId = "";
     ImageView iv;
     Button reject , verify;
     DbHandler db = new DbHandler();
@@ -26,83 +23,66 @@ public class DisplayImage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
 
-        reject=(Button) findViewById(R.id.reject);
-        verify=(Button) findViewById(R.id.accept);
+        reject= findViewById(R.id.reject);
+        verify= findViewById(R.id.accept);
 
-        documentId = getIntent().getIntExtra("documentId" ,0);
-        docId = getIntent().getIntExtra("docId" ,0);
+        docId = getIntent().getStringExtra("docId");
 
         iv = findViewById(R.id.document);
 
 
         ReportsHandler rh = new ReportsHandler();
-        db.connectToDb(DisplayImage.this);
 
-        if(db.isConnectionOpen()){
-
-            if(documentId != 0){
-                String bytesData = db.getPatientDocumentsFromDb(documentId, this);
+        db.getDocument(docId).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                byte[] bytesData = task.getResult();
                 rh.loadImageFromByteData(iv,bytesData);
-            }else if(docId != 0){
-                String byteData = db.loadDoctorDegreeImageFromDb(docId,DisplayImage.this);
-                rh.loadImageFromByteData(iv,byteData);
             }
+        });
 
-            verify.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        verify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-                    System.out.println("The id is " + docId);
-                    db.setVerified(DisplayImage.this,docId);
-                    SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sh.edit();
-                    myEdit.putBoolean("NeedToUpdate", true);
-                    myEdit.apply();
+                db.updateDoctorVerifyStatus(docId).addOnCompleteListener(task -> {
 
-                    finish(); // return back
-                }
-           });
+                    if(task.isSuccessful() && task.getResult()){
 
-            reject.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    System.out.println("The id is " + docId);
-                    db.removeDoctor(DisplayImage.this, docId);
+                        Toast.makeText(DisplayImage.this, "Operation Successful", Toast.LENGTH_SHORT).show();
+                        finish(); // return back
 
-                    SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sh.edit();
-                    myEdit.putBoolean("NeedToUpdate", true);
-                    myEdit.apply();
+                    }else{
 
-                    finish(); // return back
-                }
-            });
+                        Toast.makeText(DisplayImage.this, "Operation Unsuccessful", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
 
-        }else{
-            Toast.makeText(this, "Connection Error!", Toast.LENGTH_SHORT).show();
-        }
-
-
-
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(db.isConnectionOpen()){
-            try {
-                db.closeConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-        }
+        });
+
+        reject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                db.removeDoctor(docId).addOnCompleteListener(task -> {
+
+                    if(task.isSuccessful() && task.getResult()){
+
+                        Toast.makeText(DisplayImage.this, "Operation Successful", Toast.LENGTH_SHORT).show();
+                        finish(); // return back
+
+                    }else{
+
+                        Toast.makeText(DisplayImage.this, "Operation Unsuccessful", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+            }
+        });
+
+
+
 
     }
 }

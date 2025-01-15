@@ -50,10 +50,9 @@
         android:dividerHeight="10.0sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.59"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="0.987" />
+        app:layout_constraintVertical_bias="0.902" />
 
     <EditText
         android:id="@+id/searchView"
@@ -109,12 +108,12 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:text="Select Category"
-        android:textColor="#212121"
         app:layout_constraintBottom_toTopOf="@+id/DocList"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="0.581" />
+        app:layout_constraintVertical_bias="0.855" />
 
     <Button
         android:id="@+id/findOnMaps"
@@ -123,10 +122,9 @@
         android:text="Find on Maps"
         app:layout_constraintBottom_toTopOf="@+id/selectCategory"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.777" />
 
 
     <!--    <TextView-->

@@ -2,15 +2,8 @@
 
 package com.example.helpgenic.Patient;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
-
-import com.example.helpgenic.Classes.Admin;
-import com.example.helpgenic.Classes.Patient;
-import com.example.helpgenic.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,9 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.helpgenic.Classes.Patient;
+import com.example.helpgenic.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
-import java.util.Objects;
 
 public class PatientPage extends AppCompatActivity {
 
@@ -48,8 +42,6 @@ public class PatientPage extends AppCompatActivity {
         bnView = findViewById(R.id.nav_view);
         p = (Patient) getIntent().getSerializableExtra("patient");
 
-//        System.out.println("--------"+p.getName());
-        // Toast.makeText(this, p.getMail(), Toast.LENGTH_SHORT).show();
 
         bnView.setSelectedItemId(R.id.navigation_home);
         loadFrag(new HomePatient(p),false);

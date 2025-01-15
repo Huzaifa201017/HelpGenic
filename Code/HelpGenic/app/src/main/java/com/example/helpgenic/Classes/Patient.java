@@ -5,7 +5,6 @@ import android.widget.Toast;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.Objects;
 
 public class Patient  extends GuestUser{
@@ -28,6 +27,7 @@ public class Patient  extends GuestUser{
             this.gender = 'F';
         }
 
+        this.type = 'P';
     }
 
     public Patient (String name , String email ,String phoneNumber, String password, Date dob) {
@@ -38,9 +38,10 @@ public class Patient  extends GuestUser{
         this.dob=dob;
         this.gender = 0;
         this.bloodGroup=null;
+        this.type = 'P';
     }
 
-    public Patient (int id , String email , String password,String name,boolean gender, Date dob, String bloodGrup,String phNum) {
+    public Patient (String id , String email , String password,String name,boolean gender, Date dob, String bloodGrup,String phNum) {
 
         this.email = email;
         this.password = password;
@@ -56,11 +57,13 @@ public class Patient  extends GuestUser{
 
         this.bloodGroup=bloodGrup;
         this.phNum = phNum;
+        this.type = 'P';
     }
 
-    public Patient(int id , String name ){
+    public Patient(String id , String name ){
         this.name = name;
         this.id = id;
+        this.type = 'P';
     }
 
     public int confirmAppointment(int patientId , int docId , Date selectedDate, Slot slot, Context context){

@@ -57,7 +57,7 @@ public class SignUpPatient extends AppCompatActivity {
 
             AccountHandler ah =  new AccountHandler();
             usr.setAh(ah);
-            Log.d("SignUpPatient", "Yes");
+
             usr.SignUpPatient(nameField,emailField,phoneNumField, password1Field,password2Field,gender,dob, bloodGroups,SignUpPatient.this).addOnCompleteListener(task -> {
 
                 if (task.isSuccessful() && task.getResult()) {

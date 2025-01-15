@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +11,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.helpgenic.Classes.Appointment;
 import com.example.helpgenic.Classes.DbHandler;
@@ -142,7 +142,7 @@ public class UpcomingAppointments extends Fragment {
                 Appointment apt = null;
                 if(appointments.size() != 0) {
                     apt = appointments.get(0);
-                    docId = apt.getDoc().getId();
+                    docId = 0;
                 }
 
 

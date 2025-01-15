@@ -1,31 +1,26 @@
 /*------------------------------------------------Fragment-----------------------------------------------*/
 package com.example.helpgenic.Patient;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.helpgenic.Classes.Patient;
-import com.example.helpgenic.Doctor.DocPage;
 import com.example.helpgenic.R;
 import com.example.helpgenic.login;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfilePatient extends Fragment {
 
     Patient p;
 
-    TextView pName,phNum,email , bloodGroup , dob,id;
+    TextView pName,phNum,email , bloodGroup , dob;
 
     public ProfilePatient(Patient p) {
         // Required empty public constructor
@@ -47,13 +42,11 @@ public class ProfilePatient extends Fragment {
         email = view.findViewById(R.id.email);
         bloodGroup = view.findViewById(R.id.bloodGroup);
         dob = view.findViewById(R.id.dob);
-        id = view.findViewById(R.id.patientID);
 
         pName.setText(p.getName());
         phNum.setText(p.getPhNum());
         email.setText(p.getMail());
         bloodGroup.setText(p.getBloodGroup());
-        id.setText("ID: "+ Integer.toString(p.getId()));
         //System.out.println(p.getDob());
         dob.setText(p.getDob().toString());
 
@@ -62,15 +55,13 @@ public class ProfilePatient extends Fragment {
             @Override
             public void onClick(View view) {
 
-                SharedPreferences sh = getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sh.edit();
-                myEdit.clear();
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                mAuth.signOut();
 
-                myEdit.apply();
                 Intent intent = new Intent(getActivity(), login.class);
                 startActivity(intent);
 
-                getActivity().finish();
+                requireActivity().finish();
             }
         });
         return view;

@@ -8,13 +8,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
 
-        android:layout_width="411dp"
-        android:layout_height="97dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
         android:background="@drawable/list_view_custom_design"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp">
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/image"
@@ -37,17 +37,16 @@
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.059"
+            app:layout_constraintHorizontal_bias="0.078"
             app:layout_constraintStart_toEndOf="@+id/image"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.323" />
+            app:layout_constraintVertical_bias="0.318" />
 
         <TextView
             android:id="@+id/info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="52dp"
             android:text="Pediatrics"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"

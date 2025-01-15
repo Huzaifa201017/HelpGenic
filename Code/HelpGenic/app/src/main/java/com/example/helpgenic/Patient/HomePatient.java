@@ -8,9 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,27 +15,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.helpgenic.Classes.DbHandler;
+import androidx.fragment.app.Fragment;
+
 import com.example.helpgenic.Classes.Doctor;
-import com.example.helpgenic.Classes.GuestUser;
 import com.example.helpgenic.Classes.Patient;
 import com.example.helpgenic.MapsActivity;
 import com.example.helpgenic.PatientAdapters.customListViewAdapter;
 import com.example.helpgenic.R;
-import com.example.helpgenic.login;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
 import java.util.StringTokenizer;
 
 
@@ -85,18 +76,19 @@ public class HomePatient extends Fragment  {
     @SuppressLint("SetTextI18n")
     private void setUpData(){
 
-        DbHandler db = new DbHandler();
-        if(db.connectToDb(getContext())){
-
-            patientWelcome.setText("Welcome "+ p.getName());
-            docList = db.getListOfDoctors(getContext());
-
-            try {
-                db.closeConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+//        DbHandler db = new DbHandler();
+//        if(db.connectToDb(getContext())){
+//
+//            patientWelcome.setText("Welcome "+ p.getName());
+//            docList = db.getListOfDoctors(getContext());
+//
+//            try {
+//                db.closeConnection();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        docList = new ArrayList<>();
 
 
     }

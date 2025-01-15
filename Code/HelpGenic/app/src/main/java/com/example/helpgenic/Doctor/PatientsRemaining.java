@@ -3,13 +3,14 @@ package com.example.helpgenic.Doctor;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.helpgenic.Classes.Appointment;
 import com.example.helpgenic.Classes.DbHandler;
@@ -37,7 +38,7 @@ public class PatientsRemaining extends Fragment {
         DbHandler db = new DbHandler();
         db.connectToDb(getContext());
 
-        appointments = db.getUpcommingAppointmentsForDoctor(d.getId() , getContext());
+        appointments = db.getUpcommingAppointmentsForDoctor(0 , getContext());
 
         try {
             db.closeConnection();

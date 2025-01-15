@@ -22,25 +22,21 @@ public class GuestUser extends User{
         this.dob = d1;
     }
 
-    public GuestUser logIn(EditText email , EditText password , Context context ){
+    public Task<GuestUser> logIn(EditText email , EditText password , Context context ){
 
 
         DbHandler db = new DbHandler();
 
 
         this.au.setDb(db);
-        GuestUser obj =  this.au.validateCredentials(email,password,context);
+        return this.au.validateCredentials(email,password,context);
 
-
-        return obj;
 
     }
 
     public Task<Boolean> SignUpPatient (EditText name , EditText email, EditText phoneNumber , EditText password1, EditText password2 , EditText gender , Date dob, AutoCompleteTextView bloodGroup, Context context )
     {
-
-
-        return this.ah.validatePatientCredentials(name,email,phoneNumber,gender,password1, password2,dob,bloodGroup,context);
+         return this.ah.validatePatientCredentials(name,email,phoneNumber,gender,password1, password2,dob,bloodGroup,context);
 
     }
 

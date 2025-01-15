@@ -1,13 +1,5 @@
 package com.example.helpgenic.Doctor;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -20,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,13 +26,20 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.example.helpgenic.Classes.DbHandler;
-import com.example.helpgenic.Classes.Doctor;
-import com.example.helpgenic.Classes.GuestUser;
 import com.example.helpgenic.Classes.ReportsHandler;
 import com.example.helpgenic.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -57,10 +57,12 @@ public class SignUpDoc extends AppCompatActivity {
     RadioButton male,female,yes,no;
     Button uploaddocs;
     java.sql.Date dateSelected = null;
-    private String encodedImage=null;
+    private byte[]  degreeImage=null;
     final Calendar myCalendar= Calendar.getInstance();
     // Initialize variable
     ActivityResultLauncher<Intent> resultLauncher;
+
+    private FirebaseAuth mAuth;
     //---------------------------------------------//
 
 
@@ -94,64 +96,63 @@ public class SignUpDoc extends AppCompatActivity {
             }
         };
 
-        dob.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new DatePickerDialog(SignUpDoc.this,date,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
+        dob.setOnClickListener(view -> new DatePickerDialog(SignUpDoc.this,date,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show());
         //----------------------------------------------------------------//
         // When user presses the select category option
-        selectOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setUpDialogBox();
-                handleDialogBoxFunctionality();
-            }
+        selectOption.setOnClickListener(view -> {
+            setUpDialogBox();
+            handleDialogBoxFunctionality();
         });
 
 
 
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (verifyCredentials()) { // if all credentials are filled and validated
-                    //check either male or female
-                    char gen = maleORfemale();
-                    // is Surgeon;
-                    boolean Surgeon = isSurgeon();
-                    //User and Doctor created for inserting in user table
-                    GuestUser guestUser = new GuestUser(name.getText().toString(),mail.getText().toString(),
-                            password.getText().toString(),gen,dateSelected);
+        submitBtn.setOnClickListener(view -> {
 
-                    Doctor doctor = new Doctor(selectOption.getText().toString(),Surgeon,null,
-                            null);
+            // if all credentials are filled and validated
+            if (verifyCredentials()) {
 
-                    DbHandler dbHandler = new DbHandler();
-                    dbHandler.connectToDb(getApplicationContext());
+                //check either male or female
+                char gen = maleOrFemale();
+                // is Surgeon;
+                boolean Surgeon = isSurgeon();
 
-                    //verify if a user already exists with the current email
-                    if(dbHandler.verifyUser(mail.getText().toString(),getApplicationContext())){
-                        //insert user to db if the email is unique
-                        int id =dbHandler.insertUser(guestUser,"D",getApplicationContext());
-                        if(id>0) {
-                            dbHandler.insertDoctor(doctor,id,encodedImage, getApplicationContext());
-                            Toast.makeText(getApplicationContext(), "User inserted!", Toast.LENGTH_LONG).show();
-                            finish();
+
+                mAuth = FirebaseAuth.getInstance();
+
+                Log.d("SignUpDoc", "Credentials Verified");
+
+                mAuth.createUserWithEmailAndPassword(mail.getText().toString(), password.getText().toString()).addOnCompleteListener(this, task -> {
+
+                    if (task.isSuccessful()) {
+
+                        // Sign in success
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        Log.d("SignUpDoc", "User Created Successfully with ID: " + user.getUid());
+
+                        if (user != null) {
+                            Log.d("SignUpDoc", "User is Signed in");
+                            mAuth.signOut();
+                            Log.d("SignUpDoc", "User is Logged Out");
                         }
-                        else{
-                            Toast.makeText(getApplicationContext(),"id<0",Toast.LENGTH_LONG).show();
-                        }
-                    }
-                    else
-                        Toast.makeText(getApplicationContext(),"User already exists with this email",Toast.LENGTH_LONG).show();
 
-                    try {
-                        dbHandler.closeConnection();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+
+
+                        // Inserting data in database
+                        DbHandler db = new DbHandler();
+
+
+                        db.insertDoctorDetailsInDb(user.getUid(),name.getText().toString(), dateSelected, contact.getText().toString(), selectOption.getText().toString(), gen , Surgeon, degreeImage);
+                        Toast.makeText(SignUpDoc.this, "Success", Toast.LENGTH_SHORT).show();
+
+                        finish();
+
+
+                    }else{
+                        Log.d("SignUpDoc", "Failure in User Creation" + task.getException());
                     }
-                }
+                });
+
+
             }
         });
 
@@ -172,7 +173,7 @@ public class SignUpDoc extends AppCompatActivity {
                     // get bytes data from image and save it to database along with other doctor credentials
 
                     ReportsHandler rh = new ReportsHandler();
-                    encodedImage = rh.loadImage(selectedImageUri , SignUpDoc.this);
+                    degreeImage = rh.loadImage(selectedImageUri , SignUpDoc.this);
                     Toast.makeText(SignUpDoc.this, "Upload Successful !", Toast.LENGTH_SHORT).show();
 
 
@@ -182,23 +183,19 @@ public class SignUpDoc extends AppCompatActivity {
         } );
 
 
-        uploaddocs.setOnClickListener(new View.OnClickListener()  {
+        uploaddocs.setOnClickListener( view -> {
 
-            @Override
-            public void onClick(View view) {
+            // check condition
+            if (ActivityCompat.checkSelfPermission(SignUpDoc.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                // check condition
-                if (ActivityCompat.checkSelfPermission(SignUpDoc.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-                    // When permission is not granted
-                    // Result permission
-                    ActivityCompat.requestPermissions(SignUpDoc.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
-                }
-                else {
-                    // When permission is granted
-                    // Create method
-                    selectImage();
-                }
+                // When permission is not granted
+                // Result permission
+                ActivityCompat.requestPermissions(SignUpDoc.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
+            }
+            else {
+                // When permission is granted
+                // Create method
+                selectImage();
             }
         });
 
@@ -206,61 +203,63 @@ public class SignUpDoc extends AppCompatActivity {
     }
 
     public boolean verifyCredentials() {
-        boolean errorfound= false;
 
         if (name.length() <= 4) {
             name.setError("Minimum length should 5!");
-            errorfound=true;
+            return false;
         }
 
         if (mail.length() == 0) {
-            mail.setError("Please fill this!");
-            errorfound=true;
+            mail.setError("Please fill this field!");
+            return false;
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(mail.getText().toString()).matches()) {
             mail.setError("Invalid Email!");
-            errorfound=true;
+            return false;
+        }
+
+        if(dateSelected == null){
+            Toast.makeText(this, "Select your DOB", Toast.LENGTH_SHORT).show();
+            return false;
         }
 
         if(!validateDatePattern()){
             Toast.makeText(this, "Invalid date", Toast.LENGTH_SHORT).show();
-            errorfound=true;
+            return false;
         }
 
         if(contact.length()<11){
             contact.setError("Invalid Contact!");
-            errorfound=true;
+            return false;
         }
-        if(dateSelected == null){
-            Toast.makeText(this, "Select your data", Toast.LENGTH_SHORT).show();
-        }
+
 
         if(password.length()< 9){
             password.setError("Must be at least 9 characters!");
-            errorfound=true;
+            return false;
         }
 
         if(selectOption.getText().toString().equals("")){
-            selectOption.setError("Select Category!");
-            errorfound=true;
+            Toast.makeText(this, "Select Category", Toast.LENGTH_SHORT).show();
+            return false;
         }
 
         if(!(male.isChecked() || female.isChecked())) {
-            female.setError("Select one option!");
-            errorfound=true;
+            Toast.makeText(this, "Choose one 'Gender'", Toast.LENGTH_SHORT).show();
+            return false;
         }
 
         if(!(no.isChecked() || yes.isChecked())){
-            no.setError("Select one option!");
-            errorfound=true;
+            Toast.makeText(this, "Choose one 'Surgeon'", Toast.LENGTH_SHORT).show();
+            return false;
         }
-        if(encodedImage == null){
+        if(degreeImage == null){
             Toast.makeText(this, "Please Upload Your Degree img", Toast.LENGTH_SHORT).show();
-            errorfound=true;
+            return false;
         }
 
-        return !errorfound;
+        return true;
     }
 
 
@@ -331,7 +330,7 @@ public class SignUpDoc extends AppCompatActivity {
             String date = sdf.format(calendar.getTime());
             java.util.Date currdate1 = null;
             try {
-                currdate1 =new SimpleDateFormat("yyyy/MM/dd").parse(date);
+                currdate1 = new SimpleDateFormat("yyyy/MM/dd").parse(date);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -354,16 +353,15 @@ public class SignUpDoc extends AppCompatActivity {
 
     }
 
-    public char maleORfemale()
+    public char maleOrFemale()
     {
         if(male.isChecked())
-            return 'm';
+            return 'M';
         else
-            return 'f';
+            return 'F';
     }
 
-    public boolean isSurgeon()
-    {
+    public boolean isSurgeon() {
         return yes.isChecked();
     }
 

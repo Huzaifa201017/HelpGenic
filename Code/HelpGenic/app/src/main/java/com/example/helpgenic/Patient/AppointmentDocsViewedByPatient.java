@@ -25,11 +25,8 @@ import com.example.helpgenic.Classes.Prescription;
 import com.example.helpgenic.Classes.ReportsHandler;
 import com.example.helpgenic.CommonAdapters.ListViewAppointmentDocsAdapter;
 import com.example.helpgenic.CommonAdapters.ListViewAppointmentDocsAdapter2;
-import com.example.helpgenic.DisplayImage;
 import com.example.helpgenic.DisplayImage2;
 import com.example.helpgenic.DisplayPrescription;
-import com.example.helpgenic.Doctor.AppointmentDocsViewedByDoc;
-import com.example.helpgenic.Doctor.SignUpDoc;
 import com.example.helpgenic.R;
 
 import java.sql.SQLException;
@@ -77,12 +74,8 @@ public class AppointmentDocsViewedByPatient extends AppCompatActivity {
                     Uri selectedImageUri = data.getData();
                     // get bytes data from image and save it to database along with other doctor credentials
 
-                    String encodedImage = rh.loadImage(selectedImageUri , AppointmentDocsViewedByPatient.this);
+                    byte [] encodedImage = rh.loadImage(selectedImageUri , AppointmentDocsViewedByPatient.this);
 
-                    if(!db.isConnectionOpen()){
-                        db.connectToDb(AppointmentDocsViewedByPatient.this);
-                    }
-                    db.loadDocumentToDb(aptId , encodedImage, AppointmentDocsViewedByPatient.this);
 
 
 

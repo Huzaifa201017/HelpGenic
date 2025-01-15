@@ -11,9 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.helpgenic.Classes.Doctor;
 import com.example.helpgenic.Classes.Patient;
-import com.example.helpgenic.PatientAdapters.customListViewAdapter;
 import com.example.helpgenic.R;
 
 import java.util.ArrayList;
@@ -88,7 +86,7 @@ public class ListViewPatientAttendedAdapter extends ArrayAdapter<Patient> {
 
                 for (T object : sourceObjects) {
                     // the filtering itself:
-                    if (((Patient)object).getId() == Integer.parseInt((String) chars))
+                    if (0 == Integer.parseInt((String) chars))
                         filter.add(object);
                 }
                 result.count = filter.size();

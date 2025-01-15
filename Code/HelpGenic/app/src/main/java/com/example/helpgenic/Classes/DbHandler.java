@@ -4,9 +4,19 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mysql.jdbc.CallableStatement;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -18,11 +28,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
-import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -46,117 +53,245 @@ public class DbHandler {
 
     }
 
-    public List<Object> matchCredentials(String email , String password , Context context) {
-        try {
 
 
-            if(connection != null){
-
-                cs = (CallableStatement) this.connection.prepareCall("{call matchCredentials(?, ?, ?,?)}");
-                cs.setString(1, email);
-                cs.setString(2, password);
-                cs.registerOutParameter(3, Types.VARCHAR);
-                cs.registerOutParameter(4,Types.INTEGER);
-                cs.executeQuery();
-
-                String type = cs.getString(3);
-                int id = cs.getInt(4);
-                System.out.println(type);
-
-                if(Objects.equals(type,"D")){
-
-                    String query1 = "select verified from Doctor where docId = ?";
-
-                    try (PreparedStatement stmt = connection.prepareStatement(query1)) {
-
-                        stmt.setInt(1,id);
-
-                        ResultSet rs = stmt.executeQuery();
 
 
-                        while (rs.next()) {
-                            boolean isVerified = rs.getBoolean("verified");
+    public  void insertPatientDetailsInDb(String id, String name , char gender , Date dob, String bloodGroup , String phNum){
 
-                            System.out.println(isVerified);
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", name);
+        user.put("gender",  String.valueOf(gender));
+        user.put("dob", dob);
+        user.put("bloodGroup", bloodGroup);
+        user.put("phoneNum", phNum);
+        user.put("type", "P");
 
-                            if(!isVerified){
-                                Toast.makeText(context, "Sorry ! wait for your verification please!", Toast.LENGTH_SHORT).show();
-                                return null;
-                            }else{
-                                return Arrays.asList(cs.getString(3) , cs.getInt(4));
-                            }
+
+        db.collection("Users").document(id).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("DbHandler: insertPatientDetailsInDb", "DocumentSnapshot (user) successfully written with ID: " + id);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w("DbHandler: insertPatientDetailsInDb", "Error writing document", e);
+            }
+        });
+
+
+    }
+
+    public void insertDoctorDetailsInDb(String id, String name , Date dob , String phNum, String specialization, char gender, boolean isSurgeon, byte [] degreeImage ) {
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        String path = "degrees/" + id + ".jpg";
+        StorageReference imageRef = storageRef.child(path);
+
+        UploadTask uploadTask = imageRef.putBytes(degreeImage);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.d("DbHandler: insertDoctorDetailsInDb", "Image upload failed");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                Log.d("DbHandler: insertDoctorDetailsInDb", "Image upload Success");
+
+                Map<String, Object> user = new HashMap<>();
+                user.put("name", name);
+                user.put("gender", String.valueOf(gender));
+                user.put("dob", dob);
+                user.put("phoneNum", phNum);
+                user.put("specialization", specialization);
+                user.put("surgeon", isSurgeon);
+                user.put("verified", false);
+                user.put("rating", 4.3);
+                user.put("ratingCount", 1);
+                user.put("type", "D");
+
+
+                db.collection("Users").document(id).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("DbHandler: insertDoctorDetailsInDb", "DocumentSnapshot (user) successfully written with ID: " + id);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("DbHandler: insertDoctorDetailsInDb", "Error writing document", e);
+                    }
+                });
+
+
+
+            }
+        });
+
+
+    }
+
+    public Task<DocumentSnapshot> getUserDetails(String uID) {
+
+        TaskCompletionSource<DocumentSnapshot> taskCompletionSource = new TaskCompletionSource<>();
+        DocumentReference docRef = db.collection("Users").document(uID);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+
+                    if (document.exists()) {
+                        Log.d("Db Handler: getUserDetails", "DocumentSnapshot data: " + document.getData());
+                        taskCompletionSource.setResult(document);
+
+                    } else {
+                        Log.d("Db Handler: getUserDetails", "No relevant document found");
+                        taskCompletionSource.setResult(null);
+                    }
+                } else {
+                    Log.d("Db Handler: getUserDetails", "get failed with ", task.getException());
+                    taskCompletionSource.setResult(null);
+                }
+            }
+        });
+
+        return taskCompletionSource.getTask();
+    }
+
+
+    public Task<ArrayList<Doctor>> getUnVerifiedDocs(Context context) {
+
+        TaskCompletionSource<ArrayList<Doctor>> taskCompletionSource = new TaskCompletionSource<>();
+        ArrayList<Doctor> docList = new ArrayList<>();
+        db.collection("Users").whereEqualTo("verified", false).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot userDocument : task.getResult()) {
+
+                        String id = userDocument.getId();
+                        String name = userDocument.getString("name");
+                        String specialization = userDocument.getString("specialization");
+
+                        docList.add(new Doctor(name,specialization,id));
+
+                    }
+
+                    taskCompletionSource.setResult(docList);
+                } else {
+                    Log.d("Db Handler: getUnVerifiedDocs", "Error getting documents: ", task.getException());
+                    taskCompletionSource.setResult(null);
+                }
+            }
+        });
+
+        return taskCompletionSource.getTask();
+    }
+
+    public Task<byte[]> getDocument(String documentId) {
+
+        TaskCompletionSource<byte[]> taskCompletionSource = new TaskCompletionSource<>();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        String path = "degrees/" + documentId + ".jpg";
+        StorageReference imageRef = storageRef.child(path);
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                taskCompletionSource.setResult(bytes);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                taskCompletionSource.setResult(null);
+            }
+        });
+
+        return taskCompletionSource.getTask();
+    }
+
+    public Task<Boolean> updateDoctorVerifyStatus(String documentId){
+
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+
+        DocumentReference docRef = db.collection("Users").document(documentId);
+        docRef.update("verified", true).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("Db Handler: updateDoctorVerifyStatus", "DocumentSnapshot successfully updated!");
+                taskCompletionSource.setResult(true);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w("Db Handler: updateDoctorVerifyStatus", "Error updating document", e);
+                taskCompletionSource.setResult(false);
+            }
+        });
+
+        return taskCompletionSource.getTask();
+
+    }
+
+
+    public Task<Boolean> removeDoctor(String documentId) {
+
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+
+        try{
+            db.collection("Users").document(documentId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("Db Handler: removeDoctor", "DocumentSnapshot successfully deleted!");
+
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReference();
+                    String path = "degrees/" + documentId + ".jpg";
+                    StorageReference imageRef = storageRef.child(path);
+
+                    imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("Db Handler: removeDoctor", "Image successfully deleted!");
+                            taskCompletionSource.setResult(true);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Log.d("Db Handler: removeDoctor", "Error deleting image", exception);
+                            taskCompletionSource.setResult(false);
 
                         }
+                    });
 
-
-
-                    } catch (Exception e) {
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
                 }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("Db Handler: removeDoctor", "Error deleting document", e);
+                    taskCompletionSource.setResult(false);
+                }
+            });
 
-                return Arrays.asList(cs.getString(3) , cs.getInt(4));
 
-            }
-
-
-
-        } catch (Exception e){
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            return null;
+        }catch (Exception e){
+            Log.w("Db Handler: removeDoctor", "Error removing doctor", e);
+            taskCompletionSource.setResult(false);
         }
-        return null;
+
+
+        return taskCompletionSource.getTask();
     }
 
-    public List<Object> getPatientDetails(int pId , Context context) {
-
-        String query = "select * from `User` u join Patient p on u.uid = p.pid where pid = ? and u.type = 'P'";
-
-
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-            stmt.setInt(1,pId);
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-
-                return Arrays.asList(rs.getString("name") , rs.getBoolean("gender") , rs.getDate("dob"), rs.getString("bloodGroup"), rs.getString("phoneNum"));
-
-            }
-
-
-
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-        return null;
-    }
-
-    public List<Object> getDoctorDetails(int docId , Context context) {
-
-        String query = "select * from `User` u join Doctor d on u.uid = d.docid where docId = ? and u.type = 'D'";
-
-
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-            stmt.setInt(1,docId);
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-
-                return Arrays.asList(rs.getString("name") , rs.getBoolean("gender") , rs.getDate("dob"), rs.getString("specialization") , rs.getBoolean("surgeon") , rs.getString("accNum"), rs.getFloat("rating"));
-
-            }
-
-
-
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-        return null;
-    }
 
     public boolean isConnectionOpen(){
         return !Objects.equals(db, null);
@@ -174,7 +309,7 @@ public class DbHandler {
 
             while (rs.next()) {
 
-                int id = rs.getInt("uid");
+                String id = rs.getString("uid");
                 String docName = rs.getString("name");
                 String email = rs.getString("email");
                 boolean isGender = rs.getBoolean("gender");
@@ -409,7 +544,7 @@ public class DbHandler {
                      gender = 'F';
                  }
 
-                 Doctor d = new Doctor(rs.getInt("docId"), null ,rs.getString("specialization"),rs.getBoolean("surgeon") , null ,rs.getString("name") , gender , null, 0.0f);
+                 Doctor d = new Doctor(rs.getString("docId"), null ,rs.getString("specialization"),rs.getBoolean("surgeon") , null ,rs.getString("name") , gender , null, 0.0f);
                  d.setVSch(rs.getString("day"),rs.getTime("docsTime"), rs.getTime("docetime"));
 
                 upcomingApp.add(new Appointment(rs.getDate("date") , d , null ,rs.getTime("sTime")  ,rs.getTime("eTime"),rs.getInt("appId")));
@@ -512,62 +647,6 @@ public class DbHandler {
     }
 
 
-    public boolean matchPatientCredentials( String email , Context context) {
-
-
-        String query = "select * from `User` where email = ?";
-
-        boolean isPresent = false;
-
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-            stmt.setString(1,email);
-
-            ResultSet rs = stmt.executeQuery();
-
-
-            while (rs.next()) {
-                isPresent = true;
-            }
-
-
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-        return isPresent;
-
-
-    }
-
-    public  void insertPatientDetailsInDb(String id, String name , boolean gender , Date dob, String bloodGrup , String phNum, Context context ){
-
-        Map<String, Object> user = new HashMap<>();
-        user.put("name", name);
-        user.put("gender", gender);
-        user.put("dob", dob);
-        user.put("bloodGroup", bloodGrup);
-        user.put("bloodGroup", bloodGrup);
-        user.put("phoneNum", phNum);
-        user.put("phoneNum", phNum);
-        user.put("type", "P");
-
-
-        db.collection("Users").document(id).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("DbHandler: insertPatientDetailsInDb", "DocumentSnapshot (user) successfully written with ID: " + id);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w("DbHandler: insertPatientDetailsInDb", "Error writing document", e);
-            }
-        });
-
-
-    }
-
     public String loadDoctorDegreeImageFromDb(int docId , Context context){
 
         String query = "select degree from Doctor where docId = ?";
@@ -607,7 +686,7 @@ public class DbHandler {
             while (rs.next()) {
 
 
-                Appointment ap = new Appointment(rs.getDate("date")  , null,new Patient(rs.getInt("pid"), rs.getString("name")) , rs.getTime("sTime") , rs.getTime("eTime") , 0);
+                Appointment ap = new Appointment(rs.getDate("date")  , null,new Patient(rs.getString("pid"), rs.getString("name")) , rs.getTime("sTime") , rs.getTime("eTime") , 0);
                 upcomingApp.add(ap);
 
 
@@ -812,7 +891,7 @@ public class DbHandler {
         return null;
     }
 
-    public ArrayList<Patient> getPreviousPatientsAttended(int docId , Context context){
+    public ArrayList<Patient> getPreviousPatientsAttended(String docId , Context context){
 
         ArrayList<Patient> prevPatients = new ArrayList<>();
 
@@ -821,14 +900,14 @@ public class DbHandler {
 
         try ( PreparedStatement stmt = connection.prepareStatement(query) ) {
 
-            stmt.setInt(1,docId);
+            stmt.setString(1,docId);
 
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
 
 
-                Patient ap = new Patient(rs.getInt("pid"), rs.getString("name"));
+                Patient ap = new Patient(rs.getString("pid"), rs.getString("name"));
                 prevPatients.add(ap);
 
 
@@ -859,7 +938,7 @@ public class DbHandler {
 
             while (rs.next()) {
 
-                int id = rs.getInt("docId");
+                String id = rs.getString("docId");
                 String docName = rs.getString("name");
                 String email = rs.getString("email");
                 boolean isGender = rs.getBoolean("gender");
@@ -914,82 +993,6 @@ public class DbHandler {
     }
 
 
-    public boolean verifyUser(String email,Context context) {
-        boolean already_exists = false;
-        String query = "CALL VERIFYEMAIL(?,?)";
-        try {
-            if (connection != null) {
-                 cs = (CallableStatement) connection.prepareCall(query);
-                cs.setString(1, email);
-                cs.registerOutParameter(2, Types.BOOLEAN);
-                cs.executeQuery();
-                already_exists = cs.getBoolean(2);
-
-            }
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (already_exists)
-            return false;
-        else {
-            return true;
-        }
-    }
-
-    public int insertUser(GuestUser user,String type,Context context){
-
-        String query = "CALL INSERTUSER(?,?,?,?,?,?,?)";
-        int id=-1;
-        try{
-            if(connection!=null){
-                //convert gender to boolean
-                boolean g=false;
-                if(user.gender=='f')
-                    g=false;
-                else
-                    g=true;
-
-
-                //prepare query
-                cs = (CallableStatement) connection.prepareCall(query);
-                cs.setString(1,user.name);
-                cs.setString(2,user.email);
-                cs.setString(3,user.password);
-                cs.setBoolean(4, g);
-                cs.setDate(5, user.getDob());
-                cs.setString(6,type);
-                cs.setInt(7,id);
-                cs.executeQuery();
-                id=cs.getInt(7);
-            }
-        }
-        catch(Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        return id;
-    }
-
-    public void insertDoctor(Doctor doctor,int id,String encodedImage ,Context context) {
-
-        String query="CALL INSERTDOCTOR(?,?,?,?)";
-        try{
-            if(connection!=null)
-            {
-                cs = (CallableStatement) connection.prepareCall(query);
-                cs.setInt(1,id);
-                cs.setString(2,doctor.getSpecialization());
-                cs.setBoolean(3,doctor.isSurgeon());
-                cs.setString(4, encodedImage);
-                cs.executeQuery();
-            }
-        }
-        catch(Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-    }
-
 
     public ResultSet get_doctors_and_prev_patients(Context context){
         ResultSet rs =null;
@@ -1020,25 +1023,6 @@ public class DbHandler {
     }
 
 
-
-    public ResultSet getUnVerifiedDocs(Context context) {
-
-        ResultSet resultSet=null;
-        try{
-            if(connection!=null){
-                Statement statement= connection.createStatement();
-                resultSet= statement.executeQuery("select user.uid,user.name,doctor.specialization,doctor.verified\n" +
-                        "from user Inner Join doctor on user.uid=doctor.docid\n" +
-                        "where doctor.verified=0");
-
-            }
-        }
-        catch (Exception e){
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        return resultSet;
-    }
-
     public void setVerified(Context context,int docId) {
 
         try{
@@ -1067,27 +1051,27 @@ public class DbHandler {
         }
     }
 
-    public Doctor getDoctorComments(int docId , Context context){
+    public Doctor getDoctorComments(String docId , Context context){
         String query = "select  u.name , c.pComment from comments c join Patient p on c.pid = p.pid join `User` u on p.pid = u.uid\n" +
                 "where c.docId = ?";
 
         Doctor d = new Doctor(null , null);
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-            stmt.setInt(1,docId);
-
-            ResultSet rs = stmt.executeQuery();
-
-
-            while (rs.next()) {
-                d.setComment(rs.getString("name") , rs.getString("pComment"));
-            }
-
-
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+//        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+//
+//            stmt.setInt(1,docId);
+//
+//            ResultSet rs = stmt.executeQuery();
+//
+//
+//            while (rs.next()) {
+//                d.setComment(rs.getString("name") , rs.getString("pComment"));
+//            }
+//
+//
+//        } catch (Exception e) {
+//            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+//        }
         return d;
     }
 

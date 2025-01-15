@@ -12,9 +12,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +24,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.helpgenic.Classes.BookingManager;
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.Doctor;
@@ -38,7 +37,6 @@ import com.example.helpgenic.login;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,7 +98,7 @@ public class ProfileDoc extends Fragment {
                 if(!db.isConnectionOpen()){
                     db.connectToDb(getContext());
                 }
-                db.updateFee(d.getId(),Integer.parseInt(feeInput.getText().toString()),getContext());
+                db.updateFee(0,Integer.parseInt(feeInput.getText().toString()),getContext());
 
 
             }
@@ -134,7 +132,7 @@ public class ProfileDoc extends Fragment {
 
 
         // getting doc id  : 1st msg call
-        int docId = d.getId();
+        int docId = 0;
 
         // getting docInfo
         // // getting vSch details
@@ -168,8 +166,8 @@ public class ProfileDoc extends Fragment {
             db.connectToDb(getContext());
         }
         groupList = new ArrayList<>();
-        addClinicNames(d.getId());
-        setUpDataForEachClinic(d.getId());
+        addClinicNames(0);
+        setUpDataForEachClinic(0);
 
         //--------------------- ------- seting adapter for physical schedule list ------------------------------
 
@@ -196,7 +194,7 @@ public class ProfileDoc extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        Toast.makeText(getContext(), Integer.toString(d.getId()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), Integer.toString(0), Toast.LENGTH_SHORT).show();
 
         view = inflater.inflate(R.layout.fragment_profile_doc, container, false);
 

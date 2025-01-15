@@ -1,5 +1,4 @@
 package com.example.helpgenic.Patient;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,19 +10,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.helpgenic.Classes.Appointment;
 import com.example.helpgenic.Classes.BookingManager;
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.Doctor;
 import com.example.helpgenic.Classes.Patient;
-import com.example.helpgenic.Classes.PhysicalAppointmentSchedule;
 import com.example.helpgenic.Classes.ReportsHandler;
 import com.example.helpgenic.Classes.VirtualAppointmentSchedule;
-import com.example.helpgenic.CommonAdapters.ExpandableListViewAdapter;
-import com.example.helpgenic.CommonAdapters.ListViewAppointmentsAdapter;
 import com.example.helpgenic.CommonAdapters.ListViewVirtualScheduleDisplayAdapter;
-import com.example.helpgenic.Doctor.AppointmentDocsViewedByDoc;
-import com.example.helpgenic.Doctor.DocViewingPatientProfile;
 import com.example.helpgenic.DoctorAdapters.MyExpandableListAdapter;
 import com.example.helpgenic.R;
 
@@ -31,7 +27,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +54,8 @@ public class PatientViewingDocProfile extends AppCompatActivity {
     private void setupPhysicalScheduleData(){
         // setting physical schedule data
         groupList = new ArrayList<>();
-        addClinicNames(d.getId());
-        setUpDataForEachClinic(d.getId());
+        addClinicNames(0);
+        setUpDataForEachClinic(0);
 
         //--------------------- ------- seting adapter for physical schedule list ------------------------------
 
@@ -126,7 +121,7 @@ public class PatientViewingDocProfile extends AppCompatActivity {
 
 
             // getting doc id  : 1st msg call
-            int docId = d.getId();
+            int docId = 0;
 
             // getting docInfo
             // // getting vSch details
@@ -170,7 +165,7 @@ public class PatientViewingDocProfile extends AppCompatActivity {
 
 
             rh.setDb(db);
-            rh.displayPreviousAppointments(docId , p.getId() , PatientViewingDocProfile.this, appointments);
+            rh.displayPreviousAppointments(docId , 0 , PatientViewingDocProfile.this, appointments);
 
             appointments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
