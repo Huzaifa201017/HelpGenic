@@ -73,6 +73,7 @@ public class Patient  extends GuestUser{
         this.type = 'P';
     }
 
+
     public Patient(String id , String name ){
         this.name = name;
         this.id = id;

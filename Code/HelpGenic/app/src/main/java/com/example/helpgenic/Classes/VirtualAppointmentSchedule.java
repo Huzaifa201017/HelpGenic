@@ -22,5 +22,14 @@ public class VirtualAppointmentSchedule extends AppointmentSchedule{
 
     }
 
+    public VirtualAppointmentSchedule( String day, Time sTime,Time eTime) {
+
+        this.day = day;
+        this.sTime = sTime;
+        this.eTime = eTime;
+        this.fee = fee;
+
+    }
+
 
 }

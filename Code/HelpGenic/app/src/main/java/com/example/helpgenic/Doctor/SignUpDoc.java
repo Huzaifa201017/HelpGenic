@@ -230,21 +230,15 @@ public class SignUpDoc extends AppCompatActivity {
 
         uploaddocs.setOnClickListener( view -> {
 
-            boolean t = checkStoragePermissions();
-            selectImage();
-//            // check condition
-//            if (ActivityCompat.checkSelfPermission(SignUpDoc.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//
-//                // When permission is not granted
-//                // Result permission
-//                requestForStoragePermissions();
-//                ActivityCompat.requestPermissions(SignUpDoc.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
-//            }
-//            else {
-//                // When permission is granted
-//                // Create method
-//                selectImage();
-//            }
+            // if permission not granted
+            if (! checkStoragePermissions()) {
+                // Ask for Permission
+                requestForStoragePermissions();
+            }
+            else {
+                // When permission is granted
+                selectImage();
+            }
         });
 
 

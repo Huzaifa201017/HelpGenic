@@ -21,6 +21,11 @@ public class BookingManager {
         return obj;
     }
 
+    public ArrayList<VirtualAppointmentSchedule> getDoctorVirtualSchedule(String docId , Context context)  {
+        ArrayList<VirtualAppointmentSchedule> obj =  new ArrayList<>();
+        return obj;
+    }
+
     public ArrayList<Slot> getAvailableSlots(int docId , Date dateSelected , String day , ArrayList<Slot> slots,Context context){
 
         ArrayList<Slot> consumedSlots = db.getConsumedSlots(docId , dateSelected, context);

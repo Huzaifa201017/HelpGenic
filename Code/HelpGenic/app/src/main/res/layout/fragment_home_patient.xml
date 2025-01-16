@@ -8,8 +8,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="55dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
     tools:context=".Patient.HomePatient">
 
 
@@ -42,17 +42,16 @@
 
 
     <ListView
-
         android:id="@+id/DocList"
-        android:layout_width="389dp"
-        android:layout_height="395dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="10.0sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="0.902" />
+        app:layout_constraintTop_toBottomOf="@+id/selectCategory"
+        android:layout_marginTop="50dp"/>
 
     <EditText
         android:id="@+id/searchView"
@@ -71,75 +70,30 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.112" />
 
-    <!--    <com.google.android.material.textfield.TextInputLayout-->
-
-    <!--        android:id="@+id/textInputLayout"-->
-    <!--        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_margin="16dp"-->
-    <!--        android:hint="Sort By"-->
-    <!--        app:layout_constraintBottom_toTopOf="@+id/DocList"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="1.03"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/searchView"-->
-    <!--        app:layout_constraintVertical_bias="0.931">-->
-
-    <!--        <AutoCompleteTextView-->
-    <!--            android:id="@+id/searchOptions"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="48dp"-->
-    <!--            android:inputType="none"-->
-    <!--            android:text="Rating"-->
-    <!--            app:layout_constraintBottom_toTopOf="@+id/DocList"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="1.03"-->
-    <!--            app:layout_constraintTop_toBottomOf="@+id/searchView"-->
-    <!--            app:layout_constraintVertical_bias="0.931" />-->
-
-    <!--    </com.google.android.material.textfield.TextInputLayout>-->
-
     <Button
 
         android:id="@+id/selectCategory"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="92dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:text="Select Category"
-        app:layout_constraintBottom_toTopOf="@+id/DocList"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="0.855" />
+        app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
     <Button
         android:id="@+id/findOnMaps"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
         android:text="Find on Maps"
-        app:layout_constraintBottom_toTopOf="@+id/selectCategory"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="0.777" />
-
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/selectCategory"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:background="@drawable/search_view_custom_deesign"-->
-    <!--        android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24"-->
-    <!--        android:hint="Select Category"-->
-    <!--        android:padding="12dp"-->
-    <!--        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.5"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/searchView" />-->
+        app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

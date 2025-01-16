@@ -18,7 +18,6 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class PatientPage extends AppCompatActivity {
 
-    //private ActivityPatientPageBinding binding;
     private BottomNavigationView bnView;
     Patient p;
 

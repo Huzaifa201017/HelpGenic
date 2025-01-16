@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.Doctor;
 import com.example.helpgenic.Classes.Patient;
 import com.example.helpgenic.MapsActivity;
@@ -76,19 +78,33 @@ public class HomePatient extends Fragment  {
     @SuppressLint("SetTextI18n")
     private void setUpData(){
 
-//        DbHandler db = new DbHandler();
-//        if(db.connectToDb(getContext())){
-//
-//            patientWelcome.setText("Welcome "+ p.getName());
-//            docList = db.getListOfDoctors(getContext());
-//
-//            try {
-//                db.closeConnection();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-        docList = new ArrayList<>();
+        patientWelcome.setText("Welcome "+ p.getName());
+
+        DbHandler db = new DbHandler();
+        if(db.connectToDb(getContext())){
+
+            db.getListOfDoctors().addOnCompleteListener(task -> {
+
+                if (task.isSuccessful()) {
+
+                    docList = task.getResult();
+                    adapter1 = new customListViewAdapter(getContext() , R.layout.list_cell_custom_design , docList);
+                    doctorsList.setAdapter(adapter1);
+                    Log.d("Home Patient: ", "Successfully fetched doctors list");
+
+                } else {
+                    docList = new ArrayList<>();
+                    Log.d("Home Patient: ", "Failed to fetch doctors list");
+                }
+            });
+
+
+            try {
+                db.closeConnection();
+            } catch (Exception e) {
+                Log.e("Home Patient: ", "Failed to close connection" + e.getMessage());
+            }
+        }
 
 
     }
@@ -212,14 +228,8 @@ public class HomePatient extends Fragment  {
         // =======================================Populating the doctors list ===========================================
 
         try {
-            // populate the data
+             // populate the data
              setUpData();
-             if(docList != null){
-                 // set adapter to list view
-                 adapter1 = new customListViewAdapter(getContext() , R.layout.list_cell_custom_design , docList);
-                 doctorsList.setAdapter(adapter1);
-             }
-
 
         }catch (Exception e){
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();

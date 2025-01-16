@@ -98,7 +98,7 @@ public class ProfileDoc extends Fragment {
                 if(!db.isConnectionOpen()){
                     db.connectToDb(getContext());
                 }
-                db.updateFee(0,Integer.parseInt(feeInput.getText().toString()),getContext());
+                db.updateFee(d.getId(),Integer.parseInt(feeInput.getText().toString()),getContext());
 
 
             }
@@ -132,7 +132,7 @@ public class ProfileDoc extends Fragment {
 
 
         // getting doc id  : 1st msg call
-        int docId = 0;
+        String docId = d.getId();
 
         // getting docInfo
         // // getting vSch details
@@ -291,7 +291,6 @@ public class ProfileDoc extends Fragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), AddVirtualSchedule.class);
                 intent.putExtra("docId" ,d.getId());
-                intent.putExtra("fee" ,feeAmount);
 
                 ArrayList<CharSequence> days = getUsedDays();
 

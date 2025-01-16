@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.helpgenic.Doctor.AddVirtualSchedule;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,7 +51,6 @@ public class DbHandler {
 
     public void closeConnection() throws SQLException {
         db = null;
-
     }
 
 
@@ -297,52 +297,45 @@ public class DbHandler {
         return !Objects.equals(db, null);
     }
 
+    public Task<ArrayList<Doctor>> getListOfDoctors(){
 
-    public ArrayList<Doctor> getListOfDoctors(Context ptr){
+        TaskCompletionSource<ArrayList<Doctor>> taskCompletionSource = new TaskCompletionSource<>();
+        ArrayList<Doctor> docList = new ArrayList<>();
+        db.collection("Users").whereEqualTo("verified", true).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-        ArrayList<Doctor> list = new ArrayList<>();
-        String query = "select * from `User` u join Doctor d on u.uid = d.docId  where verified=true order by rating desc";
-
-        try (Statement stmt = connection.createStatement()) {
-
-            ResultSet rs = stmt.executeQuery(query);
-
-            while (rs.next()) {
-
-                String id = rs.getString("uid");
-                String docName = rs.getString("name");
-                String email = rs.getString("email");
-                boolean isGender = rs.getBoolean("gender");
-                float rating = rs.getFloat("rating");
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot userDocument : task.getResult()) {
 
 
-                char gender;
-                if (isGender){
-                    gender = 'M';
-                }else{
-                    gender = 'F';
+                        String id = userDocument.getId();
+                        String name = userDocument.getString("name");
+                        String specialization = userDocument.getString("specialization");
+                        char gender = Objects.requireNonNull(userDocument.getString("gender")).charAt(0);
+                        float rating = Objects.requireNonNull(userDocument.getDouble("rating")).floatValue();
+                        boolean isSurgeon = Objects.requireNonNull(userDocument.getBoolean("surgeon"));
+
+                        if(isSurgeon){
+                            specialization += ", Surgeon";
+                        }
+
+                        docList.add(new Doctor(id ,name, specialization, gender , rating, isSurgeon));
+
+                    }
+
+                    taskCompletionSource.setResult(docList);
+                } else {
+                    Log.d("Db Handler: getListOfDoctors", "Error getting documents: ", task.getException());
+                    taskCompletionSource.setResult(null);
                 }
-
-                String specialization = rs.getString("specialization");
-                boolean isSurgeon = rs.getBoolean("surgeon");
-
-                if(isSurgeon){
-                    specialization += ", Surgeon";
-                }
-
-                String accNum = rs.getString("accNum");
-
-                list.add(new Doctor(id , email,specialization ,isSurgeon , accNum ,docName, gender,null, rating));
             }
+        });
 
-
-        } catch (Exception e) {
-            Toast.makeText(ptr, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-
-        return list;
+        return taskCompletionSource.getTask();
     }
+
+
 
     public ArrayList<VirtualAppointmentSchedule> getDoctorVirtualAppDetails(int docId , Context context){
 
@@ -976,14 +969,14 @@ public class DbHandler {
 
     }
 
-    public void updateFee(int docId , int fee,Context context){
+    public void updateFee(String docId , int fee,Context context){
 
         String query1 = "update appschedule set fee = ? where docId = ? and type = 'v'";
 
         try (PreparedStatement stmt1 = connection.prepareStatement(query1)) {
 
             stmt1.setInt(1,fee);
-            stmt1.setInt(2,docId);
+//            stmt1.setInt(2,docId);
             stmt1.execute();
 
 
@@ -1092,27 +1085,31 @@ public class DbHandler {
         }
     }
 
-    public void insertVAppSchedule(Context context,VirtualAppointmentSchedule appointmentSchedule, int docId){
-        int aptId=-1;
+    public void insertVAppSchedule(Context context,VirtualAppointmentSchedule appointmentSchedule, String docId){
+
         try {
-            if(connection!=null){
-                cs = (CallableStatement) connection.prepareCall("call insertAppSchedule(?,?,?,?,?,?,?)");
-                cs.setString(1,appointmentSchedule.getDay());
-                cs.setFloat(2,appointmentSchedule.getFee());
-                cs.setString(3,"v");
-                cs.setInt(4,docId);
-                cs.setTime(5,appointmentSchedule.getsTime());
-                cs.setTime(6,appointmentSchedule.geteTime());
-                cs.registerOutParameter(7,aptId);
-                cs.executeQuery();
 
-                aptId= cs.getInt(7);
+            Map<String, Object> vScheduleDocument = new HashMap<>();
+            vScheduleDocument.put("day", appointmentSchedule.getDay());
+            vScheduleDocument.put("sTime",  appointmentSchedule.getsTime());
+            vScheduleDocument.put("eTime", appointmentSchedule.geteTime());
 
-                cs = (CallableStatement) connection.prepareCall("call insertVirtualAppSchedule(?)");
-                cs.setInt(1,aptId);
-                cs.executeQuery();
 
-            }
+            db.collection("Users").document(docId).collection("vApt Schedules").document().set(vScheduleDocument).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(context, "Schedule Added", Toast.LENGTH_SHORT).show();
+                    Log.d("DbHandler: insertVAppSchedule", "DocumentSnapshot (vSchedule) successfully written " );
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(context, "Operation Failed", Toast.LENGTH_SHORT).show();
+                    Log.w("DbHandler: insertVAppSchedule", "Error writing document", e);
+                }
+            });
+
+
         }
         catch(Exception e){
             Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();

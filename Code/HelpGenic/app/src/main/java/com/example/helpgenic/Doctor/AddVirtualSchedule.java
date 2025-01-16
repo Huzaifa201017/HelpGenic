@@ -115,14 +115,12 @@ public class AddVirtualSchedule extends AppCompatActivity {
 
 
                     //pass the doc id in the function insertVAppSchedule according the object of doc which is created after login
-                    int docId = getIntent().getIntExtra("docId",0);
-                    float fee = getIntent().getFloatExtra("fee",0.0f);
+                    String docId = getIntent().getStringExtra("docId");
 
-                    VirtualAppointmentSchedule virtualAppointmentSchedule = new VirtualAppointmentSchedule(selectedDay,time1,time2,fee);
+                    VirtualAppointmentSchedule virtualAppointmentSchedule = new VirtualAppointmentSchedule(selectedDay,time1,time2);
 
                     if(returnToProfile(value, start, end)){
 
-                        System.out.println(fee);
                         dbHandler.connectToDb(getApplicationContext());
 
                         dbHandler.insertVAppSchedule(AddVirtualSchedule.this,virtualAppointmentSchedule,docId);
@@ -183,10 +181,7 @@ public class AddVirtualSchedule extends AppCompatActivity {
             startTime.setError(null);
         }
 
-        if(eFound)
-            return false;
-        else
-            return true;
+        return !eFound;
     }
 
     private boolean checkSelectedTimings(String t1 , String t2){

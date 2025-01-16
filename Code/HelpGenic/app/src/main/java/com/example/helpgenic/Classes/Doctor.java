@@ -82,6 +82,14 @@ public class Doctor extends GuestUser {
     }
 
 
+    public Doctor(String id, String name, String specialization, char gender, float rating, boolean isSurgeon) {
+        this.id = id;
+        this.name = name;
+        this.specialization = specialization;
+        this.gender = gender;
+        this.rating = rating;
+        this.isSurgeon = isSurgeon;
+    }
 
     public void setVSch(ArrayList<VirtualAppointmentSchedule> vList){
         this.vSchedule = vList;
