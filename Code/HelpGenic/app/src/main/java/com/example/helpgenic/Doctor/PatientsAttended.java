@@ -3,9 +3,6 @@ package com.example.helpgenic.Doctor;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -15,12 +12,12 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.example.helpgenic.Classes.Appointment;
+import androidx.fragment.app.Fragment;
+
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.Doctor;
 import com.example.helpgenic.Classes.Patient;
 import com.example.helpgenic.DoctorAdapters.ListViewPatientAttendedAdapter;
-import com.example.helpgenic.DoctorAdapters.ListViewPatientsRemainingAdapter;
 import com.example.helpgenic.R;
 
 import java.sql.SQLException;
@@ -44,7 +41,8 @@ public class PatientsAttended extends Fragment {
         DbHandler db = new DbHandler();
         db.connectToDb(getContext());
 
-        prevPatients = db.getPreviousPatientsAttended(d.getId() , getContext());
+//        prevPatients = db.getPreviousPatientsAttended(d.getId() , getContext());
+        prevPatients = new ArrayList<>();
 
         try {
             db.closeConnection();

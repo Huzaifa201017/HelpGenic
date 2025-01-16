@@ -9,7 +9,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,9 +33,9 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.ReportsHandler;
@@ -65,6 +68,47 @@ public class SignUpDoc extends AppCompatActivity {
     private FirebaseAuth mAuth;
     //---------------------------------------------//
 
+    private static final int STORAGE_PERMISSION_CODE = 23;
+
+    public boolean checkStoragePermissions(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            //Android is 11 (R) or above
+            return Environment.isExternalStorageManager();
+        }else {
+            //Below android 11
+            int read = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+            return read == PackageManager.PERMISSION_GRANTED ;
+        }
+    }
+
+    private void requestForStoragePermissions() {
+        //Android is 11 (R) or above
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            try {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                Uri uri = Uri.fromParts("package", this.getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+            }catch (Exception e){
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                startActivity(intent);
+            }
+        }else{
+            //Below android 11
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    },
+                    STORAGE_PERMISSION_CODE
+            );
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,20 +227,24 @@ public class SignUpDoc extends AppCompatActivity {
         } );
 
 
+
         uploaddocs.setOnClickListener( view -> {
 
-            // check condition
-            if (ActivityCompat.checkSelfPermission(SignUpDoc.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-                // When permission is not granted
-                // Result permission
-                ActivityCompat.requestPermissions(SignUpDoc.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
-            }
-            else {
-                // When permission is granted
-                // Create method
-                selectImage();
-            }
+            boolean t = checkStoragePermissions();
+            selectImage();
+//            // check condition
+//            if (ActivityCompat.checkSelfPermission(SignUpDoc.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//
+//                // When permission is not granted
+//                // Result permission
+//                requestForStoragePermissions();
+//                ActivityCompat.requestPermissions(SignUpDoc.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
+//            }
+//            else {
+//                // When permission is granted
+//                // Create method
+//                selectImage();
+//            }
         });
 
 
@@ -385,8 +433,7 @@ public class SignUpDoc extends AppCompatActivity {
     }
 
 
-    private void selectImage()
-    {
+    private void selectImage() {
         // Initialize intent
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         // set type
@@ -395,23 +442,5 @@ public class SignUpDoc extends AppCompatActivity {
         resultLauncher.launch(intent);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        super.onRequestPermissionsResult(
-                requestCode, permissions, grantResults);
-
-        // check condition
-        if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // When permission is granted
-            // Call method
-            selectImage();
-        }
-        else {
-            // When permission is denied
-            // Display toast
-            Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
-        }
-    }
 
 }

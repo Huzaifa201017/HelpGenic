@@ -60,6 +60,19 @@ public class Patient  extends GuestUser{
         this.type = 'P';
     }
 
+    public Patient (String id , String email , String password,String name,Character gender, Date dob, String bloodGrup,String phNum) {
+
+        this.email = email;
+        this.password = password;
+        this.id = id;
+        this.dob=dob;
+        this.name = name;
+        this.gender = gender;
+        this.bloodGroup=bloodGrup;
+        this.phNum = phNum;
+        this.type = 'P';
+    }
+
     public Patient(String id , String name ){
         this.name = name;
         this.id = id;

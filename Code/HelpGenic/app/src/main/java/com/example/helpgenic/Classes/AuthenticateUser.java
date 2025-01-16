@@ -75,7 +75,7 @@ public class AuthenticateUser {
 
                             // if user is patient
                             String name = userDocument.getString("name");
-                            boolean gender = Boolean.TRUE.equals(userDocument.getBoolean("gender"));
+                            char gender = Objects.requireNonNull(userDocument.getString("gender")).charAt(0);
 
                             java.util.Date dataInUtil = userDocument.getDate("dob");
                             Date dob = new Date(Objects.requireNonNull(dataInUtil).getTime());

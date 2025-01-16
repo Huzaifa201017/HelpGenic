@@ -38,7 +38,8 @@ public class PatientsRemaining extends Fragment {
         DbHandler db = new DbHandler();
         db.connectToDb(getContext());
 
-        appointments = db.getUpcommingAppointmentsForDoctor(0 , getContext());
+//        appointments = db.getUpcommingAppointmentsForDoctor(0 , getContext());
+        appointments = new ArrayList<>();
 
         try {
             db.closeConnection();
