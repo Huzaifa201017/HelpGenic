@@ -49,9 +49,6 @@
             android:name=".Doctor.AddVirtualSchedule"
             android:exported="false" />
         <activity
-            android:name=".Doctor.UpdateVirtualSchedule"
-            android:exported="false" />
-        <activity
             android:name=".DisplayImage"
             android:exported="false" />
         <activity

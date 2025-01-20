@@ -9,10 +9,29 @@ import java.util.Objects;
 
 public class Patient  extends GuestUser{
 
+    private static Patient singletonInstance;
+
     private String bloodGroup ;
     private String phNum;
 
-    public  Patient(){}
+    // Private constructor to prevent direct instantiation
+    private Patient() {}
+
+    // Public method to get the singleton instance for the doctor
+    public static Patient getInstance() {
+
+        if (singletonInstance == null) {
+            singletonInstance = new Patient();
+        }
+        return singletonInstance;
+    }
+
+    public static void setInstance(Patient d) {
+
+        if (singletonInstance == null) {
+            singletonInstance = d;
+        }
+    }
 
     public Patient( String name ,String email , String phNum , String bloodGroup , int age, boolean gender){
         this.name = name ;
@@ -80,39 +99,6 @@ public class Patient  extends GuestUser{
         this.type = 'P';
     }
 
-    public int confirmAppointment(int patientId , int docId , Date selectedDate, Slot slot, Context context){
-        boolean confirmApp = false;
-
-        if(Objects.equals(slot , null)) {
-
-            Toast.makeText(context, "No Slot selected !", Toast.LENGTH_SHORT).show();
-
-        } else {
-
-            DbHandler db = new DbHandler();
-            db.connectToDb(context);
-
-            bm.setDb(db);
-            confirmApp = this.bm.isAlreadyHaveAnAppointmentOnDate(selectedDate , patientId , docId ,context);
-
-            if(confirmApp){
-                Toast.makeText(context, "You have already got an appointment !", Toast.LENGTH_SHORT).show();
-            }else{
-
-                return this.bm.loadAppointment(docId , patientId , selectedDate , slot.sTime , slot.eTime , context);
-
-            }
-
-
-
-            try {
-                db.closeConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return -1;
-    }
 
     public String getPhNum() {
         return phNum;

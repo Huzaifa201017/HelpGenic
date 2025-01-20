@@ -17,10 +17,8 @@ import com.example.helpgenic.Classes.Prescription;
 import com.example.helpgenic.Classes.ReportsHandler;
 import com.example.helpgenic.CommonAdapters.ListViewAppointmentDocsAdapter;
 import com.example.helpgenic.CommonAdapters.ListViewAppointmentDocsAdapter2;
-import com.example.helpgenic.DisplayImage;
 import com.example.helpgenic.DisplayImage2;
 import com.example.helpgenic.DisplayPrescription;
-import com.example.helpgenic.Patient.AppointmentDocsViewedByPatient;
 import com.example.helpgenic.R;
 
 import java.sql.SQLException;

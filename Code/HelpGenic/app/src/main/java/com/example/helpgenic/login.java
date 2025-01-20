@@ -21,26 +21,23 @@ public class login extends AppCompatActivity {
     private Button signUp, logIn;
     private final GuestUser usr = new GuestUser();
     EditText emailField, passwordField;
-    private void moveToNextScreen(GuestUser obj){
+    private void moveToNextScreen(char userType){
 
         Intent intent;
 
-        if (obj.getType() == 'P') {
+        if (userType == 'P') {
 
             // if patient then take him to the patient page
             intent = new Intent(login.this, PatientPage.class);
-            intent.putExtra("patient", obj);
 
-        } else if (obj.getType() == 'D') {
+        } else if (userType == 'D') {
 
             // if doctor then take him to the doctor page
             intent = new Intent(login.this, DocPage.class);
-            intent.putExtra("doctor", obj);
 
         }else{
             // if admin then take him to the admin page
             intent = new Intent(login.this, AdminPage.class);
-            intent.putExtra("admin", obj);
         }
 
         startActivity(intent);
@@ -74,12 +71,12 @@ public class login extends AppCompatActivity {
 
                     if (task.isSuccessful()) {
                         // if user verified
-                        GuestUser obj = task.getResult();
+                        Character userType = task.getResult();
 
-                        if (obj != null) {
+                        if (userType != null) {
 
-                            Log.d("Login", "User verified: " + obj.getType());
-                            moveToNextScreen(obj);
+                            Log.d("Login", "User verified: ");
+                            moveToNextScreen(userType);
 
                         }
                     } else {

@@ -24,10 +24,6 @@ public class PatientHistory extends Fragment {
 
 
     Patient p;
-    public PatientHistory(Patient p) {
-        // Required empty public constructor
-        this.p = p;
-    }
 
 
     @Override

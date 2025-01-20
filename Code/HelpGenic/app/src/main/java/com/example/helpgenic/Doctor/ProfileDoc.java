@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,18 +30,23 @@ import androidx.fragment.app.Fragment;
 import com.example.helpgenic.Classes.BookingManager;
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.Doctor;
+import com.example.helpgenic.Classes.GuestUser;
+import com.example.helpgenic.Classes.PhysicalAppointmentSchedule;
 import com.example.helpgenic.Classes.VirtualAppointmentSchedule;
 import com.example.helpgenic.CommonAdapters.ListViewVirtualScheduleDisplayAdapter;
 import com.example.helpgenic.DoctorAdapters.MyExpandableListAdapter;
 import com.example.helpgenic.R;
 import com.example.helpgenic.login;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -54,6 +60,7 @@ public class ProfileDoc extends Fragment {
     ListView virtualapps;
     ListViewVirtualScheduleDisplayAdapter adapter2;
     ArrayList<VirtualAppointmentSchedule> vSchList;
+    ArrayList<PhysicalAppointmentSchedule> pSchList;
     ArrayList<String[]> clinicInfo =new ArrayList<>();
     ArrayList<String> allClinicNames= new ArrayList<>();
     View view;
@@ -64,10 +71,7 @@ public class ProfileDoc extends Fragment {
     ExpandableListView expandableListView;
     ExpandableListAdapter expandableListAdapter;
 
-    public ProfileDoc( Doctor d) {
-        // Required empty public constructor
-        this.d = d;
-    }
+
     private void setUpDialogBox(){
         // initialize dialog
         dialog = new Dialog(getContext());
@@ -89,16 +93,27 @@ public class ProfileDoc extends Fragment {
         feeSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), feeInput.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                int updatedFee = Integer.parseInt(feeInput.getText().toString());
+
                 dialog.dismiss();
-                fee.setText("FEE: "+Integer.parseInt(feeInput.getText().toString()) + " /-");
 
                 feeAmount = Float.parseFloat(feeInput.getText().toString());
 
                 if(!db.isConnectionOpen()){
                     db.connectToDb(getContext());
                 }
-                db.updateFee(d.getId(),Integer.parseInt(feeInput.getText().toString()),getContext());
+                db.updateFee(d.getId(),Integer.parseInt(feeInput.getText().toString()),getContext()).addOnCompleteListener(
+                        task -> {
+                            if (task.isSuccessful()) {
+                                Log.d("Profile Doc", "Fee Update Operation Success");
+                                fee.setText(String.format(Locale.getDefault(), "FEE: %d /-", updatedFee));
+
+                            } else {
+                                Log.d("Profile Doc", "Fee Update Operation Failed");
+                            }
+                        }
+                );
 
 
             }
@@ -107,18 +122,14 @@ public class ProfileDoc extends Fragment {
 
     private void setUpData(View view){
 
-        // setting db connection
-        if(!db.isConnectionOpen()) {
-            db.connectToDb(getContext());
-        }
+        d = Doctor.getInstance();
+        vSchList = d.getvSchedule();
+        pSchList = d.getPSchedule();
+        addClinicNames();
+        setUpDataForEachClinic();
 
-        BookingManager bm = new BookingManager();
-        bm.setDb(db);
 
-        //getting doc info
-
-        // // populating doc Info
-
+        // populating basic Info
         docName = view.findViewById(R.id.name);
         docName.setText(d.getName());
 
@@ -129,49 +140,18 @@ public class ProfileDoc extends Fragment {
         docSpeciality.setText(d.getSpecialization());
 
         fee = view.findViewById(R.id.fee);
-
-
-        // getting doc id  : 1st msg call
-        String docId = d.getId();
-
-        // getting docInfo
-        // // getting vSch details
-        vSchList = bm.getDoctorVirtualSchedule(docId , getContext());
-        d.setVSch(vSchList);
+        fee.setText(String.format(Locale.getDefault(), "FEE: %d /-", d.getFee()));
 
 
 
-        // setting fee
-        if(vSchList.size() != 0){
-            feeAmount = vSchList.get(0).getFee();
-            fee.setText("FEE: "+Float.toString(vSchList.get(0).getFee()) + " /-");
-        }else{
-            fee.setText("Boom! No fee");
-        }
-
-
-
-        // setting up the list
+        // populating vSchedule List
         virtualapps=view.findViewById(R.id.virtual_app_list);
         adapter2 = new ListViewVirtualScheduleDisplayAdapter(getContext(),R.layout.list_cell_custom_design_patient_views_doc_prof,vSchList);
         virtualapps.setAdapter(adapter2);
 
-    }
 
-    private void setupPhysicalScheduleData(){
-        // setting physical schedule data
-
-        // setting db connection
-        if(!db.isConnectionOpen()) {
-            db.connectToDb(getContext());
-        }
-        groupList = new ArrayList<>();
-        addClinicNames(0);
-        setUpDataForEachClinic(0);
-
-        //--------------------- ------- seting adapter for physical schedule list ------------------------------
-
-        expandableListAdapter = new MyExpandableListAdapter(getContext(),groupList,map, db);
+        // populating pSchedule List
+        expandableListAdapter = new MyExpandableListAdapter(getContext(),groupList,map, pSchList);
         expandableListView.setAdapter(expandableListAdapter);
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             int lastExpandedPosition=-1;
@@ -185,9 +165,9 @@ public class ProfileDoc extends Fragment {
             }
         });
 
-        // -----------------------------------------------------------------------------------------------------
 
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -198,35 +178,26 @@ public class ProfileDoc extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_profile_doc, container, false);
 
-        addPhysicalSchedule=(Button)view.findViewById(R.id.book_physical_appointment);
-        addVirtualSchedule =(Button)view.findViewById(R.id.book_virtual_appointment);
-        expandableListView= (ExpandableListView)view.findViewById(R.id.psExpandable);
-
-        // setting db connection
-        if(!db.isConnectionOpen()) {
-            db.connectToDb(getContext());
-        }
-
-
-        setUpData(view);  // setting virtual schedule data
-
-
-        // setting physical schedule data
-
-        setupPhysicalScheduleData();
-
-
+        addPhysicalSchedule=view.findViewById(R.id.book_physical_appointment);
+        addVirtualSchedule =view.findViewById(R.id.book_virtual_appointment);
+        expandableListView= view.findViewById(R.id.psExpandable);
         Button logOut = view.findViewById(R.id.dLogOut);
         changeFee = view.findViewById(R.id.changeFee);
+
+
+
+        setUpData(view);
+
+
+
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                SharedPreferences sh = getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sh.edit();
-                myEdit.clear();
-                myEdit.apply();
+                Doctor.clearInstance();
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                mAuth.signOut();
 
                 Intent intent = new Intent(getActivity(), login.class);
                 startActivity(intent);
@@ -244,60 +215,54 @@ public class ProfileDoc extends Fragment {
         });
 
 
-        //================================== update VSchedule =========================================
-        virtualapps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                VirtualAppointmentSchedule sch = (VirtualAppointmentSchedule) adapterView.getItemAtPosition(i);
-                Intent intent = new Intent(getContext(), UpdateVirtualSchedule.class);
-                intent.putExtra("vSch" ,sch);
-
-                ArrayList<CharSequence> days = getUsedDays();
-                days.remove(sch.getDay());
-
-                intent.putExtra("days" ,days);
-                startActivity(intent);
-            }
-        });
 
         //================================== remove service =========================================
         virtualapps.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                VirtualAppointmentSchedule item = (VirtualAppointmentSchedule)adapterView.getItemAtPosition(i);
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                // Get the clicked item
+                VirtualAppointmentSchedule item = (VirtualAppointmentSchedule) adapterView.getItemAtPosition(position);
+                Log.d("Delete Item", Integer.toString(position));
+
+                // Show confirmation dialog
                 new AlertDialog.Builder(getContext())
                         .setIcon(android.R.drawable.ic_delete)
-                        .setTitle("Are you sure ?")
+                        .setTitle("Are you sure?")
                         .setMessage("Do you want to delete this service?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                            public void onClick(DialogInterface dialogInterface, int which) {
+                                // Call Firestore to remove the item
+                                db.removeVAptSchedule(item.getId(), d.getId(), getContext()).addOnCompleteListener(task -> {
+                                    if (task.isSuccessful() && task.getResult()) {
+                                        // Remove the item from the list and notify the adapter
 
-                                vSchList.remove(item);
-                                adapter2.notifyDataSetChanged();
-                                //Toast.makeText(getContext(),Integer.toString(item.getId()), Toast.LENGTH_SHORT).show();
-
-                                db.removeAppSchedule(item.getId(),getContext());
+                                        vSchList.remove(position);
+                                        adapter2.notifyDataSetChanged();
+                                    } else {
+                                        Log.e("DbHandler", "Failed to delete appointment schedule");
+                                    }
+                                });
                             }
-                        })
-                        .setNegativeButton("No",null)
-                        .show();
+                        }).setNegativeButton("No", null).show();
+
                 return true;
             }
         });
+
         //================================== add virtual schedule ================================
         addVirtualSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), AddVirtualSchedule.class);
-                intent.putExtra("docId" ,d.getId());
 
                 ArrayList<CharSequence> days = getUsedDays();
-
                 intent.putExtra("days" ,days);
+
                 startActivity(intent);
             }
         });
+
         // ================================== add physical schedule ================================
         // Click listener to button 'addSchedule for physicalSchedule'
 
@@ -305,8 +270,6 @@ public class ProfileDoc extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), com.example.helpgenic.Doctor.AddPhysicalSchedule.class);
-                intent.putExtra("docId" ,d.getId());
-
                 startActivity(intent);
             }
         });
@@ -317,63 +280,58 @@ public class ProfileDoc extends Fragment {
     }
 
     //function to set data for physical schedule
-    public void setUpDataForEachClinic(int docId){
+    public void setUpDataForEachClinic(){
 
-        ResultSet resultSet = db.getAllPhyAppointments(getContext(),docId);
         try {
-            while (resultSet.next()) {
+            for(PhysicalAppointmentSchedule p: pSchList){
 
-                String day = resultSet.getString("day");
-                Time sTime = resultSet.getTime("stime");
-                Time eTime = resultSet.getTime("etime");
-                String AssPhone = resultSet.getString("assistantPhoneNum");
-                String fullSchedule = "   Time :      " + sTime.toString() + "  to  " + eTime.toString() + "  " + day; // concatenate data
-                String[] allinOne={fullSchedule, "Assistant Contact :      "+AssPhone};
+                String day = p.getDay();
+                Time sTime = p.getsTime();
+                Time eTime = p.geteTime();
+                String AssPhone = p.getAssistantPhNum();
+                String fullSchedule = "        Time :      " + sTime.toString() + "  to  " + eTime.toString() + "  -  " + day;
+                String[] allinOne={fullSchedule, "        Assistant Contact :      "+AssPhone};
                 clinicInfo.add(allinOne);
             }
+
+            map = new HashMap<>();
+
+            int i =0;
+
+            for(String group: groupList){
+                if(group.equals(allClinicNames.get(i)))
+                    loadChild(clinicInfo.get(i));
+                map.put(group,childList);
+                i++;
+            }
+
         }
         catch (Exception e){
             Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
         }
 
-        map = new HashMap<String,List<String>>();
-
-        int i =0;
-        System.out.println(clinicInfo.size());
-        for(String group: groupList){
-            if(group.equals(allClinicNames.get(i)))
-                loadChild(clinicInfo.get(i));
-            map.put(group,childList);
-            i++;
-        }
     }
 
     private void loadChild(String[] info) {
         childList = new ArrayList<>();
-        for(String x:info){
-            childList.add(x);
-        }
+        Collections.addAll(childList, info);
     }
 
-    //function to set up groupItems in Expandable List;
-    // // replace with current logged in docId
+    public void addClinicNames(){
 
-    public void addClinicNames(int docId){
+        try {
 
-        String clinicName;
-        groupList=new ArrayList<>();
-        System.out.println(docId);
-        ResultSet resultSet = db.getAllClinicNames(getContext(),docId) ;
-        try{
-            while(resultSet.next()){
-                clinicName=resultSet.getString("clinicname");
-                groupList.add(clinicName);
-                allClinicNames.add(clinicName);
+            groupList=new ArrayList<>();
+
+            for (PhysicalAppointmentSchedule p: pSchList){
+                groupList.add(p.getClinicName());
+                allClinicNames.add(p.getClinicName());
             }
+
+        }catch (Exception e){
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-        catch (Exception e){
-            Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
-        }
+
     }
 
     @Override
@@ -381,21 +339,23 @@ public class ProfileDoc extends Fragment {
 
         super.onResume();
 
-
         SharedPreferences sh = getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         SharedPreferences.Editor myEdit = sh.edit();
 
-        if(sh.getBoolean("pNeedToUpdate", false)){
-            // setting physical schedule data
 
-            Toast.makeText(getContext(), "Resumed", Toast.LENGTH_SHORT).show();
-            setupPhysicalScheduleData();
+
+        if(sh.getBoolean("pNeedToUpdate", false)){
+            pSchList = d.getPSchedule();
+            addClinicNames();
+            setUpDataForEachClinic();
+            ((MyExpandableListAdapter)expandableListAdapter).updateList(groupList,map,pSchList);
+
 
         }
         else if (sh.getBoolean("vNeedToUpdate", false)) {
 
-            Toast.makeText(getContext(), "Resumed", Toast.LENGTH_SHORT).show();
-            setUpData(view);  // setting virtual schedule data
+            vSchList = d.getvSchedule();
+            adapter2.notifyDataSetChanged();
 
         }
         myEdit.remove("pNeedToUpdate");
@@ -404,6 +364,7 @@ public class ProfileDoc extends Fragment {
 
 
     }
+
     public ArrayList<CharSequence> getUsedDays(){
         ArrayList<CharSequence> days = new ArrayList<>();
 
@@ -413,17 +374,4 @@ public class ProfileDoc extends Fragment {
         return days;
     }
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Toast.makeText(getContext(), "Connection Destroyed", Toast.LENGTH_SHORT).show();
-        // as all data filled , so connection closed
-        try {
-            db.closeConnection();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }

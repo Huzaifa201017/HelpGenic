@@ -18,6 +18,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.helpgenic.Classes.DbHandler;
+import com.example.helpgenic.Classes.Doctor;
 import com.example.helpgenic.Classes.PhysicalAppointmentSchedule;
 import com.example.helpgenic.R;
 
@@ -111,33 +112,36 @@ public class AddPhysicalSchedule extends AppCompatActivity {
 
                 //compare the two times
                 int value=t1.compareTo(t2);
-                System.out.println(start);
-                System.out.println(end);
                 Time time1 = Time.valueOf(start); // startTime
                 Time time2 = Time.valueOf(end); // endTime
-                int docId = getIntent().getIntExtra("docId",0);
+                String docId = Doctor.getInstance().getId();
 
 
                 if(returnToProfile(value)){
 
-                    PhysicalAppointmentSchedule physicalAppointmentSchedule = new PhysicalAppointmentSchedule(clinicName.getText().toString(),Double.parseDouble(latts.getText().toString()),Double.parseDouble(longs.getText().toString()),contact.getText().toString(),selectedDay,time1,time2,1000);
-                    Toast.makeText(AddPhysicalSchedule.this, "Submitted", Toast.LENGTH_SHORT).show();
+                    PhysicalAppointmentSchedule physicalAppointmentSchedule = new PhysicalAppointmentSchedule(clinicName.getText().toString(),Double.parseDouble(latts.getText().toString()),Double.parseDouble(longs.getText().toString()),contact.getText().toString(),selectedDay,time1,time2);
                     dbHandler.connectToDb(getApplicationContext());
 
-                    dbHandler.insertPAppSchedule(getApplicationContext(),physicalAppointmentSchedule,docId);
+                    dbHandler.insertPAppSchedule(getApplicationContext(),physicalAppointmentSchedule,docId).addOnCompleteListener(
+                            task -> {
+                                if (task.isSuccessful() && task.getResult()) {
 
-                    try {
-                        dbHandler.closeConnection();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+                                    Doctor d = Doctor.getInstance();
+                                    d.setPSchedule(physicalAppointmentSchedule);
 
-                    SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sh.edit();
-                    myEdit.putBoolean("pNeedToUpdate", true);
-                    myEdit.apply();
+                                    SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                                    SharedPreferences.Editor myEdit = sh.edit();
+                                    myEdit.putBoolean("pNeedToUpdate", true);
+                                    myEdit.apply();
 
-                    finish(); // return back
+                                    finish(); // return back
+
+                                }else{
+                                    Toast.makeText(AddPhysicalSchedule.this, "Operation Failed, please try again later !", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                    );
+
 
                 }
 

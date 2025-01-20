@@ -29,11 +29,6 @@ public class PatientsRemaining extends Fragment {
     Doctor d;
     Button callPatient;
 
-    public PatientsRemaining(Doctor d) {
-        // Required empty public constructor
-        this.d = d;
-    }
-
     private void setUpData() {
         DbHandler db = new DbHandler();
         db.connectToDb(getContext());

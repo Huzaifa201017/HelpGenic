@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.helpgenic.Classes.DbHandler;
+import com.example.helpgenic.Classes.PhysicalAppointmentSchedule;
 import com.example.helpgenic.MapsActivity2;
 import com.example.helpgenic.R;
 import com.google.android.gms.common.data.DataBuffer;
@@ -26,14 +27,15 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private Map<String, List<String>> map;
     private List<String> groupList;
-    DbHandler db = new DbHandler();
+    private ArrayList<PhysicalAppointmentSchedule> pAppointmentSchedules;
 
-    public MyExpandableListAdapter(Context context, List<String> groupList, Map<String,List<String>> map, DbHandler db) {
+    public MyExpandableListAdapter(Context context, List<String> groupList, Map<String,List<String>> map, ArrayList<PhysicalAppointmentSchedule> pAppointmentSchedules) {
         this.context=context;
         this.map=map;
         this.groupList=groupList;
-        this.db = db;
+        this.pAppointmentSchedules = pAppointmentSchedules;
     }
+
 
     @Override
     public int getGroupCount() {
@@ -85,20 +87,14 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<Double> coordinates ;
-                coordinates= db.getLattsAndLongs(groupList.get(i),context);
-                //Toast.makeText(context, "Location Clicked", Toast.LENGTH_SHORT).show();
 
-                if(coordinates.size() != 0){
-                    Intent intent = new Intent(context, MapsActivity2.class);
-                    intent.putExtra("latts",coordinates.get(0));
-                    intent.putExtra("longs",coordinates.get(1));
-                    intent.putExtra("clinicName",groupList.get(i));
-                    System.out.println(coordinates.get(0));
-                    System.out.println(coordinates.get(1));
-                    context.startActivity(intent);
+                PhysicalAppointmentSchedule p = pAppointmentSchedules.get(i);
 
-                }
+                Intent intent = new Intent(context, MapsActivity2.class);
+                intent.putExtra("latts",p.getLatts());
+                intent.putExtra("longs",p.getLongs());
+                intent.putExtra("clinicName",groupList.get(i));
+                context.startActivity(intent);
 
 
             }
@@ -124,5 +120,13 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int i, int i1) {
         return false;
+    }
+
+    // Update the data in the adapter
+    public void updateList(List<String> newGroupList, Map<String,List<String>> newMap, ArrayList<PhysicalAppointmentSchedule> newPSchList) {
+        this.groupList = newGroupList;
+        this.map = newMap;
+        this.pAppointmentSchedules = newPSchList;
+        notifyDataSetChanged();
     }
 }

@@ -39,13 +39,8 @@ public class HomePatient extends Fragment  {
 
     Patient p;
 
-    public HomePatient(Patient p) {
-        // Required empty public constructor
-        this.p =  p;
-    }
 
     ArrayList<Doctor> docList ;
-    // String[] items = {"Rating" , "Fee" , "PatientsAttended" };
     String[] categories = {"Dermatologist" , "Allergist" , "Neurologist" , "Pathologist" , "Urologist" , "Anesthesiologist" , "Ophthalmologist"};
 
 
@@ -66,18 +61,17 @@ public class HomePatient extends Fragment  {
             String str = sp.nextToken();
 
             if(str.equals(category.toLowerCase())){
-                System.out.println(str+"  "+category.toLowerCase());
                 temp.add(docList.get(i));
             }
         }
 
-        System.out.println(temp.size());
         return temp;
     }
 
     @SuppressLint("SetTextI18n")
     private void setUpData(){
 
+        p = Patient.getInstance();
         patientWelcome.setText("Welcome "+ p.getName());
 
         DbHandler db = new DbHandler();
@@ -171,8 +165,6 @@ public class HomePatient extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Toast.makeText(getContext(), p.getMail(), Toast.LENGTH_SHORT).show();
-
         View view = inflater.inflate(R.layout.fragment_home_patient, container, false); // return view
 
         //================================== Select category functionality =======================
@@ -199,29 +191,6 @@ public class HomePatient extends Fragment  {
         // ========================================= Handling Search View click =========================================
         sView = view.findViewById(R.id.searchView);       // search view at the top
         // ==============================================================================================================
-
-
-
-        // ======================================== Handling Sort by functionality ==========================================
-
-//        tView = view.findViewById(R.id.searchOptions);    // 'sort by' spinner option
-//
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity() , android.R.layout.simple_spinner_dropdown_item , items);
-//        tView.setAdapter(adapter);
-//
-//        // when user presses the autocomplete text view 'sort by' option
-//        tView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                String s = adapterView.getItemAtPosition(i).toString();
-//                if(s.equalsIgnoreCase( "rating")){
-//                    sortListByRating();
-//                    adapter1.notifyDataSetChanged();
-//                }
-//            }
-//        });
-
-        // ==================================================================================
 
 
 
@@ -267,7 +236,6 @@ public class HomePatient extends Fragment  {
                 Doctor doc = (Doctor)adapterView.getItemAtPosition(i);
                 Intent intent = new Intent(getContext(), PatientViewingDocProfile.class);
                 intent.putExtra("doctor", doc);
-                intent.putExtra("patient" , p);
                 startActivity(intent);
             }
         });

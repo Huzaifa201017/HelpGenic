@@ -63,89 +63,82 @@ public class DisplayingSlots extends AppCompatActivity {
 
         // getting doctor , patient , and corresponding clicked vSchedule row's information.
         d = (Doctor) getIntent().getSerializableExtra("doc");
-        vs = (VirtualAppointmentSchedule) getIntent().getSerializableExtra("vs");
-        SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        p = new Patient(sh.getString("Id" , "xyz"),null, null , null , false , null  , null , null);
+        p = Patient.getInstance();
+        int vs_index =  getIntent().getIntExtra("vs_index", 0);
+        vs = d.getvSchedule().get(vs_index);
 
         slots = bm.makeSlots(vs.getsTime(),vs.geteTime(),vs.getDay()); // all total possibilities
 
 
         // ====================== selecting date ==================================
 
-        dateBtn =(Button) findViewById(R.id.date);
+        dateBtn = findViewById(R.id.date);
 
-        DatePickerDialog.OnDateSetListener date =new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int day) {
+        DatePickerDialog.OnDateSetListener date = (view, year, month, day) -> {
 
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH,month);
-                myCalendar.set(Calendar.DAY_OF_MONTH,day);
-                updateLabel();
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH,month);
+            myCalendar.set(Calendar.DAY_OF_MONTH,day);
 
-
-
-                long millis = System.currentTimeMillis();
-                java.sql.Date date = new java.sql.Date(millis);
-
-                String dayWeekText = new SimpleDateFormat("EEEE").format(dateSelected);
-
-                if( (Objects.equals(vs.getDay() , dayWeekText)) && (dateSelected.compareTo(date) > 0 || Objects.equals(dateSelected.toString() , date.toString() )) ){
-
-                    DbHandler db = new DbHandler();
-                    db.connectToDb(DisplayingSlots.this);
-                    bm.setDb(db);
-
-                    ArrayList<Slot> availableSlots = bm.getAvailableSlots(0 , dateSelected, vs.getDay() , slots, DisplayingSlots.this );
-                    ListViewDsiplayingSlotsAdapter adapter = new ListViewDsiplayingSlotsAdapter(DisplayingSlots.this,0,availableSlots);
-
-                    lst.setAdapter(adapter);
-
-                    lst.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            selectedPosition = -1;
+            selectedSlot = null;
+            updateLabel();
 
 
-                            if(selectedPosition != -1){
-                                lst.getChildAt(selectedPosition).setBackgroundColor(Color.TRANSPARENT);
-                            }
 
-                            try{
-                                selectedSlot = (Slot)adapterView.getItemAtPosition(i);
-                                lst.getChildAt(i).setBackgroundColor(Color.rgb(165,184,166));
-                                selectedPosition = i;
-                            }catch (Exception e){
-                                Toast.makeText(DisplayingSlots.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+            long millis = System.currentTimeMillis();
+            java.sql.Date date1 = new java.sql.Date(millis);
 
-                        }
-                    });
+            String dayWeekText = new SimpleDateFormat("EEEE").format(dateSelected);
 
-                    try {
-                        db.closeConnection();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+            if( (Objects.equals(vs.getDay() , dayWeekText)) && (dateSelected.compareTo(date1) > 0 || Objects.equals(dateSelected.toString() , date1.toString() )) ){
+
+                DbHandler db = new DbHandler();
+                db.connectToDb(DisplayingSlots.this);
+                bm.setDb(db);
+
+                ArrayList<Slot> availableSlots = bm.getAvailableSlots(d.getId() , dateSelected, vs.getDay() , slots, DisplayingSlots.this );
+
+                ListViewDsiplayingSlotsAdapter adapter = new ListViewDsiplayingSlotsAdapter(DisplayingSlots.this,0,availableSlots);
+                lst.setAdapter(adapter);
+
+                lst.setOnItemClickListener((adapterView, view1, i, l) -> {
+
+
+                    if(selectedPosition != -1){
+                        lst.getChildAt(selectedPosition).setBackgroundColor(Color.TRANSPARENT);
                     }
 
+                    try{
+                        selectedSlot = (Slot)adapterView.getItemAtPosition(i);
+                        lst.getChildAt(i).setBackgroundColor(Color.rgb(165,184,166));
+                        selectedPosition = i;
+                    }catch (Exception e){
+                        Toast.makeText(DisplayingSlots.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
 
-                }
-                else{
-                    Toast.makeText(DisplayingSlots.this, "Invalid Date Selected", Toast.LENGTH_SHORT).show();
-                }
-
+                });
 
 
 
             }
+            else{
+                Toast.makeText(DisplayingSlots.this, "Invalid Date Selected", Toast.LENGTH_SHORT).show();
+            }
+
+
+
+
         };
 
 
-        dateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new DatePickerDialog(DisplayingSlots.this,date,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
+        dateBtn.setOnClickListener(view -> new DatePickerDialog(
+                DisplayingSlots.this,
+                date,
+                myCalendar.get(Calendar.YEAR)
+                ,myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)
+        ).show());
 
         // ===========================================================================
 
@@ -153,28 +146,22 @@ public class DisplayingSlots extends AppCompatActivity {
 
         // listen for book appointment button
 
-        bookApp.setOnClickListener(new View.OnClickListener() {
+        bookApp.setOnClickListener(view -> {
 
-            @Override
-            public void onClick(View view) {
+            bm.confirmAppointment(p.getId() , d.getId() , dateSelected , selectedSlot , DisplayingSlots.this).addOnCompleteListener(
+                    task -> {
+                        if (task.isSuccessful() && task.getResult()){
 
-                p.setBm(bm);
-                int appId = p.confirmAppointment(0 , 0 ,dateSelected ,selectedSlot , DisplayingSlots.this);
+//                            AlarmHandler ah = new AlarmHandler();
+//                            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+//                            ah.setAlarm(appId , dateSelected , selectedSlot.sTime , DisplayingSlots.this , alarmManager);
 
-                if(appId != -1){
+                            finish();
+                        }
+                    }
+            );
 
-                    AlarmHandler ah = new AlarmHandler();
-                    // setting alarm
-                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                    ah.setAlarm(appId , dateSelected , selectedSlot.sTime , DisplayingSlots.this , alarmManager);
 
-                    Toast.makeText(DisplayingSlots.this, "Appointment Scheduled", Toast.LENGTH_SHORT).show();
-
-                    finish();
-
-                }
-
-            }
         });
 
     }

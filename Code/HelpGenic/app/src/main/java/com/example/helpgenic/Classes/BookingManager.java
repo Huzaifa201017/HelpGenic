@@ -1,7 +1,11 @@
 package com.example.helpgenic.Classes;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -16,19 +20,11 @@ public class BookingManager {
         this.db = db;
     }
 
-    public ArrayList<VirtualAppointmentSchedule> getDoctorVirtualSchedule(int docId , Context context)  {
-        ArrayList<VirtualAppointmentSchedule> obj =  db.getDoctorVirtualAppDetails(docId,context);
-        return obj;
-    }
 
-    public ArrayList<VirtualAppointmentSchedule> getDoctorVirtualSchedule(String docId , Context context)  {
-        ArrayList<VirtualAppointmentSchedule> obj =  new ArrayList<>();
-        return obj;
-    }
+    public ArrayList<Slot> getAvailableSlots(String docId , Date dateSelected , String day , ArrayList<Slot> slots,Context context){
 
-    public ArrayList<Slot> getAvailableSlots(int docId , Date dateSelected , String day , ArrayList<Slot> slots,Context context){
-
-        ArrayList<Slot> consumedSlots = db.getConsumedSlots(docId , dateSelected, context);
+//        ArrayList<Slot> consumedSlots = db.getConsumedSlots(docId , dateSelected, context);
+        ArrayList<Slot> consumedSlots =  new ArrayList<>();
 
         ArrayList<Slot> availableSlots = new ArrayList<>();
 
@@ -100,14 +96,13 @@ public class BookingManager {
         return t;
     }
 
-    private   ArrayList<Slot> func(Time t1, Time t2 , String day) {
+    private ArrayList<Slot> func(Time t1, Time t2 , String day) {
 
         ArrayList<Slot> slots = new ArrayList<>();
         Time temp;
 
         while(true){
             temp = add30ToTime(t1.toString());
-            //System.out.println(t1.toString() + "  " + temp.toString());
             slots.add(new Slot(t1,temp , day));
             t1 = temp;
             if(Objects.equals(t1,t2)){
@@ -147,16 +142,54 @@ public class BookingManager {
     }
 
 
-    public boolean isAlreadyHaveAnAppointmentOnDate(Date dateSelected ,int pId , int docId , Context context){
-        return this.db.checkDuplicateAppointment(docId , pId , dateSelected,context);
+
+
+    public Task<Boolean> confirmAppointment(String patientId , String docId , Date selectedDate, Slot slot, Context context) {
+
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+
+        if(Objects.equals(slot , null)) {
+
+            Toast.makeText(context, "No Slot selected !", Toast.LENGTH_SHORT).show();
+            taskCompletionSource.setResult(false);
+
+        } else {
+
+            db.checkDuplicateAppointment(patientId , docId, selectedDate).addOnCompleteListener(
+                task -> {
+                    if (task.isSuccessful() ){
+
+                        if (task.getResult()){
+
+                            Toast.makeText(context, "You have already got an appointment on this date !", Toast.LENGTH_SHORT).show();
+                            taskCompletionSource.setResult(false);
+
+                        }else{
+
+                            db.loadAppointmentToDb(docId , patientId , selectedDate , slot.sTime , slot.eTime ).addOnCompleteListener(
+                                    task2 -> {
+                                        if (task2.isSuccessful() && task2.getResult() ){
+                                            Toast.makeText(context, "Appointment Confirmed", Toast.LENGTH_SHORT).show();
+                                            taskCompletionSource.setResult(true);
+                                        }else{
+                                            Toast.makeText(context, "Operation Failed, please try again later !", Toast.LENGTH_SHORT).show();
+                                            taskCompletionSource.setResult(false);
+                                        }
+                                    }
+                            );
+                        }
+
+                    }else{
+                        taskCompletionSource.setResult(false);
+                    }
+                }
+            );
+        }
+
+        return taskCompletionSource.getTask();
+
     }
 
-    public int loadAppointment(int docId , int patientId , Date dateSelected ,Time sTime , Time eTime, Context context){
 
-         return this.db.loadAppointmentToDb(docId , patientId , dateSelected,sTime,eTime,context);
+
     }
-
-
-
-
-}

@@ -30,12 +30,6 @@ public class PatientsAttended extends Fragment {
     Doctor d;
     EditText sView;
 
-    public PatientsAttended(Doctor d) {
-        // Required empty public constructor
-        this.d = d;
-    }
-
-
     private void setUpData() {
 
         DbHandler db = new DbHandler();

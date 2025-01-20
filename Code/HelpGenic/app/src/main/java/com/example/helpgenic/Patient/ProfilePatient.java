@@ -22,10 +22,6 @@ public class ProfilePatient extends Fragment {
 
     TextView pName,phNum,email , bloodGroup , dob;
 
-    public ProfilePatient(Patient p) {
-        // Required empty public constructor
-        this.p = p;
-    }
 
 
 
@@ -37,6 +33,8 @@ public class ProfilePatient extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile_patient, container, false);
 
+        p = Patient.getInstance();
+
         pName = view.findViewById(R.id.pName);
         phNum = view.findViewById(R.id.phNum);
         email = view.findViewById(R.id.email);
@@ -47,7 +45,6 @@ public class ProfilePatient extends Fragment {
         phNum.setText(p.getPhNum());
         email.setText(p.getMail());
         bloodGroup.setText(p.getBloodGroup());
-        //System.out.println(p.getDob());
         dob.setText(p.getDob().toString());
 
         Button logOut = view.findViewById(R.id.logOut);

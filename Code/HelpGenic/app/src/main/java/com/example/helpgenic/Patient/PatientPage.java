@@ -19,7 +19,6 @@ import com.google.android.material.navigation.NavigationBarView;
 public class PatientPage extends AppCompatActivity {
 
     private BottomNavigationView bnView;
-    Patient p;
 
     private void loadFrag(Fragment fragment, boolean flag){
         FragmentManager fm = getSupportFragmentManager();
@@ -39,11 +38,10 @@ public class PatientPage extends AppCompatActivity {
         setContentView(R.layout.activity_patient_page);
 
         bnView = findViewById(R.id.nav_view);
-        p = (Patient) getIntent().getSerializableExtra("patient");
 
 
         bnView.setSelectedItemId(R.id.navigation_home);
-        loadFrag(new HomePatient(p),false);
+        loadFrag(new HomePatient(),false);
 
         bnView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
 
@@ -51,11 +49,11 @@ public class PatientPage extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId() ;
                 if (id == R.id.navigation_home){
-                    loadFrag(new HomePatient(p),true);
+                    loadFrag(new HomePatient(),true);
                 }else if (id == R.id.navigation_profile){
-                    loadFrag(new ProfilePatient(p),true);
+                    loadFrag(new ProfilePatient(),true);
                 }else{
-                    loadFrag(new PatientHistory(p),true);
+                    loadFrag(new PatientHistory(),true);
                 }
                 return true;
             }
@@ -65,20 +63,5 @@ public class PatientPage extends AppCompatActivity {
 
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//
-//        SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-//        SharedPreferences.Editor myEdit = sh.edit();
-//
-//
-//        if(Objects.equals(sh.getInt("isNeedToUpdateUPFrag",0),1)){
-//            Toast.makeText(this, "Yes Came", Toast.LENGTH_SHORT).show();
-//            loadFrag(new PatientHistory(p),true);
-//        }
-//        myEdit.remove("isNeedToUpdateUPFrag");
-//        myEdit.apply();
-//
-//    }
+
 }

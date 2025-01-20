@@ -8,9 +8,9 @@ public abstract class AppointmentSchedule  implements Serializable {
     protected Time sTime;
     protected Time eTime;
     protected float fee;
-    protected int id;
+    protected String id;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

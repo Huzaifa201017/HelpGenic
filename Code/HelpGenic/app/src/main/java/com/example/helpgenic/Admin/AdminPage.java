@@ -39,7 +39,7 @@ public class AdminPage extends AppCompatActivity {
         setContentView(R.layout.activity_admin);
 
         bnView = findViewById(R.id.nav_view);
-        admin = (Admin) getIntent().getSerializableExtra("admin");
+        admin = Admin.getInstance();
 
 
         bnView.setSelectedItemId(R.id.navigation_home);

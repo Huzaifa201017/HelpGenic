@@ -22,7 +22,7 @@ public class GuestUser extends User{
         this.dob = d1;
     }
 
-    public Task<GuestUser> logIn(EditText email , EditText password , Context context ){
+    public Task<Character> logIn(EditText email , EditText password , Context context ){
 
 
         DbHandler db = new DbHandler();

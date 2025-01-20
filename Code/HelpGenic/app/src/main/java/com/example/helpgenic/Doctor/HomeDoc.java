@@ -23,13 +23,7 @@ public class HomeDoc extends Fragment {
 
     TabLayout tab;
     ViewPager2 viewPager;
-    Doctor d;
 
-
-    public HomeDoc(Doctor d) {
-        // Required empty public constructor
-        this.d = d;
-    }
 
 
     @Override
@@ -41,9 +35,8 @@ public class HomeDoc extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home_doc, container, false);
         tab = view.findViewById(R.id.tab);
         viewPager = view.findViewById(R.id.viewPager);
-        Toast.makeText(getContext(), d.getSpecialization(), Toast.LENGTH_SHORT).show();
 
-        ViewPagerDocPageAdapter adapter = new ViewPagerDocPageAdapter(getActivity().getSupportFragmentManager(), getLifecycle() ,  d);
+        ViewPagerDocPageAdapter adapter = new ViewPagerDocPageAdapter(getActivity().getSupportFragmentManager(), getLifecycle());
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tab, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {

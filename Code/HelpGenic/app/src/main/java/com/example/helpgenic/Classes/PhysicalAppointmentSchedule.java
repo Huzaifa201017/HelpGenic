@@ -64,7 +64,7 @@ public class PhysicalAppointmentSchedule extends AppointmentSchedule{
     }
 
 
-    public PhysicalAppointmentSchedule(String clinicName, Double lattitude , Double longitude, String contact, String day, Time sTime, Time eTime, float fee){
+    public PhysicalAppointmentSchedule(String clinicName, Double lattitude , Double longitude, String contact, String day, Time sTime, Time eTime){
         this.clinicName=clinicName;
         this.latts=lattitude;
         this.longs=longitude;
@@ -72,6 +72,15 @@ public class PhysicalAppointmentSchedule extends AppointmentSchedule{
         this.day=day;
         this.sTime=sTime;
         this.eTime=eTime;
-        this.fee=fee;
+    }
+    public PhysicalAppointmentSchedule(String id , String clinicName, Double lattitude , Double longitude, String contact, String day, Time sTime, Time eTime){
+        this.clinicName=clinicName;
+        this.latts=lattitude;
+        this.longs=longitude;
+        this.assistantPhNum = contact;
+        this.day=day;
+        this.sTime=sTime;
+        this.eTime=eTime;
+        this.id = id;
     }
 }

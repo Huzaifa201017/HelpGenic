@@ -27,10 +27,6 @@ public class Feedback extends Fragment {
     RatingBar rb ;
     ListView commentsList;
 
-    public Feedback(Doctor d) {
-        // Required empty public constructor
-        this.d = d;
-    }
 
 
     @Override
@@ -40,6 +36,8 @@ public class Feedback extends Fragment {
         View view = inflater.inflate(R.layout.fragment_feedback_doc, container, false);
         rb = view.findViewById(R.id.ratingBar2);
         commentsList = view.findViewById(R.id.commentsList);
+
+        d = Doctor.getInstance();
 
         SharedPreferences shrd =  getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         float rating = shrd.getFloat("rating" , 0.0f);

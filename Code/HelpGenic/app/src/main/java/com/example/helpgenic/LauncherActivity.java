@@ -17,26 +17,23 @@ public class LauncherActivity extends AppCompatActivity {
     private final AuthenticateUser au = new AuthenticateUser();
 
 
-    private void moveToNextScreen(GuestUser obj){
+    private void moveToNextScreen(Character userType){
 
         Intent intent;
 
-        if (obj.getType() == 'P') {
+        if (userType == 'P') {
 
             // if patient then take him to the patient page
             intent = new Intent(LauncherActivity.this, PatientPage.class);
-            intent.putExtra("patient", obj);
 
-        } else if (obj.getType() == 'D') {
+        } else if (userType == 'D') {
 
             // if doctor then take him to the doctor page
             intent = new Intent(LauncherActivity.this, DocPage.class);
-            intent.putExtra("doctor", obj);
 
         }else{
             // if admin then take him to the admin page
             intent = new Intent(LauncherActivity.this, AdminPage.class);
-            intent.putExtra("admin", obj);
         }
 
         startActivity(intent);
@@ -56,12 +53,12 @@ public class LauncherActivity extends AppCompatActivity {
         au.checkIfAlreadyLoggedIn(this).addOnCompleteListener(task -> {
 
             if (task.isSuccessful()) {
-                GuestUser obj = task.getResult();
+                Character userType = task.getResult();
 
-                if (obj != null) {
+                if (userType != null) {
 
-                    Log.d("Login", "User was already logged in: " + obj.getType());
-                    moveToNextScreen(obj);
+                    Log.d("Login", "User was already logged in: " + userType);
+                    moveToNextScreen(userType);
 
                 }else{
 

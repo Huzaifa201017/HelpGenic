@@ -63,7 +63,7 @@ public class PendingDoctors extends Fragment {
 
         doctorsList = view.findViewById(R.id.verifyList);
 
-        dbHandler.getUnVerifiedDocs(getContext()).addOnCompleteListener(task -> {
+        dbHandler.getUnVerifiedDocs().addOnCompleteListener(task -> {
 
             if (task.isSuccessful()) {
 

@@ -4,12 +4,12 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.helpgenic.Doctor.AddVirtualSchedule;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -57,7 +57,7 @@ public class DbHandler {
 
 
 
-    public  void insertPatientDetailsInDb(String id, String name , char gender , Date dob, String bloodGroup , String phNum){
+    public void insertPatientDetailsInDb(String id, String name , char gender , Date dob, String bloodGroup , String phNum){
 
         Map<String, Object> user = new HashMap<>();
         user.put("name", name);
@@ -139,32 +139,28 @@ public class DbHandler {
 
         TaskCompletionSource<DocumentSnapshot> taskCompletionSource = new TaskCompletionSource<>();
         DocumentReference docRef = db.collection("Users").document(uID);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
 
-                    if (document.exists()) {
-                        Log.d("Db Handler: getUserDetails", "DocumentSnapshot data: " + document.getData());
-                        taskCompletionSource.setResult(document);
+                if (document.exists()) {
+                    Log.d("Db Handler: getUserDetails", "DocumentSnapshot data: " + document.getData());
+                    taskCompletionSource.setResult(document);
 
-                    } else {
-                        Log.d("Db Handler: getUserDetails", "No relevant document found");
-                        taskCompletionSource.setResult(null);
-                    }
                 } else {
-                    Log.d("Db Handler: getUserDetails", "get failed with ", task.getException());
+                    Log.d("Db Handler: getUserDetails", "No relevant document found");
                     taskCompletionSource.setResult(null);
                 }
+            } else {
+                Log.d("Db Handler: getUserDetails", "get failed with ", task.getException());
+                taskCompletionSource.setResult(null);
             }
         });
 
         return taskCompletionSource.getTask();
     }
 
-
-    public Task<ArrayList<Doctor>> getUnVerifiedDocs(Context context) {
+    public Task<ArrayList<Doctor>> getUnVerifiedDocs() {
 
         TaskCompletionSource<ArrayList<Doctor>> taskCompletionSource = new TaskCompletionSource<>();
         ArrayList<Doctor> docList = new ArrayList<>();
@@ -174,7 +170,6 @@ public class DbHandler {
 
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot userDocument : task.getResult()) {
-
                         String id = userDocument.getId();
                         String name = userDocument.getString("name");
                         String specialization = userDocument.getString("specialization");
@@ -242,7 +237,6 @@ public class DbHandler {
 
     }
 
-
     public Task<Boolean> removeDoctor(String documentId) {
 
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
@@ -292,7 +286,6 @@ public class DbHandler {
         return taskCompletionSource.getTask();
     }
 
-
     public boolean isConnectionOpen(){
         return !Objects.equals(db, null);
     }
@@ -315,12 +308,14 @@ public class DbHandler {
                         char gender = Objects.requireNonNull(userDocument.getString("gender")).charAt(0);
                         float rating = Objects.requireNonNull(userDocument.getDouble("rating")).floatValue();
                         boolean isSurgeon = Objects.requireNonNull(userDocument.getBoolean("surgeon"));
+                        int fee = Objects.requireNonNull(userDocument.getLong("fee")).intValue();
+                        String email = userDocument.getString("email");
 
                         if(isSurgeon){
                             specialization += ", Surgeon";
                         }
 
-                        docList.add(new Doctor(id ,name, specialization, gender , rating, isSurgeon));
+                        docList.add(new Doctor(id ,name, specialization, gender , rating, isSurgeon, fee, email));
 
                     }
 
@@ -335,82 +330,89 @@ public class DbHandler {
         return taskCompletionSource.getTask();
     }
 
+    public Task<Boolean> setDoctorAptScheduleDetails(Doctor d) {
 
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+        DocumentReference docRef = db.collection("Users").document(d.getId());
 
-    public ArrayList<VirtualAppointmentSchedule> getDoctorVirtualAppDetails(int docId , Context context){
+        ArrayList<VirtualAppointmentSchedule> vAptSchedules = new ArrayList<>();
+        ArrayList<PhysicalAppointmentSchedule> pAptSchedules = new ArrayList<>();
 
-        ArrayList<VirtualAppointmentSchedule> list = new ArrayList<>();
-        String query = "select a.aptId, a.fee ,a.day , a.sTime , a.eTime from Doctor d join appSchedule a on d.docId=a.docId join virtualAppSchedule vs on a.aptId=vs.aptId\n" +
-                "where d.docId = ?";
+        Task<QuerySnapshot> vAptScheduleTask = docRef.collection("vApt Schedules").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot userDocument : task.getResult()) {
 
+                        String id = userDocument.getId();
+                        String day = userDocument.getString("day");
+                        Time eTime = new Time(Objects.requireNonNull(userDocument.getDate("eTime")).getTime());
+                        Time sTime = new Time(Objects.requireNonNull(userDocument.getDate("sTime")).getTime());
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                        vAptSchedules.add(new VirtualAppointmentSchedule(id, day, sTime, eTime));
 
-            stmt.setInt(1,docId);
+                    }
 
-            ResultSet rs = stmt.executeQuery();
+                    d.setVSch(vAptSchedules);
 
+                } else {
+                    Log.d("Db Handler: getUserDetails", "get failed with ", task.getException());
+                }
 
-            while (rs.next()) {
-
-                int id = rs.getInt("aptId");
-                String day = rs.getString("day");
-                Time sTime = rs.getTime("sTime");
-                Time eTime = rs.getTime("eTime");
-                float fee = rs.getFloat("fee");
-
-
-                list.add(new VirtualAppointmentSchedule(id,day,sTime,eTime,fee));
             }
+        });
 
 
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        Task<QuerySnapshot> pAptScheduleTask = docRef.collection("pApt Schedules").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot userDocument : task.getResult()) {
+
+                        String day = userDocument.getString("day");
+                        Time eTime = new Time(Objects.requireNonNull(userDocument.getDate("eTime")).getTime());
+                        Time sTime = new Time(Objects.requireNonNull(userDocument.getDate("sTime")).getTime());
+                        String clinicName = userDocument.getString("clinicName");
+                        String assistantPh = userDocument.getString("assistantPhNum");
+                        Double latts = userDocument.getDouble("latts");
+                        Double longs = userDocument.getDouble("longs");
+                        String id = userDocument.getId();
+
+                        pAptSchedules.add(new PhysicalAppointmentSchedule(id, clinicName,latts, longs, assistantPh, day, sTime, eTime));
+
+                    }
+
+                    d.setPSchedule(pAptSchedules);
+
+                } else {
+                    Log.d("Db Handler: getUserDetails", "get failed with ", task.getException());
+                }
+
+            }
+        });
 
 
-        return list;
+        // Wait for both tasks to complete
+        Tasks.whenAll(vAptScheduleTask, pAptScheduleTask).addOnCompleteListener(allTasks -> {
+
+            if (allTasks.isSuccessful()) {
+                // Both tasks succeeded
+                taskCompletionSource.setResult(true);
+            } else {
+                // At least one task failed
+                Log.d("DbHandler", "One or both tasks failed", allTasks.getException());
+                taskCompletionSource.setResult(false);
+            }
+        });
+
+        return taskCompletionSource.getTask();
     }
 
-    public ArrayList<PhysicalAppointmentSchedule> getDoctorPhysicalAppDetails(int docId , Context context){
-
-        ArrayList<PhysicalAppointmentSchedule> list = new ArrayList<>();
-
-        String query = "select a.aptId ,fee ,day , sTime , eTime ,clinicName ,location,assistantPhoneNum  from Doctor d join appSchedule a on d.docId=a.docId join phyAppSchedule ps on a.aptId=ps.aptId\n" +
-                "where d.docId = ?";
 
 
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-            stmt.setInt(1,docId);
-
-            ResultSet rs = stmt.executeQuery();
-
-
-            while (rs.next()) {
-
-                String day = rs.getString("day");
-                Time sTime = rs.getTime("sTime");
-                Time eTime = rs.getTime("eTime");
-                float fee = rs.getFloat("fee");
-
-                String clinicName = rs.getString("clinicName");
-                String location = rs.getString("location");
-                String assistantPh = rs.getString("assistantPhoneNum");
-
-                list.add(new PhysicalAppointmentSchedule(clinicName,assistantPh,day,sTime,eTime,fee));
-            }
-
-
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-
-        return list;
-    }
 
     public ArrayList<Slot> getConsumedSlots(int docId , Date date ,Context context ){
 
@@ -444,76 +446,59 @@ public class DbHandler {
     }
 
 
-    public boolean checkDuplicateAppointment(int docId , int patientId , Date date , Context context){
+    public Task<Boolean> checkDuplicateAppointment(String docId , String patientId , Date date){
 
-        String query = "select * from Appointment where docId= ? and pId = ? and `date`= ?";
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+        taskCompletionSource.setResult(false);
 
-        boolean isPresent = false;
+        db.collection("Appointments")
+                .whereEqualTo("docId", docId)
+                .whereEqualTo("patientId", patientId)
+                .whereEqualTo("date", date).get().addOnCompleteListener( task -> {
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot ignored : task.getResult()) {
+                            taskCompletionSource.setResult(true);
+                        }
+                    } else {
+                        Log.d("Db Handler: getListOfDoctors", "Error getting documents: ", task.getException());
+                        taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
+                    }
+                });
 
-            stmt.setInt(1,docId);
-            stmt.setInt(2,patientId);
-            stmt.setDate(3,date);
-
-            ResultSet rs = stmt.executeQuery();
-
-
-            while (rs.next()) {
-                isPresent = true;
-            }
-
-
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-        return isPresent;
+        return taskCompletionSource.getTask();
 
     }
 
 
-    public int loadAppointmentToDb(int docId , int patientId , Date date ,Time sTime , Time eTime, Context context) {
+    public Task<Boolean> loadAppointmentToDb(String docId , String patientId , Date date ,Time sTime , Time eTime) {
 
-        String query = "insert into Appointment (docId , pId , date , sTime , eTime) values (?,?,?,?,?)";
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
 
+        try {
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            Map<String, Object> appointment = new HashMap<>();
+            appointment.put("docId", docId);
+            appointment.put("patientId", patientId);
+            appointment.put("date", date);
+            appointment.put("sTime", sTime);
+            appointment.put("eTime", eTime);
 
-            stmt.setInt(1,docId);
-            stmt.setInt(2,patientId);
-            stmt.setDate(3,date);
-            stmt.setTime(4,sTime);
-            stmt.setTime(5,eTime);
-
-
-            stmt.execute();
-
-            Toast.makeText(context, "Inserted Successfully !", Toast.LENGTH_SHORT).show();
-
-
-            String query1 = "select max(appId) as appId from Appointment";
-
-            try (PreparedStatement stmt1 = connection.prepareStatement(query1)) {
-
-                ResultSet rs = stmt1.executeQuery();
-
-
-                while (rs.next()) {
-                    return rs.getInt("appId");
-                }
-
-
-            } catch (Exception e) {
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+            db.collection("Appointments").document().set(appointment).addOnSuccessListener(aVoid -> {
+                Log.d("DbHandler: loadAppointmentToDb", "DocumentSnapshot (Appointment) successfully written with ID: " );
+                taskCompletionSource.setResult(true);
+            }).addOnFailureListener(e -> {
+                Log.w("DbHandler: loadAppointmentToDb", "Error writing document", e);
+                taskCompletionSource.setResult(false);
+            });
 
 
         } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.w("DbHandler: loadAppointmentToDb", "Error writing document", e);
+            taskCompletionSource.setResult(false);
         }
 
-        return -1;
+        return taskCompletionSource.getTask();
 
     }
 
@@ -969,20 +954,27 @@ public class DbHandler {
 
     }
 
-    public void updateFee(String docId , int fee,Context context){
+    public Task<Boolean> updateFee(String docId , int fee,Context context){
 
-        String query1 = "update appschedule set fee = ? where docId = ? and type = 'v'";
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
 
-        try (PreparedStatement stmt1 = connection.prepareStatement(query1)) {
+        DocumentReference docRef = db.collection("Users").document(docId);
+        docRef.update("fee", fee).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                taskCompletionSource.setResult(true);
+                Log.d("Db Handler: updateFee", "DocumentSnapshot successfully updated!");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                taskCompletionSource.setResult(false);
+                Log.w("Db Handler: updateFee", "Error updating document", e);
+            }
+        });
 
-            stmt1.setInt(1,fee);
-//            stmt1.setInt(2,docId);
-            stmt1.execute();
+        return taskCompletionSource.getTask();
 
-
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
     }
 
 
@@ -1085,7 +1077,9 @@ public class DbHandler {
         }
     }
 
-    public void insertVAppSchedule(Context context,VirtualAppointmentSchedule appointmentSchedule, String docId){
+    public Task<Boolean> insertVAppSchedule(Context context,VirtualAppointmentSchedule appointmentSchedule, String docId){
+
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
 
         try {
 
@@ -1098,14 +1092,14 @@ public class DbHandler {
             db.collection("Users").document(docId).collection("vApt Schedules").document().set(vScheduleDocument).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Toast.makeText(context, "Schedule Added", Toast.LENGTH_SHORT).show();
                     Log.d("DbHandler: insertVAppSchedule", "DocumentSnapshot (vSchedule) successfully written " );
+                    taskCompletionSource.setResult(true);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(context, "Operation Failed", Toast.LENGTH_SHORT).show();
                     Log.w("DbHandler: insertVAppSchedule", "Error writing document", e);
+                    taskCompletionSource.setResult(false);
                 }
             });
 
@@ -1113,43 +1107,51 @@ public class DbHandler {
         }
         catch(Exception e){
             Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();
+            taskCompletionSource.setResult(false);
         }
+
+        return taskCompletionSource.getTask();
     }
 
-    public void insertPAppSchedule(Context context,PhysicalAppointmentSchedule physicalAppointmentSchedule,int docId){
-        int aptId= -1;
+    public Task<Boolean> insertPAppSchedule(Context context,PhysicalAppointmentSchedule physicalAppointmentSchedule,String docId){
+
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+
         try{
-            if(connection!=null) {
 
-                //System.out.println(physicalAppointmentSchedule);
-                cs = (CallableStatement) connection.prepareCall("call insertappschedule(?,?,?,?,?,?,?)");
-                cs.setString(1,physicalAppointmentSchedule.getDay());
-                cs.setFloat(2,physicalAppointmentSchedule.getFee());
-                cs.setString(3,"p");
-                cs.setInt(4,docId);
-                cs.setTime(5,physicalAppointmentSchedule.getsTime());
-                cs.setTime(6,physicalAppointmentSchedule.geteTime());
-                cs.registerOutParameter(7,aptId);
-                cs.executeQuery();
+            Map<String, Object> vScheduleDocument = new HashMap<>();
+            vScheduleDocument.put("day", physicalAppointmentSchedule.getDay());
+            vScheduleDocument.put("sTime",  physicalAppointmentSchedule.getsTime());
+            vScheduleDocument.put("eTime", physicalAppointmentSchedule.geteTime());
+            vScheduleDocument.put("clinicName", physicalAppointmentSchedule.getClinicName());
+            vScheduleDocument.put("latts", physicalAppointmentSchedule.getLatts());
+            vScheduleDocument.put("longs", physicalAppointmentSchedule.getLongs());
+            vScheduleDocument.put("assistantPhNum", physicalAppointmentSchedule.getAssistantPhNum());
 
-                aptId =cs.getInt(7);
-                Toast.makeText(context,"Inserted in App table",Toast.LENGTH_SHORT).show();
 
-                //insert in phyappschedule
-                cs = (CallableStatement) connection.prepareCall("call insertphyappschedule (?,?,?,?,?)");
-                cs.setInt(1, aptId);
-                cs.setString(2, physicalAppointmentSchedule.getClinicName());
-                cs.setDouble(3,physicalAppointmentSchedule.getLatts());
-                cs.setDouble(4,physicalAppointmentSchedule.getLongs());
-                cs.setString(5, physicalAppointmentSchedule.getAssistantPhNum());
+            db.collection("Users").document(docId).collection("pApt Schedules").document().set(vScheduleDocument).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    taskCompletionSource.setResult(true);
+                    Log.d("DbHandler: insertPAppSchedule", "DocumentSnapshot (vSchedule) successfully written " );
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    taskCompletionSource.setResult(false);
+                    Log.w("DbHandler: insertPAppSchedule", "Error writing document", e);
+                }
+            });
 
-                cs.executeQuery();
-            }
         }
         catch (Exception e) {
+            taskCompletionSource.setResult(false);
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+
+        return taskCompletionSource.getTask();
     }
+
 
     public ResultSet getAllVirAppointments(Context context,int docId){
         ResultSet resultSet = null;
@@ -1191,17 +1193,34 @@ public class DbHandler {
     }
 
 
-    public void removeAppSchedule(int aptId, Context context){
-        String query= "delete from appSchedule where aptId= ?";
-        try (PreparedStatement stmt1 = connection.prepareStatement(query)) {
+    public Task<Boolean> removeVAptSchedule(String scheduleId, String doctorId, Context context){
 
-            stmt1.setInt(1,aptId);
-            stmt1.execute();
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+
+        try{
+            db.collection("Users").document(doctorId).collection("vApt Schedules").document(scheduleId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("Db Handler: removeVAptSchedule", "DocumentSnapshot successfully deleted!");
+                    taskCompletionSource.setResult(true);
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("Db Handler: removeVAptSchedule", "Error deleting document", e);
+                    taskCompletionSource.setResult(false);
+                }
+            });
 
 
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Log.w("Db Handler: removeVAptSchedule", "Error removing Document", e);
+            taskCompletionSource.setResult(false);
         }
+
+
+        return taskCompletionSource.getTask();
     }
 
 

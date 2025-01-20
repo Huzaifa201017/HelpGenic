@@ -72,7 +72,7 @@ public class PageForUpdateApps extends AppCompatActivity {
 
         // getting available slots
         slots = bm.makeSlots(app.getDoc().getvSchedule().get(0).getsTime() , app.getDoc().getvSchedule().get(0).geteTime() ,dayWeekText);
-        ArrayList<Slot> availableSlots = bm.getAvailableSlots(0, app.getAppDate(),dayWeekText,slots ,this);
+        ArrayList<Slot> availableSlots = bm.getAvailableSlots("", app.getAppDate(),dayWeekText,slots ,this);
 
 
         // displaying slots to patient

@@ -44,18 +44,18 @@ public class DocPage extends AppCompatActivity {
 
 
         bnView.setSelectedItemId(R.id.navigation_home);
-        loadFrag(new HomeDoc(d),false);
+        loadFrag(new HomeDoc(),false);
 
         bnView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId() ;
                 if (id == R.id.navigation_home){
-                    loadFrag(new HomeDoc(d),true);
+                    loadFrag(new HomeDoc(),true);
                 }else if (id == R.id.navigation_profile){
-                    loadFrag(new ProfileDoc(d),true);
+                    loadFrag(new ProfileDoc(),true);
                 }else{
-                    loadFrag(new Feedback(d),true);
+                    loadFrag(new Feedback(),true);
                 }
                 return true;
             }

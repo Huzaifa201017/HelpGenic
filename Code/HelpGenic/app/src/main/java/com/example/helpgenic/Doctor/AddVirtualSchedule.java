@@ -16,6 +16,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.helpgenic.Classes.DbHandler;
+import com.example.helpgenic.Classes.Doctor;
 import com.example.helpgenic.Classes.VirtualAppointmentSchedule;
 import com.example.helpgenic.R;
 
@@ -115,7 +116,7 @@ public class AddVirtualSchedule extends AppCompatActivity {
 
 
                     //pass the doc id in the function insertVAppSchedule according the object of doc which is created after login
-                    String docId = getIntent().getStringExtra("docId");
+                    String docId = Doctor.getInstance().getId();
 
                     VirtualAppointmentSchedule virtualAppointmentSchedule = new VirtualAppointmentSchedule(selectedDay,time1,time2);
 
@@ -123,18 +124,25 @@ public class AddVirtualSchedule extends AppCompatActivity {
 
                         dbHandler.connectToDb(getApplicationContext());
 
-                        dbHandler.insertVAppSchedule(AddVirtualSchedule.this,virtualAppointmentSchedule,docId);
+                        dbHandler.insertVAppSchedule(AddVirtualSchedule.this,virtualAppointmentSchedule,docId).addOnCompleteListener(
+                                task -> {
 
-                        try {
-                            dbHandler.closeConnection();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                        SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                        SharedPreferences.Editor myEdit = sh.edit();
-                        myEdit.putBoolean("vNeedToUpdate", true);
-                        myEdit.apply();
-                        finish();
+                                    if(task.isSuccessful() && task.getResult()){
+                                        Doctor d = Doctor.getInstance();
+                                        d.setVSch(virtualAppointmentSchedule);
+
+                                        SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                                        SharedPreferences.Editor myEdit = sh.edit();
+                                        myEdit.putBoolean("vNeedToUpdate", true);
+                                        myEdit.apply();
+                                        finish();
+
+                                    }else{
+                                        Toast.makeText(AddVirtualSchedule.this, "Operation Failed, please try again later !", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                        );
+
                     }
                 }else{
                     Toast.makeText(AddVirtualSchedule.this, "Already have a schedule at this day !", Toast.LENGTH_SHORT).show();

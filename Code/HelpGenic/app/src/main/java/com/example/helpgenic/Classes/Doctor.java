@@ -7,18 +7,45 @@ import java.util.Objects;
 
 public class Doctor extends GuestUser {
 
-    private final String specialization;
+    private static Doctor singletonInstance;
+
+
+    private String specialization;
     private String degree;
     private String phNum;
-    private final float rating;
-    private final boolean isSurgeon;
+    private float rating;
+    private boolean isSurgeon;
+    private int fee;
 
     private ArrayList<VirtualAppointmentSchedule> vSchedule;
     private ArrayList<PhysicalAppointmentSchedule> pSchedule;
     private ArrayList<Comment> comments;
 
+    // Private constructor to prevent direct instantiation
+    private Doctor() {}
 
-    public Doctor(String id , String email, String name , String phNum , String specialization, boolean isSurgeon  , Character gender , float rating, Date dob){
+    // Public method to get the singleton instance for the doctor
+    public static Doctor getInstance() {
+
+        if (singletonInstance == null) {
+            singletonInstance = new Doctor();
+        }
+        return singletonInstance;
+    }
+
+    public static void setInstance(Doctor d) {
+
+        if (singletonInstance == null) {
+            singletonInstance = d;
+        }
+    }
+
+    public static void clearInstance() {
+
+        singletonInstance = null;
+    }
+
+    public Doctor(String id , String email, String name , String phNum , String specialization, boolean isSurgeon  , Character gender , float rating, Date dob, int fee){
         this.id = id;
         this.email = email;
         this.name = name;
@@ -29,6 +56,7 @@ public class Doctor extends GuestUser {
         this.rating = rating;
         this.type = 'D';
         this.dob = dob;
+        this.fee = fee;
     }
 
 
@@ -82,17 +110,33 @@ public class Doctor extends GuestUser {
     }
 
 
-    public Doctor(String id, String name, String specialization, char gender, float rating, boolean isSurgeon) {
+    public Doctor(String id, String name, String specialization, char gender, float rating, boolean isSurgeon, int fee, String email) {
         this.id = id;
         this.name = name;
         this.specialization = specialization;
         this.gender = gender;
         this.rating = rating;
         this.isSurgeon = isSurgeon;
+        this.fee = fee;
+        this.email = email;
+    }
+
+    public void setFee(int fee) {
+        this.fee = fee;
+    }
+
+    public int getFee() {
+        return fee;
     }
 
     public void setVSch(ArrayList<VirtualAppointmentSchedule> vList){
         this.vSchedule = vList;
+    }
+
+    public void setVSch(VirtualAppointmentSchedule v){
+        if (vSchedule != null) {
+            vSchedule.add(v);
+        }
     }
 
     public void setVSch(String day, Time sTime , Time eTime){
@@ -100,7 +144,23 @@ public class Doctor extends GuestUser {
 
             vSchedule = new  ArrayList<VirtualAppointmentSchedule>();
         }
-        vSchedule.add(new VirtualAppointmentSchedule(day,sTime,eTime,0));
+        vSchedule.add(new VirtualAppointmentSchedule(day,sTime,eTime));
+    }
+
+    public void setPSchedule(ArrayList<PhysicalAppointmentSchedule> pList){
+        this.pSchedule = pList;
+    }
+
+    public void setPSchedule(PhysicalAppointmentSchedule p){
+        if (pSchedule != null) {
+            pSchedule.add(p);
+        }
+    }
+
+
+
+    public ArrayList<PhysicalAppointmentSchedule> getPSchedule() {
+        return pSchedule;
     }
 
     public String getSpecialization() {

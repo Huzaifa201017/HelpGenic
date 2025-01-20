@@ -2,7 +2,6 @@ package com.example.helpgenic.Classes;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.util.Patterns;
 import android.widget.EditText;
@@ -19,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class AuthenticateUser {
@@ -30,7 +30,7 @@ public class AuthenticateUser {
         this.db = db;
     }
 
-    private void setUser(String uID, String email, TaskCompletionSource<GuestUser> taskCompletionSource, Context context) {
+    private void setUser(String uID, String email, TaskCompletionSource<Character> taskCompletionSource, Context context) {
 
         if (!Objects.equals(email, "admin@gmail.com")) {
 
@@ -84,7 +84,8 @@ public class AuthenticateUser {
                             String bloodGroup = userDocument.getString("bloodGroup");
 
                             Patient p = new Patient(uID, email, null, name, gender, dob, bloodGroup, phNum);
-                            taskCompletionSource.setResult(p);
+                            Patient.setInstance(p);
+                            taskCompletionSource.setResult('P');
 
                         } else if (Objects.equals("D", type)) {
 
@@ -101,11 +102,22 @@ public class AuthenticateUser {
                                 String specialization = userDocument.getString("specialization");
                                 boolean isSurgeon = Boolean.TRUE.equals(userDocument.getBoolean("surgeon"));
                                 char gender = Objects.requireNonNull(userDocument.getString("gender")).charAt(0);
-
+                                int fee = Objects.requireNonNull(userDocument.getLong("fee")).intValue();
                                 float rating = Objects.requireNonNull(userDocument.getDouble("rating")).floatValue();
 
-                                Doctor d = new Doctor(uID, email, name, phNum, specialization, isSurgeon, gender, rating, dob);
-                                taskCompletionSource.setResult(d);
+                                Doctor d = new Doctor(uID, email, name, phNum, specialization, isSurgeon, gender, rating, dob, fee);
+                                Doctor.setInstance(d);
+
+                                db.setDoctorAptScheduleDetails(d).addOnCompleteListener(
+                                        task -> {
+                                            if (!task.isSuccessful() || (!task.getResult())) {
+                                                Log.d("Authenticate User", "Fetch Document Task Failed");
+                                                d.setVSch(new ArrayList<>());
+                                                d.setPSchedule(new ArrayList<>());
+                                            }
+                                            taskCompletionSource.setResult('D');
+                                        }
+                                );
 
                             } else {
                                 Toast.makeText(context, "You'll be allowed to log in once your degree is verified", Toast.LENGTH_SHORT).show();
@@ -125,14 +137,16 @@ public class AuthenticateUser {
 
         }else{
             Admin a = new Admin(uID, email);
-            taskCompletionSource.setResult(a);
+            Admin.setInstance(a);
+
+            taskCompletionSource.setResult('A');
         }
     }
 
 
-    public Task<GuestUser> validateCredentials(EditText email , EditText password , Context context ){
+    public Task<Character> validateCredentials(EditText email , EditText password , Context context ){
 
-        TaskCompletionSource<GuestUser> taskCompletionSource = new TaskCompletionSource<>();
+        TaskCompletionSource<Character> taskCompletionSource = new TaskCompletionSource<>();
 
 
         if (email.length() == 0) {
@@ -190,9 +204,9 @@ public class AuthenticateUser {
 
     }
 
-    public Task<GuestUser> checkIfAlreadyLoggedIn(Context context){
+    public Task<Character> checkIfAlreadyLoggedIn(Context context){
 
-        TaskCompletionSource<GuestUser> taskCompletionSource = new TaskCompletionSource<>();
+        TaskCompletionSource<Character> taskCompletionSource = new TaskCompletionSource<>();
         if (mAuth.getCurrentUser() != null){
 
             FirebaseUser user = mAuth.getCurrentUser();
@@ -209,52 +223,6 @@ public class AuthenticateUser {
 
         return taskCompletionSource.getTask();
     }
-
-    void addToSharedPrefForPatient(int id , String type, String email ,String name , boolean gender, Date dob, String bloodGrup,String phNum,Context context) {
-
-        SharedPreferences shrd =  context.getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = shrd.edit();
-
-        myEdit.putString("type",type);
-        myEdit.putInt("Id" , id);
-        myEdit.putString("email", email);
-        myEdit.putString("name" , name);
-        myEdit.putString("dob" , dob.toString());
-        myEdit.putBoolean("gender" , gender);
-        myEdit.putString("bloodGroup" , bloodGrup);
-        myEdit.putString("phNum" , phNum);
-        myEdit.apply();
-
-
-    }
-
-    void addToSharedPrefForDoctor(int id , String type, String email ,String name , boolean gender, Date dob, String specialization , boolean isSurgeon , String accNum ,float rating, Context context){
-
-        SharedPreferences shrd =  context.getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = shrd.edit();
-
-        myEdit.putString("type",type);
-        myEdit.putInt("Id" , id);
-        myEdit.putString("email", email);
-        myEdit.putString("name" , name);
-        myEdit.putString("dob" , dob.toString());
-        myEdit.putBoolean("gender" , gender);
-        myEdit.putString("specialization" , specialization);
-        myEdit.putBoolean("isSurgeon" , isSurgeon);
-        myEdit.putString("accNum", accNum);
-        myEdit.putFloat("rating", rating);
-        myEdit.apply();
-    }
-
-    void addToSharedPrefForAdmin(int id , String type, String email, Context context){
-
-        SharedPreferences shrd =  context.getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = shrd.edit();
-
-        myEdit.putString("type",type);
-        myEdit.putInt("Id" , id);
-        myEdit.putString("email", email);
-        myEdit.apply();
-    }
+    
 
 }

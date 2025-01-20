@@ -12,18 +12,16 @@ import com.example.helpgenic.Doctor.PatientsRemaining;
 public class ViewPagerDocPageAdapter extends FragmentStateAdapter {
 
 
-    Doctor d;
-    public ViewPagerDocPageAdapter( FragmentManager fragmentManager, Lifecycle lifecycle, Doctor d) {
+    public ViewPagerDocPageAdapter( FragmentManager fragmentManager, Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
-        this.d = d;
     }
 
     @Override
     public Fragment createFragment(int position) {
         if (position == 0){
-            return new PatientsRemaining(d);
+            return new PatientsRemaining();
         }else{
-            return new PatientsAttended(d);
+            return new PatientsAttended();
         }
 
     }
