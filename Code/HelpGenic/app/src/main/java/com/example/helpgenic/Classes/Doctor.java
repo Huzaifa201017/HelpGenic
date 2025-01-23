@@ -89,6 +89,7 @@ public class Doctor extends GuestUser {
         this.rating = rating;
 
     }
+
     public Doctor(String email , String password) {
         this.email = email;
         this.password = password;
@@ -100,15 +101,6 @@ public class Doctor extends GuestUser {
         this.vSchedule=null;
         this.rating = 0;
     }
-    public Doctor(String specialization, boolean isSurgeon,String accountNumber,String degree){
-        this.specialization=specialization;
-        this.isSurgeon=isSurgeon;
-        this.degree=degree;
-        this.rating=0;
-        this.pSchedule=null;
-        this.vSchedule=null;
-    }
-
 
     public Doctor(String id, String name, String specialization, char gender, float rating, boolean isSurgeon, int fee, String email) {
         this.id = id;
@@ -142,7 +134,7 @@ public class Doctor extends GuestUser {
     public void setVSch(String day, Time sTime , Time eTime){
         if(Objects.equals(vSchedule ,null)){
 
-            vSchedule = new  ArrayList<VirtualAppointmentSchedule>();
+            vSchedule = new  ArrayList<>();
         }
         vSchedule.add(new VirtualAppointmentSchedule(day,sTime,eTime));
     }

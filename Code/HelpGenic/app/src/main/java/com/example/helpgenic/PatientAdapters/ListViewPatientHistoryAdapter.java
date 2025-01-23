@@ -44,9 +44,6 @@ public class ListViewPatientHistoryAdapter extends ArrayAdapter<com.example.help
 
 
         String info = appointment.getDoc().getSpecialization();
-        if(appointment.getDoc().isSurgeon()){
-            info += ", Surgeon";
-        }
 
         qualificationPlusProfession.setText(info);  // random data
         appointmentDate.setText(appointment.getAppDate().toString());

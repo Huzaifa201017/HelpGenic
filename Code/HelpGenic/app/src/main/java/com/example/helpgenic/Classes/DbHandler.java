@@ -23,16 +23,22 @@ import com.mysql.jdbc.CallableStatement;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Date;
 
 public class DbHandler {
 
@@ -410,10 +416,6 @@ public class DbHandler {
         return taskCompletionSource.getTask();
     }
 
-
-
-
-
     public ArrayList<Slot> getConsumedSlots(int docId , Date date ,Context context ){
 
         ArrayList<Slot> list = new ArrayList<>();
@@ -423,7 +425,7 @@ public class DbHandler {
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
 
             stmt.setInt(1,docId);
-            stmt.setDate(2,date);
+//            stmt.setDate(2,date);
 
             ResultSet rs = stmt.executeQuery();
 
@@ -470,8 +472,9 @@ public class DbHandler {
 
     }
 
-
-    public Task<Boolean> loadAppointmentToDb(String docId , String patientId , Date date ,Time sTime , Time eTime) {
+    public Task<Boolean> loadAppointmentToDb(String docId , String patientId , String docName,
+                                             String docSpecialization, Date date ,
+                                             Time sTime , Time eTime) {
 
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
 
@@ -479,6 +482,8 @@ public class DbHandler {
 
             Map<String, Object> appointment = new HashMap<>();
             appointment.put("docId", docId);
+            appointment.put("docName", docName);
+            appointment.put("docSpecialization", docSpecialization);
             appointment.put("patientId", patientId);
             appointment.put("date", date);
             appointment.put("sTime", sTime);
@@ -502,44 +507,62 @@ public class DbHandler {
 
     }
 
-    public ArrayList<Appointment> getUpcommingAppointmentsForPatients(int pId,Context context){
+    public Task<ArrayList<Appointment>> getUpcommingAppointmentsForPatients(String pId,Context context){
 
+        TaskCompletionSource<ArrayList<Appointment>> taskCompletionSource = new TaskCompletionSource<>();
         ArrayList<Appointment> upcomingApp = new ArrayList<>();
-        String query = "select * from upcomingAppointments ua where pId = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try {
 
-            stmt.setInt(1,pId);
+            java.util.Date currentDate = new java.util.Date();
 
-            ResultSet rs = stmt.executeQuery();
+            db.collection("Appointments")
+                    .get().addOnCompleteListener( task -> {
 
-            while (rs.next()) {
-
-                 Character gender;
-                 if(Objects.equals(rs.getBoolean("gender"),1)) {
-                     gender = 'M';
-                 }else{
-                     gender = 'F';
-                 }
-
-                 Doctor d = new Doctor(rs.getString("docId"), null ,rs.getString("specialization"),rs.getBoolean("surgeon") , null ,rs.getString("name") , gender , null, 0.0f);
-                 d.setVSch(rs.getString("day"),rs.getTime("docsTime"), rs.getTime("docetime"));
-
-                upcomingApp.add(new Appointment(rs.getDate("date") , d , null ,rs.getTime("sTime")  ,rs.getTime("eTime"),rs.getInt("appId")));
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
 
 
-            }
+                        String id = documentSnapshot.getId();
+                        String name = documentSnapshot.getString("docName");
+                        String specialization = documentSnapshot.getString("docSpecialization");
+                        Date aptDate = documentSnapshot.getDate("date");
 
-            return upcomingApp;
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        String formattedDate = dateFormat.format(aptDate);
+
+                        Date finalFormattedDate = null;
+                        try {
+                            finalFormattedDate = dateFormat.parse(formattedDate);
+                        } catch (Exception e) {
+                            e.printStackTrace();  // Handle exception if parsing fails
+                        }
+
+                        Time sTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("sTime")).getTime());
+                        Time eTime =  new Time(Objects.requireNonNull(documentSnapshot.getDate("eTime")).getTime());
+
+                        Doctor d = new Doctor(name,specialization,id);
+                        upcomingApp.add(new Appointment(aptDate , d ,sTime ,eTime,documentSnapshot.getId()));
+
+                    }
+
+                    taskCompletionSource.setResult(upcomingApp);
+                } else {
+                    Log.d("Db Handler: getListOfDoctors", "Error getting documents: ", task.getException());
+                    taskCompletionSource.setResult(upcomingApp);
+                }
+            });
+
 
         } catch (Exception e) {
 
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            taskCompletionSource.setResult(upcomingApp);
         }
 
 
 
-        return upcomingApp;
+        return taskCompletionSource.getTask();
     }
 
 

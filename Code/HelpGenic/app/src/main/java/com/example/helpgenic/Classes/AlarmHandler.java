@@ -6,9 +6,8 @@ import android.content.Intent;
 
 import com.example.helpgenic.MyReciever;
 import android.app.AlarmManager;
-import android.widget.Toast;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

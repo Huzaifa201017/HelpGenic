@@ -16,11 +16,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.helpgenic.Classes.Appointment;
 import com.example.helpgenic.Classes.DbHandler;
+import com.example.helpgenic.Classes.Patient;
 import com.example.helpgenic.PatientAdapters.ListViewPatientHistoryAdapter;
 import com.example.helpgenic.R;
 
-import java.sql.Date;
-import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,28 +34,32 @@ public class UpcomingAppointments extends Fragment {
     Button joinMeeting;
     DbHandler db = new DbHandler();
     int docId = 0;
+    Patient p;
+    ListView appointmentListRef;
 
-
-    public UpcomingAppointments() {
-        // Required empty public constructor
-
-    }
 
     private void setUpData() {
 
+        p = Patient.getInstance();
         db.connectToDb(getContext());
-        SharedPreferences sh = getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
 
         try {
 
-            if(db.isConnectionOpen()){
-                appointments = db.getUpcommingAppointmentsForPatients(sh.getInt("Id", 0),  getContext());
-            }
-            try {
-                db.closeConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            db.getUpcommingAppointmentsForPatients(p.getId(),  getContext()).addOnCompleteListener(
+                task -> {
+                    if (task.isSuccessful()) {
+                        appointments = task.getResult();
+
+                        // set adapter to list view
+                        ListViewPatientHistoryAdapter adapter = new ListViewPatientHistoryAdapter(getContext() , R.layout.list_cell_custom_design_for_patient_schedule , appointments);
+                        appointmentListRef.setAdapter(adapter);
+
+                    } else {
+                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            );
+
 
         }
         catch (Exception e) {
@@ -73,17 +78,12 @@ public class UpcomingAppointments extends Fragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upcoming_appointments, container, false);
-
+        appointmentListRef = view.findViewById(R.id.upcomingSchedule);
+        joinMeeting = view.findViewById(R.id.joinMeeting);
 
 
         // populate the data
         setUpData();
-
-
-        // set adapter to list view
-        ListView appointmentListRef = view.findViewById(R.id.upcomingSchedule);
-        ListViewPatientHistoryAdapter adapter = new ListViewPatientHistoryAdapter(getContext() , R.layout.list_cell_custom_design_for_patient_schedule , appointments);
-        appointmentListRef.setAdapter(adapter);
 
 
 
@@ -127,10 +127,6 @@ public class UpcomingAppointments extends Fragment {
 
         });
 
-
-
-        // join the meeting if time is verified
-        joinMeeting = view.findViewById(R.id.joinMeeting);
 
 
         joinMeeting.setOnClickListener(new View.OnClickListener() {

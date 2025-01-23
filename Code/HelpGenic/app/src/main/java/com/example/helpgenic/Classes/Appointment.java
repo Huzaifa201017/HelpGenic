@@ -1,7 +1,7 @@
 package com.example.helpgenic.Classes;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Time;
 import java.util.ArrayList;
 
@@ -12,6 +12,7 @@ public class Appointment implements Serializable {
     private final Patient p;
     private Time sTime , eTime ;
     private int appId;
+    private String aptId;
     private Prescription pres;
     private ArrayList<Document> documents;
 
@@ -27,6 +28,15 @@ public class Appointment implements Serializable {
         this.sTime = sTime;
         this.eTime = eTime;
         this.appId = id;
+    }
+
+    public Appointment(Date appDate, Doctor doc, Time sTime, Time eTime , String id) {
+        this.appDate = appDate;
+        this.doc = doc;
+        this.p = null;
+        this.sTime = sTime;
+        this.eTime = eTime;
+        this.aptId = id;
     }
 
     public Date getAppDate() {

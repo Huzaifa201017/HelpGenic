@@ -3,19 +3,14 @@ package com.example.helpgenic.Patient;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.helpgenic.Classes.AlarmHandler;
 import com.example.helpgenic.Classes.BookingManager;
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.Doctor;
@@ -25,7 +20,6 @@ import com.example.helpgenic.Classes.VirtualAppointmentSchedule;
 import com.example.helpgenic.PatientAdapters.ListViewDsiplayingSlotsAdapter;
 import com.example.helpgenic.R;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,7 +37,7 @@ public class DisplayingSlots extends AppCompatActivity {
     final Calendar myCalendar= Calendar.getInstance();
     Button dateBtn;
     ArrayList<Slot> slots;
-    java.sql.Date dateSelected;
+    Date dateSelected;
     BookingManager bm = new BookingManager();
     int selectedPosition = -1;
     Slot selectedSlot = null;
@@ -148,7 +142,7 @@ public class DisplayingSlots extends AppCompatActivity {
 
         bookApp.setOnClickListener(view -> {
 
-            bm.confirmAppointment(p.getId() , d.getId() , dateSelected , selectedSlot , DisplayingSlots.this).addOnCompleteListener(
+            bm.confirmAppointment(p.getId() , d.getId() , d.getName(), d.getSpecialization(), dateSelected , selectedSlot , DisplayingSlots.this).addOnCompleteListener(
                     task -> {
                         if (task.isSuccessful() && task.getResult()){
 
@@ -175,7 +169,7 @@ public class DisplayingSlots extends AppCompatActivity {
 
         Date t = myCalendar.getTime();
 
-        String date= dateFormat.format(myCalendar.getTime());
+        String date = dateFormat.format(myCalendar.getTime());
         dateBtn.setText(date);
 
 

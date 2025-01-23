@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -21,7 +21,7 @@ public class BookingManager {
     }
 
 
-    public ArrayList<Slot> getAvailableSlots(String docId , Date dateSelected , String day , ArrayList<Slot> slots,Context context){
+    public ArrayList<Slot> getAvailableSlots(String docId , Date dateSelected , String day , ArrayList<Slot> slots, Context context){
 
 //        ArrayList<Slot> consumedSlots = db.getConsumedSlots(docId , dateSelected, context);
         ArrayList<Slot> consumedSlots =  new ArrayList<>();
@@ -144,7 +144,8 @@ public class BookingManager {
 
 
 
-    public Task<Boolean> confirmAppointment(String patientId , String docId , Date selectedDate, Slot slot, Context context) {
+    public Task<Boolean> confirmAppointment(String docId , String patientId , String docName,
+                                            String docSpecialization , Date selectedDate, Slot slot, Context context) {
 
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
 
@@ -166,7 +167,7 @@ public class BookingManager {
 
                         }else{
 
-                            db.loadAppointmentToDb(docId , patientId , selectedDate , slot.sTime , slot.eTime ).addOnCompleteListener(
+                            db.loadAppointmentToDb(docId , patientId  , docName, docSpecialization, selectedDate, slot.sTime , slot.eTime ).addOnCompleteListener(
                                     task2 -> {
                                         if (task2.isSuccessful() && task2.getResult() ){
                                             Toast.makeText(context, "Appointment Confirmed", Toast.LENGTH_SHORT).show();
