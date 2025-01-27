@@ -56,7 +56,7 @@ public class PageForUpdateApps extends AppCompatActivity {
         app = (Appointment) getIntent().getExtras().getSerializable("appointment");
         Toast.makeText(this, app.getAppDate().toString(), Toast.LENGTH_SHORT).show();
 
-        // // setting prior appointment date to current page
+        // setting prior appointment date to current page
         date = findViewById(R.id.date);
         date.setText(app.getAppDate().toString());
 
@@ -71,8 +71,9 @@ public class PageForUpdateApps extends AppCompatActivity {
         bm.setDb(db);
 
         // getting available slots
-        slots = bm.makeSlots(app.getDoc().getvSchedule().get(0).getsTime() , app.getDoc().getvSchedule().get(0).geteTime() ,dayWeekText);
-        ArrayList<Slot> availableSlots = bm.getAvailableSlots("", app.getAppDate(),dayWeekText,slots ,this);
+        // slots = bm.makeSlots(app.getDoc().getvSchedule().get(0).getsTime() , app.getDoc().getvSchedule().get(0).geteTime() ,dayWeekText);
+//        ArrayList<Slot> availableSlots = bm.getAvailableSlots("", app.getAppDate(),dayWeekText,slots ,this);
+        ArrayList<Slot> availableSlots = new ArrayList<>();
 
 
         // displaying slots to patient
@@ -161,25 +162,4 @@ public class PageForUpdateApps extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        try {
-            db.closeConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    //    @Override
-//    protected void onPause() {
-//
-//        super.onPause();
-//        try {
-//            db.closeConnection();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

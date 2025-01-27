@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -514,35 +515,54 @@ public class DbHandler {
 
         try {
 
-            java.util.Date currentDate = new java.util.Date();
+            // Fetching current date
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            Timestamp currentTimestamp = new Timestamp(calendar.getTime());
+
+            // Fetching current time
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+            String currentTimeString = timeFormat.format(new Date());
+            Time currentTime = java.sql.Time.valueOf(currentTimeString);
 
             db.collection("Appointments")
-                    .get().addOnCompleteListener( task -> {
+                    .whereEqualTo("patientId", pId)
+                    .whereGreaterThanOrEqualTo("date", currentTimestamp ).get().addOnCompleteListener( task -> {
 
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
 
 
-                        String id = documentSnapshot.getId();
-                        String name = documentSnapshot.getString("docName");
-                        String specialization = documentSnapshot.getString("docSpecialization");
-                        Date aptDate = documentSnapshot.getDate("date");
+                        Date eTimeDate = documentSnapshot.getDate("eTime");
+                        String eTimeString = timeFormat.format(eTimeDate);
+                        Time eTime = java.sql.Time.valueOf(eTimeString);
 
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                        String formattedDate = dateFormat.format(aptDate);
+                        if (eTime.after(currentTime)) {
 
-                        Date finalFormattedDate = null;
-                        try {
-                            finalFormattedDate = dateFormat.parse(formattedDate);
-                        } catch (Exception e) {
-                            e.printStackTrace();  // Handle exception if parsing fails
+                            String id = documentSnapshot.getId();
+                            String name = documentSnapshot.getString("docName");
+                            String specialization = documentSnapshot.getString("docSpecialization");
+                            Date aptDate = documentSnapshot.getDate("date");
+
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            String formattedDate = dateFormat.format(aptDate);
+
+                            Date finalFormattedDate = null;
+                            try {
+                                finalFormattedDate = dateFormat.parse(formattedDate);
+                            } catch (Exception e) {
+                                Log.d("Db Handler: getListOfDoctors", "Error while formatting the date: ");
+                            }
+
+                            Time sTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("sTime")).getTime());
+
+
+                            Doctor d = new Doctor(name, specialization, id);
+                            upcomingApp.add(new Appointment(finalFormattedDate, formattedDate, d, sTime, eTime, documentSnapshot.getId()));
                         }
-
-                        Time sTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("sTime")).getTime());
-                        Time eTime =  new Time(Objects.requireNonNull(documentSnapshot.getDate("eTime")).getTime());
-
-                        Doctor d = new Doctor(name,specialization,id);
-                        upcomingApp.add(new Appointment(aptDate , d ,sTime ,eTime,documentSnapshot.getId()));
 
                     }
 

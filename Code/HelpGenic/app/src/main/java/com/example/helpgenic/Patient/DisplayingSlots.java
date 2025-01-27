@@ -142,7 +142,7 @@ public class DisplayingSlots extends AppCompatActivity {
 
         bookApp.setOnClickListener(view -> {
 
-            bm.confirmAppointment(p.getId() , d.getId() , d.getName(), d.getSpecialization(), dateSelected , selectedSlot , DisplayingSlots.this).addOnCompleteListener(
+            bm.confirmAppointment(d.getId(), p.getId() , d.getName(), d.getSpecialization(), dateSelected , selectedSlot , DisplayingSlots.this).addOnCompleteListener(
                     task -> {
                         if (task.isSuccessful() && task.getResult()){
 

@@ -7,7 +7,8 @@ import java.util.ArrayList;
 
 public class Appointment implements Serializable {
 
-    private final Date appDate;
+    private final Date aptDate;
+    private final String aptDateStr;
     private final Doctor doc;
     private final Patient p;
     private Time sTime , eTime ;
@@ -22,25 +23,27 @@ public class Appointment implements Serializable {
 
 
     public Appointment(Date appDate, Doctor doc, Patient p, Time sTime, Time eTime , int id) {
-        this.appDate = appDate;
+        this.aptDate = appDate;
         this.doc = doc;
         this.p = p;
         this.sTime = sTime;
         this.eTime = eTime;
         this.appId = id;
+        this.aptDateStr = null;
     }
 
-    public Appointment(Date appDate, Doctor doc, Time sTime, Time eTime , String id) {
-        this.appDate = appDate;
+    public Appointment(Date appDate, String aptDateStr, Doctor doc, Time sTime, Time eTime , String id) {
+        this.aptDate = appDate;
         this.doc = doc;
         this.p = null;
         this.sTime = sTime;
         this.eTime = eTime;
         this.aptId = id;
+        this.aptDateStr = aptDateStr;
     }
 
     public Date getAppDate() {
-        return appDate;
+        return aptDate;
     }
 
     public Doctor getDoc() {
@@ -58,6 +61,11 @@ public class Appointment implements Serializable {
     public Time geteTime() {
         return eTime;
     }
+
+    public String getAptDateStr() {
+        return aptDateStr;
+    }
+
 
 
 }

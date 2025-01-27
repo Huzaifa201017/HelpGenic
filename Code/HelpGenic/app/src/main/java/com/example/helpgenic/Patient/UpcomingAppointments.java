@@ -93,13 +93,13 @@ public class UpcomingAppointments extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
 
-                Appointment app =(Appointment) adapterView.getItemAtPosition(i);
+                Appointment apt = (Appointment) adapterView.getItemAtPosition(i);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                String dateString = app.getAppDate().toString() + " " + app.getsTime().toString();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                String dateString = apt.getAptDateStr() + " " + apt.getsTime().toString();
 
 
-                //formatting the dateString to convert it into a Date
+                // formatting the dateString to convert it into a Date
                 java.util.Date date = null;
                 try {
                     date = sdf.parse(dateString);
@@ -108,15 +108,15 @@ public class UpcomingAppointments extends Fragment {
                 }
 
                 Calendar calendar = Calendar.getInstance();
-                //Setting the Calendar date and time to the given date and time
-                calendar.setTime(date);
 
+                // Setting the Calendar date and time to the given date and time
+                calendar.setTime(date);
                 long time = calendar.getTimeInMillis();
                 long currentTime = System.currentTimeMillis();
 
                 if(time > currentTime){
                     Intent intent = new Intent(getContext(), PageForUpdateApps.class);
-                    intent.putExtra("appointment", app);
+                    intent.putExtra("appointment", apt);
                     startActivity(intent);
                 }else{
                     Toast.makeText(getContext() ,"Your appointment has already been started!", Toast.LENGTH_SHORT).show();

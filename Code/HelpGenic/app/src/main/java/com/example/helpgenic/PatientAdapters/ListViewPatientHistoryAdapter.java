@@ -45,8 +45,9 @@ public class ListViewPatientHistoryAdapter extends ArrayAdapter<com.example.help
 
         String info = appointment.getDoc().getSpecialization();
 
-        qualificationPlusProfession.setText(info);  // random data
-        appointmentDate.setText(appointment.getAppDate().toString());
+        qualificationPlusProfession.setText(info);
+
+        appointmentDate.setText(appointment.getAptDateStr());
         String sTime = appointment.getsTime().toString();
         String eTime = appointment.geteTime().toString();
         String timeRange = sTime + " -- " + eTime;
