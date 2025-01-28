@@ -30,16 +30,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Date;
 
 public class DbHandler {
 
@@ -473,22 +470,23 @@ public class DbHandler {
 
     }
 
-    public Task<Boolean> loadAppointmentToDb(String docId , String patientId , String docName,
-                                             String docSpecialization, Date date ,
-                                             Time sTime , Time eTime) {
+    public Task<Boolean> loadAppointmentToDb(Appointment newApt) {
 
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
 
         try {
 
             Map<String, Object> appointment = new HashMap<>();
-            appointment.put("docId", docId);
-            appointment.put("docName", docName);
-            appointment.put("docSpecialization", docSpecialization);
-            appointment.put("patientId", patientId);
-            appointment.put("date", date);
-            appointment.put("sTime", sTime);
-            appointment.put("eTime", eTime);
+            appointment.put("docId", newApt.getDoc().getId());
+            appointment.put("docName", newApt.getDoc().getName());
+            appointment.put("docSpecialization", newApt.getDoc().getSpecialization());
+            appointment.put("docSTime", newApt.getDoc().getvSchedule().get(0).getsTime());
+            appointment.put("docETime", newApt.getDoc().getvSchedule().get(0).geteTime());
+            appointment.put("patientId", newApt.getPatient().getId());
+            appointment.put("date", newApt.getAppDate());
+            appointment.put("sTime", newApt.getsTime());
+            appointment.put("eTime", newApt.geteTime());
+
 
             db.collection("Appointments").document().set(appointment).addOnSuccessListener(aVoid -> {
                 Log.d("DbHandler: loadAppointmentToDb", "DocumentSnapshot (Appointment) successfully written with ID: " );

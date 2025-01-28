@@ -42,9 +42,9 @@ public class ListViewPatientsRemainingAdapter extends ArrayAdapter<Appointment> 
 
 
         // setting their data
-        patientName.setText(appointment.getP().getName());
+        patientName.setText(appointment.getPatient().getName());
 
-        id.setText(String.valueOf(appointment.getP().getId()));  // random data
+        id.setText(String.valueOf(appointment.getPatient().getId()));  // random data
         appointmentDate.setText(appointment.getAppDate().toString());
         String time = appointment.getsTime().toString();
         time += " -- ";

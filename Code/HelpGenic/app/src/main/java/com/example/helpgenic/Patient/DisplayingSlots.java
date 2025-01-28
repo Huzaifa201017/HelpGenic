@@ -1,7 +1,6 @@
 package com.example.helpgenic.Patient;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.helpgenic.Classes.Appointment;
 import com.example.helpgenic.Classes.BookingManager;
 import com.example.helpgenic.Classes.DbHandler;
 import com.example.helpgenic.Classes.Doctor;
@@ -142,18 +142,29 @@ public class DisplayingSlots extends AppCompatActivity {
 
         bookApp.setOnClickListener(view -> {
 
-            bm.confirmAppointment(d.getId(), p.getId() , d.getName(), d.getSpecialization(), dateSelected , selectedSlot , DisplayingSlots.this).addOnCompleteListener(
-                    task -> {
-                        if (task.isSuccessful() && task.getResult()){
+            if (selectedSlot == null){
+                Toast.makeText(DisplayingSlots.this, "Please select a slot !", Toast.LENGTH_SHORT).show();
+            }else {
+
+
+                Doctor temp1 = new Doctor(d.getId(), d.getName(), d.getSpecialization(), vs);
+                Patient temp2 = new Patient(p.getId(), p.getName());
+                Appointment newApt = new Appointment(dateSelected, temp1, temp2, selectedSlot.sTime, selectedSlot.eTime);
+
+                bm.confirmAppointment(newApt, DisplayingSlots.this).addOnCompleteListener(
+                        task -> {
+                            if (task.isSuccessful() && task.getResult()) {
 
 //                            AlarmHandler ah = new AlarmHandler();
 //                            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 //                            ah.setAlarm(appId , dateSelected , selectedSlot.sTime , DisplayingSlots.this , alarmManager);
 
-                            finish();
+                                finish();
+                            }
                         }
-                    }
-            );
+                );
+
+            }
 
 
         });

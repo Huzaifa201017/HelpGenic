@@ -113,6 +113,14 @@ public class Doctor extends GuestUser {
         this.email = email;
     }
 
+    public Doctor(String id, String name, String specialization, VirtualAppointmentSchedule vSchedule) {
+        this.id = id;
+        this.name = name;
+        this.specialization = specialization;
+        this.vSchedule = new ArrayList<>();
+        this.vSchedule.add(vSchedule);
+    }
+
     public void setFee(int fee) {
         this.fee = fee;
     }

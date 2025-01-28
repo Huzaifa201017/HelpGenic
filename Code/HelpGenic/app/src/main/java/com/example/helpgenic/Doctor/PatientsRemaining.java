@@ -70,7 +70,7 @@ public class PatientsRemaining extends Fragment {
                 //System.out.println(p);
 
                 Intent intent = new Intent(new Intent(getContext(), DocViewingPatientProfile.class));
-                intent.putExtra("patientID" , p.getP().getId());
+                intent.putExtra("patientID" , p.getPatient().getId());
                 intent.putExtra("docID" ,d.getId());
                 startActivity(intent);
             }

@@ -1,15 +1,14 @@
 package com.example.helpgenic.Classes;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
-import java.util.Date;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 public class BookingManager {
@@ -144,48 +143,39 @@ public class BookingManager {
 
 
 
-    public Task<Boolean> confirmAppointment(String docId , String patientId , String docName,
-                                            String docSpecialization , Date selectedDate, Slot slot, Context context) {
+    public Task<Boolean> confirmAppointment(Appointment newApt, Context context) {
 
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
 
-        if(Objects.equals(slot , null)) {
+        db.checkDuplicateAppointment(newApt.getPatient().getId() , newApt.getDoc().getId(), newApt.getAppDate()).addOnCompleteListener(
+            task -> {
+                if (task.isSuccessful() ){
 
-            Toast.makeText(context, "No Slot selected !", Toast.LENGTH_SHORT).show();
-            taskCompletionSource.setResult(false);
+                    if (task.getResult()){
 
-        } else {
-
-            db.checkDuplicateAppointment(patientId , docId, selectedDate).addOnCompleteListener(
-                task -> {
-                    if (task.isSuccessful() ){
-
-                        if (task.getResult()){
-
-                            Toast.makeText(context, "You have already got an appointment on this date !", Toast.LENGTH_SHORT).show();
-                            taskCompletionSource.setResult(false);
-
-                        }else{
-
-                            db.loadAppointmentToDb(docId , patientId  , docName, docSpecialization, selectedDate, slot.sTime , slot.eTime ).addOnCompleteListener(
-                                    task2 -> {
-                                        if (task2.isSuccessful() && task2.getResult() ){
-                                            Toast.makeText(context, "Appointment Confirmed", Toast.LENGTH_SHORT).show();
-                                            taskCompletionSource.setResult(true);
-                                        }else{
-                                            Toast.makeText(context, "Operation Failed, please try again later !", Toast.LENGTH_SHORT).show();
-                                            taskCompletionSource.setResult(false);
-                                        }
-                                    }
-                            );
-                        }
+                        Toast.makeText(context, "You have already got an appointment on this date !", Toast.LENGTH_SHORT).show();
+                        taskCompletionSource.setResult(false);
 
                     }else{
-                        taskCompletionSource.setResult(false);
+
+                        db.loadAppointmentToDb(newApt).addOnCompleteListener(
+                                task2 -> {
+                                    if (task2.isSuccessful() && task2.getResult() ){
+                                        Toast.makeText(context, "Appointment Confirmed", Toast.LENGTH_SHORT).show();
+                                        taskCompletionSource.setResult(true);
+                                    }else{
+                                        Toast.makeText(context, "Operation Failed, please try again later !", Toast.LENGTH_SHORT).show();
+                                        taskCompletionSource.setResult(false);
+                                    }
+                                }
+                        );
                     }
+
+                }else{
+                    taskCompletionSource.setResult(false);
                 }
-            );
-        }
+            }
+        );
 
         return taskCompletionSource.getTask();
 

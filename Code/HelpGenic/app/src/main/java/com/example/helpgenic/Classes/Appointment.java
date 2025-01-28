@@ -42,6 +42,16 @@ public class Appointment implements Serializable {
         this.aptDateStr = aptDateStr;
     }
 
+    public Appointment(Date appDate, Doctor doc, Patient p, Time sTime, Time eTime) {
+        this.aptDate = appDate;
+        this.doc = doc;
+        this.p = p;
+        this.sTime = sTime;
+        this.eTime = eTime;
+        this.aptId = "";
+        this.aptDateStr = null;
+    }
+
     public Date getAppDate() {
         return aptDate;
     }
@@ -50,7 +60,7 @@ public class Appointment implements Serializable {
         return doc;
     }
 
-    public Patient getP() {
+    public Patient getPatient() {
         return p;
     }
 
