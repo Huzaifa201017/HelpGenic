@@ -413,61 +413,87 @@ public class DbHandler {
         return taskCompletionSource.getTask();
     }
 
-    public ArrayList<Slot> getConsumedSlots(int docId , Date date ,Context context ){
+    public Task<ArrayList<Slot>> getConsumedSlots(String docId , Date date ){
 
+        TaskCompletionSource<ArrayList<Slot>> taskCompletionSource = new TaskCompletionSource<>();
         ArrayList<Slot> list = new ArrayList<>();
 
-        String query = "select * from Appointment where docId= ? and `date`= ?";
+        try{
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-
-            stmt.setInt(1,docId);
-//            stmt.setDate(2,date);
-
-            ResultSet rs = stmt.executeQuery();
-
-
-            while (rs.next()) {
-
-                Time sTime = rs.getTime("sTime");
-                Time eTime = rs.getTime("eTime");
-
-                list.add(new Slot(sTime , eTime ,null));
-            }
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
 
 
-        } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            db.collection("Appointments")
+                    .whereEqualTo("docId", docId)
+                    .whereEqualTo("date", calendar.getTime() ).get().addOnCompleteListener( task -> {
+
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+
+                                Time eTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("eTime")).getTime());
+                                Time sTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("sTime")).getTime());
+
+                                list.add(new Slot(sTime , eTime ,null));
+                            }
+
+                            taskCompletionSource.setResult(list);
+
+                        }else{
+                            Log.d("Db Handler: getConsumedSlots", "Error getting documents: ", task.getException());
+                            taskCompletionSource.setResult(list);
+                        }
+
+
+                    });
+
+        }catch (Exception e){
+            Log.d("Db Handler: getConsumedSlots", "Error getting documents: ", e);
+            taskCompletionSource.setResult(list);
         }
 
-
-        return list;
-    }
-
-
-    public Task<Boolean> checkDuplicateAppointment(String docId , String patientId , Date date){
-
-        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
-        taskCompletionSource.setResult(false);
-
-        db.collection("Appointments")
-                .whereEqualTo("docId", docId)
-                .whereEqualTo("patientId", patientId)
-                .whereEqualTo("date", date).get().addOnCompleteListener( task -> {
-
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot ignored : task.getResult()) {
-                            taskCompletionSource.setResult(true);
-                        }
-                    } else {
-                        Log.d("Db Handler: getListOfDoctors", "Error getting documents: ", task.getException());
-                        taskCompletionSource.setException(Objects.requireNonNull(task.getException()));
-                    }
-                });
 
         return taskCompletionSource.getTask();
 
     }
+
+
+    public Task<Boolean> checkDuplicateAppointment(String docId , String patientId , Date date) {
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+
+        // Set time to start of day (only comparing dates)
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        db.collection("Appointments")
+                .whereEqualTo("docId", docId)
+                .whereEqualTo("patientId", patientId)
+                .whereEqualTo("date", calendar.getTime())
+                .get()
+                .addOnCompleteListener(task -> {
+
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        taskCompletionSource.setResult(true);  // Appointment exists
+                    } else {
+                        taskCompletionSource.setResult(false); // No appointment found
+                    }
+
+                }).addOnFailureListener(e -> {
+                    Log.d("Db Handler", "Error getting documents: ", e);
+                    taskCompletionSource.setResult(false);
+                });
+
+        return taskCompletionSource.getTask();
+    }
+
 
     public Task<Boolean> loadAppointmentToDb(Appointment newApt) {
 
@@ -527,7 +553,6 @@ public class DbHandler {
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-            Timestamp currentTimestamp = new Timestamp(calendar.getTime());
 
             // Fetching current time
             long currentTime = System.currentTimeMillis();
@@ -535,7 +560,7 @@ public class DbHandler {
 
             db.collection("Appointments")
                     .whereEqualTo("patientId", pId)
-                    .whereGreaterThanOrEqualTo("date", currentTimestamp ).get().addOnCompleteListener( task -> {
+                    .whereGreaterThanOrEqualTo("date", calendar.getTime() ).get().addOnCompleteListener( task -> {
 
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
@@ -547,15 +572,12 @@ public class DbHandler {
                         Time doceTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("docETime")).getTime());
                         Time docsTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("docSTime")).getTime());
 
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                        String formattedDate = dateFormat.format(aptDate);
+                        Date formattedDate = new java.sql.Date(aptDate.getTime());
 
-                        Date finalFormattedDate;
                         Calendar calendar2 = Calendar.getInstance();
                         try {
-                            finalFormattedDate = dateFormat.parse(formattedDate);
                             String dateString = formattedDate + " " + eTime;
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                             calendar2.setTime(sdf.parse(dateString));
                         } catch (Exception e) {
                             Log.d("Db Handler: getListOfDoctors", "Error while formatting the date: ", e);
@@ -567,13 +589,13 @@ public class DbHandler {
 
                             VirtualAppointmentSchedule vs = new VirtualAppointmentSchedule(null, docsTime, doceTime);
                             Doctor doctor = new Doctor(
-                                    documentSnapshot.getId(),
+                                    documentSnapshot.getString("docId"),
                                     documentSnapshot.getString("docName"),
                                     documentSnapshot.getString("docSpecialization"),
                                     vs
                             );
 
-                            upcomingApp.add(new Appointment(finalFormattedDate, formattedDate, doctor, sTime, eTime, documentSnapshot.getId()));
+                            upcomingApp.add(new Appointment(formattedDate, doctor, sTime, eTime, documentSnapshot.getId()));
                         }
 
                     }

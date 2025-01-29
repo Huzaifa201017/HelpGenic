@@ -61,7 +61,7 @@ public class DisplayingSlots extends AppCompatActivity {
         int vs_index =  getIntent().getIntExtra("vs_index", 0);
         vs = d.getvSchedule().get(vs_index);
 
-        slots = bm.makeSlots(vs.getsTime(),vs.geteTime(),vs.getDay()); // all total possibilities
+        slots = bm.makeSlots(vs.getsTime(),vs.geteTime(),vs.getDay());  // all total possibilities
 
 
         // ====================== selecting date ==================================
@@ -79,7 +79,6 @@ public class DisplayingSlots extends AppCompatActivity {
             updateLabel();
 
 
-
             long millis = System.currentTimeMillis();
             java.sql.Date date1 = new java.sql.Date(millis);
 
@@ -91,28 +90,35 @@ public class DisplayingSlots extends AppCompatActivity {
                 db.connectToDb(DisplayingSlots.this);
                 bm.setDb(db);
 
-                ArrayList<Slot> availableSlots = bm.getAvailableSlots(d.getId() , dateSelected, vs.getDay() , slots, DisplayingSlots.this );
+                bm.getAvailableSlots(d.getId() , dateSelected, vs.getDay() , slots, DisplayingSlots.this ).addOnCompleteListener(
+                        task -> {
 
-                ListViewDsiplayingSlotsAdapter adapter = new ListViewDsiplayingSlotsAdapter(DisplayingSlots.this,0,availableSlots);
-                lst.setAdapter(adapter);
+                            if (task.isSuccessful()){
+                                ArrayList<Slot> availableSlots = task.getResult();
 
-                lst.setOnItemClickListener((adapterView, view1, i, l) -> {
+                                ListViewDsiplayingSlotsAdapter adapter = new ListViewDsiplayingSlotsAdapter(DisplayingSlots.this,0,availableSlots);
+                                lst.setAdapter(adapter);
+
+                                lst.setOnItemClickListener((adapterView, view1, i, l) -> {
 
 
-                    if(selectedPosition != -1){
-                        lst.getChildAt(selectedPosition).setBackgroundColor(Color.TRANSPARENT);
-                    }
+                                    if(selectedPosition != -1){
+                                        lst.getChildAt(selectedPosition).setBackgroundColor(Color.TRANSPARENT);
+                                    }
 
-                    try{
-                        selectedSlot = (Slot)adapterView.getItemAtPosition(i);
-                        lst.getChildAt(i).setBackgroundColor(Color.rgb(165,184,166));
-                        selectedPosition = i;
-                    }catch (Exception e){
-                        Toast.makeText(DisplayingSlots.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                                    try{
+                                        selectedSlot = (Slot)adapterView.getItemAtPosition(i);
+                                        lst.getChildAt(i).setBackgroundColor(Color.rgb(165,184,166));
+                                        selectedPosition = i;
+                                    }catch (Exception e){
+                                        Toast.makeText(DisplayingSlots.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
 
-                });
+                                });
 
+                            }
+                        }
+                );
 
 
             }
@@ -152,7 +158,9 @@ public class DisplayingSlots extends AppCompatActivity {
                 Appointment newApt = new Appointment(dateSelected, temp1, temp2, selectedSlot.sTime, selectedSlot.eTime);
 
                 bm.confirmAppointment(newApt, DisplayingSlots.this).addOnCompleteListener(
+
                         task -> {
+
                             if (task.isSuccessful() && task.getResult()) {
 
 //                            AlarmHandler ah = new AlarmHandler();

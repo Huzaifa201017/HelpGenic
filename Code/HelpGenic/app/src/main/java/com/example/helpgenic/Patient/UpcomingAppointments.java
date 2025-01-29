@@ -91,8 +91,8 @@ public class UpcomingAppointments extends Fragment {
 
             Appointment apt = (Appointment) adapterView.getItemAtPosition(i);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-            String dateString = apt.getAptDateStr() + " " + apt.getsTime().toString();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String dateString = apt.getAppDate() + " " + apt.getsTime().toString();
 
 
             // formatting the dateString to convert it into a Date

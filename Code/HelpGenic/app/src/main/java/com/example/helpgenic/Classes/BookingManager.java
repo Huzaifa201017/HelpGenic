@@ -20,57 +20,73 @@ public class BookingManager {
     }
 
 
-    public ArrayList<Slot> getAvailableSlots(String docId , Date dateSelected , String day , ArrayList<Slot> slots, Context context){
+    public Task<ArrayList<Slot>> getAvailableSlots(String docId , Date dateSelected , String day , ArrayList<Slot> slots, Context context){
 
-//        ArrayList<Slot> consumedSlots = db.getConsumedSlots(docId , dateSelected, context);
-        ArrayList<Slot> consumedSlots =  new ArrayList<>();
-
+        TaskCompletionSource<ArrayList<Slot>> taskCompletionSource = new TaskCompletionSource<>();
         ArrayList<Slot> availableSlots = new ArrayList<>();
 
-        boolean isPresent, onSameDay = false;
+        db.getConsumedSlots(docId , dateSelected).addOnCompleteListener(
+                task -> {
+
+                    if (task.isSuccessful()) {
+
+                        ArrayList<Slot> consumedSlots = task.getResult();
+
+                        boolean isPresent, onSameDay = false;
 
 
-        long millis = System.currentTimeMillis();
-        java.sql.Date date = new java.sql.Date(millis);
+                        long millis = System.currentTimeMillis();
+                        java.sql.Date date = new java.sql.Date(millis);
 
-        Time t = new Time(date.getTime());
+                        Time t = new Time(date.getTime());
 
 
-        if(Objects.equals(dateSelected.toString(),date.toString())){
-            Toast.makeText(context, "Yes", Toast.LENGTH_SHORT).show();
-            onSameDay = true;
-        }
+                        if(Objects.equals(dateSelected.toString(),date.toString())){
+                            Toast.makeText(context, "Yes", Toast.LENGTH_SHORT).show();
+                            onSameDay = true;
+                        }
 
-        for (Slot slot: slots ){
+                        for (Slot slot: slots ){
 
-            isPresent = false;
+                            isPresent = false;
 
-            if(onSameDay){
-                if( this.compareTo(slot.sTime,t) <= 0){
-                    continue;
+                            if(onSameDay){
+                                if( this.compareTo(slot.sTime,t) <= 0){
+                                    continue;
+                                }
+                            }
+
+                            for (Slot cSlot: consumedSlots) {
+
+
+                                if (Objects.equals(slot.sTime , cSlot.sTime) && Objects.equals(slot.eTime ,cSlot.eTime) ){
+                                    isPresent = true;
+                                    break;
+                                }
+
+                            }
+                            if(!isPresent) {
+
+                                slot.day = day;
+                                availableSlots.add(slot);
+
+                            }
+
+
+                        }
+
+                        taskCompletionSource.setResult(availableSlots);
+
+                    }else {
+                        taskCompletionSource.setResult(availableSlots);
+                    }
                 }
-            }
+        );
 
-            for (Slot cSlot: consumedSlots) {
+        return taskCompletionSource.getTask();
 
-
-                if (Objects.equals(slot.sTime , cSlot.sTime) && Objects.equals(slot.eTime ,cSlot.eTime) ){
-                    isPresent = true;
-                    break;
-                }
-
-            }
-            if(!isPresent) {
-
-                slot.day = day;
-                availableSlots.add(slot);
-
-            }
-
-
-        }
-        return availableSlots;
     }
+
 
     public ArrayList<Slot> makeSlots( Time sTime , Time eTime , String day){
 
@@ -147,7 +163,7 @@ public class BookingManager {
 
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
 
-        db.checkDuplicateAppointment(newApt.getPatient().getId() , newApt.getDoc().getId(), newApt.getAppDate()).addOnCompleteListener(
+        db.checkDuplicateAppointment(newApt.getDoc().getId(), newApt.getPatient().getId() , newApt.getAppDate()).addOnCompleteListener(
             task -> {
                 if (task.isSuccessful() ){
 
@@ -175,6 +191,7 @@ public class BookingManager {
                     taskCompletionSource.setResult(false);
                 }
             }
+
         );
 
         return taskCompletionSource.getTask();

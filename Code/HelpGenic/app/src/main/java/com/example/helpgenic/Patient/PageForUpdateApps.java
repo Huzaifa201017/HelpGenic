@@ -35,6 +35,7 @@ public class PageForUpdateApps extends AppCompatActivity {
     Slot selectedSlot=null;
     Button updateBtn, cancelBtn;
     DbHandler db = null;
+    ListViewDsiplayingSlotsAdapter adapter;
 
     public void setSharedPref(){
         SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
@@ -57,7 +58,7 @@ public class PageForUpdateApps extends AppCompatActivity {
 
         // setting prior appointment date to current page
         date = findViewById(R.id.date);
-        date.setText(app.getAptDateStr());
+        date.setText(app.getAppDate().toString());
 
 
         // getting corresponding week to appointment date
@@ -69,36 +70,47 @@ public class PageForUpdateApps extends AppCompatActivity {
         BookingManager bm = new BookingManager();
         bm.setDb(db);
 
+        lst = findViewById(R.id.list);
+
+
         // getting available slots
         slots = bm.makeSlots(app.getDoc().getvSchedule().get(0).getsTime() , app.getDoc().getvSchedule().get(0).geteTime() ,dayWeekText);
-        ArrayList<Slot> availableSlots = bm.getAvailableSlots(app.getDoc().getId(), app.getAppDate(),dayWeekText,slots ,this);
+        bm.getAvailableSlots(app.getDoc().getId(), app.getAppDate(),dayWeekText,slots ,this).addOnCompleteListener(
+                task -> {
+
+                    ArrayList<Slot> availableSlots = task.getResult();
+
+                    if(task.isSuccessful()){
+
+                        adapter = new ListViewDsiplayingSlotsAdapter(this,0,availableSlots);
+                        lst.setAdapter(adapter);
+
+                    }else{
+                        Toast.makeText(PageForUpdateApps.this, "Some Error Occurred !", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+        );
 
 
-        // displaying slots to patient
-        lst = findViewById(R.id.list);
-        ListViewDsiplayingSlotsAdapter adapter = new ListViewDsiplayingSlotsAdapter(this,0,availableSlots);
-        lst.setAdapter(adapter);
 
 
 
 
 
         // getting selected slot
-        lst.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(selectedPos != -1){
-                    lst.getChildAt(selectedPos).setBackgroundColor(Color.TRANSPARENT);
-                }
+        lst.setOnItemClickListener( (adapterView, view, i, l) -> {
+            if(selectedPos != -1){
+                lst.getChildAt(selectedPos).setBackgroundColor(Color.TRANSPARENT);
+            }
 
-                try{
-                    selectedSlot = (Slot)adapterView.getItemAtPosition(i);
-                    lst.getChildAt(i).setBackgroundColor(Color.rgb(165,184,166));
-                    selectedPos = i;
+            try{
+                selectedSlot = (Slot)adapterView.getItemAtPosition(i);
+                lst.getChildAt(i).setBackgroundColor(Color.rgb(165,184,166));
+                selectedPos = i;
 
-                }catch (Exception e){
-                    Toast.makeText(PageForUpdateApps.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+            }catch (Exception e){
+                Toast.makeText(PageForUpdateApps.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
