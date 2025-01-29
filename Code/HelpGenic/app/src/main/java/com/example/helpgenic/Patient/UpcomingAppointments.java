@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -20,13 +19,12 @@ import com.example.helpgenic.Classes.Patient;
 import com.example.helpgenic.PatientAdapters.ListViewPatientHistoryAdapter;
 import com.example.helpgenic.R;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class UpcomingAppointments extends Fragment {
 
@@ -88,42 +86,38 @@ public class UpcomingAppointments extends Fragment {
 
 
        // on click take them to the next page to update/cancel appt.
-        appointmentListRef.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        appointmentListRef.setOnItemClickListener( (adapterView, view1, i, l) -> {
 
 
-                Appointment apt = (Appointment) adapterView.getItemAtPosition(i);
+            Appointment apt = (Appointment) adapterView.getItemAtPosition(i);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-                String dateString = apt.getAptDateStr() + " " + apt.getsTime().toString();
-
-
-                // formatting the dateString to convert it into a Date
-                java.util.Date date = null;
-                try {
-                    date = sdf.parse(dateString);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                Calendar calendar = Calendar.getInstance();
-
-                // Setting the Calendar date and time to the given date and time
-                calendar.setTime(date);
-                long time = calendar.getTimeInMillis();
-                long currentTime = System.currentTimeMillis();
-
-                if(time > currentTime){
-                    Intent intent = new Intent(getContext(), PageForUpdateApps.class);
-                    intent.putExtra("appointment", apt);
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(getContext() ,"Your appointment has already been started!", Toast.LENGTH_SHORT).show();
-                }
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+            String dateString = apt.getAptDateStr() + " " + apt.getsTime().toString();
 
 
+            // formatting the dateString to convert it into a Date
+            Date date = null;
+            try {
+                date = sdf.parse(dateString);
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+
+            Calendar calendar = Calendar.getInstance();
+
+            // Setting the Calendar date and time to the given date and time
+            calendar.setTime(date);
+            long time = calendar.getTimeInMillis();
+            long currentTime = System.currentTimeMillis();
+
+            if(time > currentTime){
+                Intent intent = new Intent(getContext(), PageForUpdateApps.class);
+                intent.putExtra("appointment", apt);
+                startActivity(intent);
+            }else{
+                Toast.makeText(getContext() ,"Your appointment has already been started!", Toast.LENGTH_SHORT).show();
+            }
+
 
         });
 

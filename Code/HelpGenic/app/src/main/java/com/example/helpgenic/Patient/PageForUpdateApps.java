@@ -21,7 +21,6 @@ import com.example.helpgenic.Classes.Slot;
 import com.example.helpgenic.PatientAdapters.ListViewDsiplayingSlotsAdapter;
 import com.example.helpgenic.R;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -58,7 +57,7 @@ public class PageForUpdateApps extends AppCompatActivity {
 
         // setting prior appointment date to current page
         date = findViewById(R.id.date);
-        date.setText(app.getAppDate().toString());
+        date.setText(app.getAptDateStr());
 
 
         // getting corresponding week to appointment date
@@ -71,9 +70,8 @@ public class PageForUpdateApps extends AppCompatActivity {
         bm.setDb(db);
 
         // getting available slots
-        // slots = bm.makeSlots(app.getDoc().getvSchedule().get(0).getsTime() , app.getDoc().getvSchedule().get(0).geteTime() ,dayWeekText);
-//        ArrayList<Slot> availableSlots = bm.getAvailableSlots("", app.getAppDate(),dayWeekText,slots ,this);
-        ArrayList<Slot> availableSlots = new ArrayList<>();
+        slots = bm.makeSlots(app.getDoc().getvSchedule().get(0).getsTime() , app.getDoc().getvSchedule().get(0).geteTime() ,dayWeekText);
+        ArrayList<Slot> availableSlots = bm.getAvailableSlots(app.getDoc().getId(), app.getAppDate(),dayWeekText,slots ,this);
 
 
         // displaying slots to patient

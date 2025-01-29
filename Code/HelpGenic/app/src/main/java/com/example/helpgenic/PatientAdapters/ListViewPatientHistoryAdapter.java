@@ -50,7 +50,7 @@ public class ListViewPatientHistoryAdapter extends ArrayAdapter<com.example.help
         appointmentDate.setText(appointment.getAptDateStr());
         String sTime = appointment.getsTime().toString();
         String eTime = appointment.geteTime().toString();
-        String timeRange = sTime + " -- " + eTime;
+        String timeRange = sTime.substring(0, sTime.length() - 3) + " -- " + eTime.substring(0, eTime.length() - 3);;
         appointmentTime.setText(timeRange);
 
 

@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -483,7 +482,16 @@ public class DbHandler {
             appointment.put("docSTime", newApt.getDoc().getvSchedule().get(0).getsTime());
             appointment.put("docETime", newApt.getDoc().getvSchedule().get(0).geteTime());
             appointment.put("patientId", newApt.getPatient().getId());
-            appointment.put("date", newApt.getAppDate());
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(newApt.getAppDate());
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            appointment.put("date", calendar.getTime());
+
             appointment.put("sTime", newApt.getsTime());
             appointment.put("eTime", newApt.geteTime());
 
@@ -522,9 +530,8 @@ public class DbHandler {
             Timestamp currentTimestamp = new Timestamp(calendar.getTime());
 
             // Fetching current time
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
-            String currentTimeString = timeFormat.format(new Date());
-            Time currentTime = java.sql.Time.valueOf(currentTimeString);
+            long currentTime = System.currentTimeMillis();
+
 
             db.collection("Appointments")
                     .whereEqualTo("patientId", pId)
@@ -534,32 +541,39 @@ public class DbHandler {
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
 
 
-                        Date eTimeDate = documentSnapshot.getDate("eTime");
-                        String eTimeString = timeFormat.format(eTimeDate);
-                        Time eTime = java.sql.Time.valueOf(eTimeString);
+                        Date aptDate = documentSnapshot.getDate("date");
+                        Time eTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("eTime")).getTime());
+                        Time sTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("sTime")).getTime());
+                        Time doceTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("docETime")).getTime());
+                        Time docsTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("docSTime")).getTime());
 
-                        if (eTime.after(currentTime)) {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        String formattedDate = dateFormat.format(aptDate);
 
-                            String id = documentSnapshot.getId();
-                            String name = documentSnapshot.getString("docName");
-                            String specialization = documentSnapshot.getString("docSpecialization");
-                            Date aptDate = documentSnapshot.getDate("date");
+                        Date finalFormattedDate;
+                        Calendar calendar2 = Calendar.getInstance();
+                        try {
+                            finalFormattedDate = dateFormat.parse(formattedDate);
+                            String dateString = formattedDate + " " + eTime;
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                            calendar2.setTime(sdf.parse(dateString));
+                        } catch (Exception e) {
+                            Log.d("Db Handler: getListOfDoctors", "Error while formatting the date: ", e);
+                            continue;  // Exit early in case of an error
+                        }
 
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                            String formattedDate = dateFormat.format(aptDate);
+                        long endTime = calendar2.getTimeInMillis();
+                        if (endTime > currentTime) {
 
-                            Date finalFormattedDate = null;
-                            try {
-                                finalFormattedDate = dateFormat.parse(formattedDate);
-                            } catch (Exception e) {
-                                Log.d("Db Handler: getListOfDoctors", "Error while formatting the date: ");
-                            }
+                            VirtualAppointmentSchedule vs = new VirtualAppointmentSchedule(null, docsTime, doceTime);
+                            Doctor doctor = new Doctor(
+                                    documentSnapshot.getId(),
+                                    documentSnapshot.getString("docName"),
+                                    documentSnapshot.getString("docSpecialization"),
+                                    vs
+                            );
 
-                            Time sTime = new Time(Objects.requireNonNull(documentSnapshot.getDate("sTime")).getTime());
-
-
-                            Doctor d = new Doctor(name, specialization, id);
-                            upcomingApp.add(new Appointment(finalFormattedDate, formattedDate, d, sTime, eTime, documentSnapshot.getId()));
+                            upcomingApp.add(new Appointment(finalFormattedDate, formattedDate, doctor, sTime, eTime, documentSnapshot.getId()));
                         }
 
                     }
